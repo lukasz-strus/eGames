@@ -1,4 +1,4 @@
-﻿using Domain.Customers;
+﻿using Domain.Users;
 using Domain.Games;
 
 namespace Domain.Orders;
@@ -11,44 +11,29 @@ public class Order
     {
     }
 
-    public Guid Id { get; private set; }
+    public OrderId Id { get; private set; }
 
-    public Guid CustomerId { get; private set; }
+    public UserId UserId { get; private set; }
 
-    public static Order Create(Customer customer)
+    public static Order Create(UserId userId)
     {
         var order = new Order
         {
-            Id = Guid.NewGuid(),
-            CustomerId = customer.Id
+            Id = new OrderId(Guid.NewGuid()),
+            UserId = userId
         };
 
         return order;
     }
 
-    public void Add(Game game)
+    public void Add(GameId gameId, Money price)
     {
-        var orderItem = new OrderItem(Guid.NewGuid(), Id, game.Id, game.Price);
+        var orderItem = new OrderItem(
+            new OrderItemId(Guid.NewGuid()), 
+            Id,
+            gameId,
+            price);
 
         _items.Add(orderItem);
     }
-}
-
-public class OrderItem
-{
-    internal OrderItem(Guid id, Guid orderId, Guid gameId, Money price)
-    {
-        Id = id;
-        OrderId = orderId;
-        GameId = gameId;
-        Price = price;
-    }
-
-    public Guid Id { get; private set; }
-
-    public Guid OrderId { get; private set; }
-
-    public Guid GameId { get; private set; }
-
-    public Money Price { get; set; }
 }
