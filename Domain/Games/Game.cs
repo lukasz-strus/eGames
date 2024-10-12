@@ -1,4 +1,6 @@
-﻿namespace Domain.Games;
+﻿using Domain.Primitives.ValueObjects;
+
+namespace Domain.Games;
 
 public class Game
 {
