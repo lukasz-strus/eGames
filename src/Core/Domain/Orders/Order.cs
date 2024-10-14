@@ -1,7 +1,7 @@
 ﻿using Domain.Users;
 using Domain.Games;
-using Domain.Primitives.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using Domain.ValueObjects;
 
 namespace Domain.Orders;
 
@@ -21,14 +21,14 @@ public class Order
 
     public OrderStatus Status { get; private set; }
 
-    public IReadOnlyList<OrderItem> Items => _items.ToList();
+    public IReadOnlyList<OrderItem> Items => [.. _items];
 
-    public static Order Create(UserId customerId)
+    public static Order Create(UserId userId)
     {
         var order = new Order
         {
             Id = new OrderId(Guid.NewGuid()),
-            CustomerId = customerId,
+            CustomerId = userId,
             Status = OrderStatus.Pending
         };
 

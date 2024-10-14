@@ -1,5 +1,5 @@
 ﻿using Domain.Games;
-using Domain.Primitives.ValueObjects;
+using Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Orders;

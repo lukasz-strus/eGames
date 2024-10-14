@@ -47,7 +47,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Game");
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("Domain.Orders.Order", b =>
@@ -65,7 +65,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Domain.Orders.OrderItem", b =>
@@ -85,7 +85,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -134,7 +134,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
 
                     b.HasDiscriminator().HasValue("User");
 
@@ -157,7 +157,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Games.Game", b =>
                 {
-                    b.OwnsOne("Domain.Primitives.ValueObjects.Money", "Price", b1 =>
+                    b.OwnsOne("Domain.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<Guid>("GameId")
                                 .HasColumnType("uniqueidentifier");
@@ -172,7 +172,7 @@ namespace Infrastructure.Migrations
 
                             b1.HasKey("GameId");
 
-                            b1.ToTable("Game");
+                            b1.ToTable("Games");
 
                             b1.WithOwner()
                                 .HasForeignKey("GameId");
@@ -205,7 +205,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Primitives.ValueObjects.Money", "Price", b1 =>
+                    b.OwnsOne("Domain.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<Guid>("OrderItemId")
                                 .HasColumnType("uniqueidentifier");
@@ -219,7 +219,7 @@ namespace Infrastructure.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItem");
+                            b1.ToTable("OrderItems");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
