@@ -1,6 +1,7 @@
 ﻿using Domain.Users;
 using Domain.Games;
 using Domain.Primitives.ValueObjects;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Orders;
 
@@ -12,20 +13,22 @@ public class Order
     {
     }
 
+    [Key]
     public OrderId Id { get; private set; }
 
-    public UserId UserId { get; private set; }
+    [Required]
+    public UserId CustomerId { get; private set; }
 
     public OrderStatus Status { get; private set; }
 
-    public IReadOnlyCollection<OrderItem> Items => _items;
+    public IReadOnlyList<OrderItem> Items => _items.ToList();
 
-    public static Order Create(UserId userId)
+    public static Order Create(UserId customerId)
     {
         var order = new Order
         {
             Id = new OrderId(Guid.NewGuid()),
-            UserId = userId,
+            CustomerId = customerId,
             Status = OrderStatus.Pending
         };
 

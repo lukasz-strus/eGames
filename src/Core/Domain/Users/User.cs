@@ -1,25 +1,32 @@
-﻿namespace Domain.Users;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Domain.Users;
 
 public abstract class User
 {
-
-    public string Email { get; private set; } = string.Empty;
-
-    public string FirstName { get; private set; } = string.Empty;
+    [Key]
     public UserId Id { get; private set; }
 
-    public string LastName { get; private set; } = string.Empty;
-
+    [Required]
+    [MaxLength(100)]
     public string Login { get; private set; } = string.Empty;
 
+    [Required]
+    [EmailAddress]
+    [MaxLength(255)]
+    public string Email { get; private set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
+    public string FirstName { get; private set; } = string.Empty;
+
+    [Required]
+    [MaxLength(100)]
+    public string LastName { get; private set; } = string.Empty;
+
+    [Required]
+    [Phone]
+    [MaxLength(20)]
     public string PhoneNumber { get; private set; } = string.Empty;
 
-    public abstract Role Role { get; }
-
-}
-
-public enum Role
-{
-    Customer,
-    Admin
 }
