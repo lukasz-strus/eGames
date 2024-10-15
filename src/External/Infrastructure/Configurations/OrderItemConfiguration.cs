@@ -18,6 +18,10 @@ internal class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .WithMany()
             .HasForeignKey(oi => oi.GameId);
 
-        builder.OwnsOne(oi => oi.Price);
+        builder.OwnsOne(oi => oi.Price, priceBuilder =>
+        {
+            priceBuilder.Property(m => m.Currency).HasMaxLength(3);
+            priceBuilder.Property(m => m.Amount).HasColumnType("decimal(18,3)");
+        });
     }
 }

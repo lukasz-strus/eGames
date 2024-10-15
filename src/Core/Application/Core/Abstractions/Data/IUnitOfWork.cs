@@ -1,4 +1,4 @@
-﻿namespace Domain.Primitives;
+﻿namespace Application.Core.Abstractions.Data;
 
 public interface IUnitOfWork
 {

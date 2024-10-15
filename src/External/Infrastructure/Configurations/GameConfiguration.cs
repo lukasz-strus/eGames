@@ -16,6 +16,7 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.OwnsOne(g => g.Price, priceBuilder =>
         {
             priceBuilder.Property(m => m.Currency).HasMaxLength(3);
+            priceBuilder.Property(m => m.Amount).HasColumnType("decimal(18,3)");
         });
     }
 }

@@ -2,10 +2,11 @@
 using Domain.Games;
 using System.ComponentModel.DataAnnotations;
 using Domain.ValueObjects;
+using Domain.Core.Primitives;
 
 namespace Domain.Orders;
 
-public class Order
+public class Order : Entity<OrderId>
 {
     private readonly HashSet<OrderItem> _items = [];
 
@@ -13,11 +14,7 @@ public class Order
     {
     }
 
-    [Key]
-    public OrderId Id { get; private set; }
-
-    [Required]
-    public UserId CustomerId { get; private set; }
+    [Required] public UserId CustomerId { get; private set; }
 
     public OrderStatus Status { get; private set; }
 
@@ -38,7 +35,7 @@ public class Order
     public void Add(GameId gameId, Money price)
     {
         var orderItem = new OrderItem(
-            new OrderItemId(Guid.NewGuid()), 
+            new OrderItemId(Guid.NewGuid()),
             Id,
             gameId,
             price);

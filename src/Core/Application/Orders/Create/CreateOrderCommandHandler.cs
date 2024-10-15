@@ -1,5 +1,6 @@
-﻿using Domain.Orders;
-using Domain.Primitives;
+﻿using Application.Core.Abstractions.Data;
+using Domain.Core.Primitives;
+using Domain.Orders;
 using Domain.Users;
 using MediatR;
 

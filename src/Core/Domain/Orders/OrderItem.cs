@@ -1,32 +1,29 @@
-﻿using Domain.Games;
+﻿using Domain.Core.Primitives;
+using Domain.Games;
 using Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Orders;
 
-public class OrderItem
+public class OrderItem : Entity<OrderItemId>
 {
     private OrderItem()
     {
     }
 
-    internal OrderItem(OrderItemId id, OrderId orderId, GameId gameId, Money price)
+    public OrderItem(OrderItemId id,
+        OrderId orderId,
+        GameId gameId,
+        Money price) : base(id)
     {
-        Id = id;
         OrderId = orderId;
         GameId = gameId;
         Price = price;
     }
 
-    [Key]
-    public OrderItemId Id { get; private set; }
+    [Required] public OrderId OrderId { get; private set; }
 
-    [Required]
-    public OrderId OrderId { get; private set; }
+    [Required] public GameId GameId { get; private set; }
 
-    [Required]
-    public GameId GameId { get; private set; }
-
-    [Required]
-    public Money Price { get; set; }
+    [Required] public Money Price { get; set; }
 }

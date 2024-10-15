@@ -1,7 +1,9 @@
-﻿using Domain.Orders;
-using Domain.Primitives;
+﻿using Application.Core.Abstractions.Data;
+using Domain.Games;
+using Domain.Orders;
 using Domain.Users;
 using Infrastructure.Repositories;
+using Infrastructure.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,9 @@ public static class DependencyInjection
 
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IGameRepository, GameRepository>();
+
+        services.AddScoped<ApplicationSeeder>();
 
         return services;
     }

@@ -1,4 +1,4 @@
-﻿using Domain.Primitives;
+﻿using Application.Core.Abstractions.Data;
 
 namespace Infrastructure;
 

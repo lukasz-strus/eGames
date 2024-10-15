@@ -1,4 +1,4 @@
-﻿using Domain.Primitives;
+﻿using Domain.Core.Exceptions;
 
 namespace Domain.Users;
 

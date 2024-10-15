@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015170457_Refactor_Domain")]
+    partial class Refactor_Domain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("Domain.Orders.Order", b =>
@@ -65,7 +68,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Domain.Orders.OrderItem", b =>
@@ -85,7 +88,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -134,7 +137,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasDiscriminator().HasValue("User");
 
@@ -157,7 +160,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Games.Game", b =>
                 {
-                    b.OwnsOne("Domain.Games.Game.Price#Domain.ValueObjects.Money", "Price", b1 =>
+                    b.OwnsOne("Domain.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<Guid>("GameId")
                                 .HasColumnType("uniqueidentifier");
@@ -172,7 +175,7 @@ namespace Infrastructure.Migrations
 
                             b1.HasKey("GameId");
 
-                            b1.ToTable("Games", (string)null);
+                            b1.ToTable("Games");
 
                             b1.WithOwner()
                                 .HasForeignKey("GameId");
@@ -205,7 +208,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Domain.Orders.OrderItem.Price#Domain.ValueObjects.Money", "Price", b1 =>
+                    b.OwnsOne("Domain.ValueObjects.Money", "Price", b1 =>
                         {
                             b1.Property<Guid>("OrderItemId")
                                 .HasColumnType("uniqueidentifier");
@@ -220,7 +223,7 @@ namespace Infrastructure.Migrations
 
                             b1.HasKey("OrderItemId");
 
-                            b1.ToTable("OrderItems", (string)null);
+                            b1.ToTable("OrderItems");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
