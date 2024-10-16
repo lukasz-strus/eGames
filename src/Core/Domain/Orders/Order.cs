@@ -16,7 +16,8 @@ public class Order : Entity<OrderId>
 
     [Required] public UserId CustomerId { get; private set; }
 
-    public OrderStatus Status { get; private set; }
+    [Required] public int StatusId { get; private set; }
+    [Required] public OrderStatus Status { get; private set; }
 
     public IReadOnlyList<OrderItem> Items => [.. _items];
 
@@ -26,6 +27,7 @@ public class Order : Entity<OrderId>
         {
             Id = new OrderId(Guid.NewGuid()),
             CustomerId = userId,
+            StatusId = OrderStatus.Pending.Value,
             Status = OrderStatus.Pending
         };
 
