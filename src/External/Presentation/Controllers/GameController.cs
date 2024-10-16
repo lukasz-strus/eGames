@@ -26,6 +26,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
     public async Task<IActionResult> GetGameById(Guid id, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new GetGameByIdQuery(id), cancellationToken);
+
         return Ok(result);
     }
 }
