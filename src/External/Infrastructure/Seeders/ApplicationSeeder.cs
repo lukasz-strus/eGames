@@ -16,7 +16,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext)
     private static async Task SeedCustomer(ApplicationDbContext dbContext)
     {
         if (dbContext.Customers.Any()) return;
-        
+
         var customer = Customer.Create(
             "customer",
             "customer@test.com",
@@ -30,17 +30,19 @@ public class ApplicationSeeder(ApplicationDbContext dbContext)
 
     private static async Task SeedGame(ApplicationDbContext dbContext)
     {
-        if (dbContext.Games.Any()) return;
+        if (dbContext.FullGames.Any()) return;
 
-        var game = Game.Create(
+        var fullGame = FullGame.Create(
             "Game",
             "Game description",
             100.0m,
             "PLN",
             DateTime.Now,
-            "Test");
+            "Test",
+            "test",
+            1000000);
 
-        await dbContext.Games.AddAsync(game);
+        await dbContext.FullGames.AddAsync(fullGame);
         await dbContext.SaveChangesAsync();
     }
 }

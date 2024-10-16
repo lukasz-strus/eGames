@@ -3,10 +3,10 @@
 namespace Infrastructure.Repositories;
 
 internal sealed class OrderRepository(
-    ApplicationDbContext DbContext) : IOrderRepository
+    ApplicationDbContext dbContext) : IOrderRepository
 {
     public async Task AddAsync(Order order, CancellationToken cancellationToken)
     {
-        await DbContext.Orders.AddAsync(order, cancellationToken);
+        await dbContext.Orders.AddAsync(order, cancellationToken);
     }
 }

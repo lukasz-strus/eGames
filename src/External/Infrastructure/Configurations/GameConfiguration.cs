@@ -13,10 +13,31 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
                 gameId => gameId.Value,
                 value => new GameId(value));
 
-        builder.OwnsOne(g => g.Price, priceBuilder =>
-        {
-            priceBuilder.Property(m => m.Currency).HasMaxLength(3);
-            priceBuilder.Property(m => m.Amount).HasColumnType("decimal(18,3)");
-        });
+        builder.OwnsOne(g => g.Price);
+    }
+}
+
+internal class FullGameConfiguration : IEntityTypeConfiguration<FullGame>
+{
+    public void Configure(EntityTypeBuilder<FullGame> builder)
+    {
+    }
+}
+
+internal class DlcGameConfiguration : IEntityTypeConfiguration<DlcGame>
+{
+    public void Configure(EntityTypeBuilder<DlcGame> builder)
+    {
+        builder.HasOne(dg => dg.BaseGame)
+            .WithMany(fg => fg.DlcGames)
+            .HasForeignKey(dg => dg.BaseGameId)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
+}
+
+internal class SubscriptionGameConfiguration : IEntityTypeConfiguration<Subscription>
+{
+    public void Configure(EntityTypeBuilder<Subscription> builder)
+    {
     }
 }

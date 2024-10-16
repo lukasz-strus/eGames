@@ -1,11 +1,15 @@
-﻿namespace Domain.ValueObjects;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+
+namespace Domain.ValueObjects;
 
 public record Money
 {
     private const int CurrencyCodeLength = 3;
 
-    public string Currency { get; private set; }
-    public decimal Amount { get; private set; }
+    [Required] [MaxLength(3)] public string Currency { get; private set; }
+
+    [Required] [Precision(18, 3)] public decimal Amount { get; private set; }
 
     public Money(string currency, decimal amount)
     {

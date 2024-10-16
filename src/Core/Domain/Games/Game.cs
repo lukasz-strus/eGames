@@ -4,10 +4,30 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Games;
 
-public class Game : Entity<GameId>
+public abstract class Game : Entity<GameId>
 {
-    private Game()
+    private protected Game()
     {
+    }
+
+    private protected Game(
+        GameId id,
+        string name,
+        string description,
+        Money price,
+        DateTime releaseDate,
+        string publisher,
+        string downloadLink,
+        ulong fileSize)
+    {
+        Id = id;
+        Name = name;
+        Description = description;
+        Price = price;
+        ReleaseDate = releaseDate;
+        Publisher = publisher;
+        DownloadLink = downloadLink;
+        FileSize = fileSize;
     }
 
     [Required] [MaxLength(100)] public string Name { get; private set; } = string.Empty;
@@ -16,27 +36,10 @@ public class Game : Entity<GameId>
 
     [Required] public Money Price { get; private set; }
 
-    [Required] public DateTime ReleaseDate { get; set; }
+    [Required] public DateTime ReleaseDate { get; private set; }
 
-    [Required] [MaxLength(100)] public string Publisher { get; set; } = string.Empty;
+    [Required] [MaxLength(100)] public string Publisher { get; private set; } = string.Empty;
+    [Required] [MaxLength(100)] public string DownloadLink { get; private set; } = string.Empty;
 
-    public static Game Create(
-        string name,
-        string description,
-        decimal price,
-        string currency,
-        DateTime releaseDate,
-        string publisher)
-    {
-        var game = new Game
-        {
-            Id = new GameId(Guid.NewGuid()),
-            Name = name,
-            Description = description,
-            Price = new Money(currency, price),
-            ReleaseDate = releaseDate,
-            Publisher = publisher
-        };
-        return game;
-    }
+    [Required] public ulong FileSize { get; private set; }
 }
