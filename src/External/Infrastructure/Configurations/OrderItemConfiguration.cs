@@ -1,4 +1,5 @@
-﻿using Domain.Games;
+﻿using Domain.Enums;
+using Domain.Games;
 using Domain.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -18,6 +19,12 @@ internal class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .WithMany()
             .HasForeignKey(oi => oi.GameId);
 
-        builder.OwnsOne(oi => oi.Price);
+        builder.ComplexProperty(oi => oi.Price, priceBuilder =>
+        {
+            priceBuilder.Property(m => m.Currency)
+                .HasConversion(
+                    currency => currency.Value,
+                    value => Currency.FromValue(value)!);
+        });
     }
 }

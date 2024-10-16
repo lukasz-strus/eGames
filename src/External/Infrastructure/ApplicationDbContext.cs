@@ -1,4 +1,5 @@
-﻿using Domain.Games;
+﻿using Domain.Enums;
+using Domain.Games;
 using Domain.Orders;
 using Domain.Users;
 using Microsoft.EntityFrameworkCore;
@@ -24,4 +25,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<OrderStatus> OrderStatuses { get; set; }
+    public DbSet<Currency> Currency { get; set; }
 }

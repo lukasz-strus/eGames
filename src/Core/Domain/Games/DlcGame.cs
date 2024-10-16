@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 using Domain.ValueObjects;
 
 namespace Domain.Games;
@@ -28,7 +29,7 @@ public sealed class DlcGame : Game
         string name,
         string description,
         decimal price,
-        string currency,
+        Currency currency,
         DateTime releaseDate,
         string publisher,
         string downloadLink,

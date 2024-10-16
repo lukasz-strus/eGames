@@ -15,7 +15,7 @@ internal sealed class GetGameByIdQueryHandler(
             game.Id.Value,
             game.Name,
             game.Description,
-            game.Price.Currency,
+            game.Price.Currency.ToString(),
             game.Price.Amount,
             game.ReleaseDate,
             game.Publisher);

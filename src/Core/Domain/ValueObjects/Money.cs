@@ -1,33 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.ValueObjects;
 
+[ComplexType]
 public record Money
 {
-    private const int CurrencyCodeLength = 3;
+    private const string AmountCannotBeNegative = "Amount cannot be negative";
 
-    [Required] [MaxLength(3)] public string Currency { get; private set; }
+    [Required] public Currency Currency { get; private set; }
 
     [Required] [Precision(18, 3)] public decimal Amount { get; private set; }
 
-    public Money(string currency, decimal amount)
+    public Money(Currency currency, decimal amount)
     {
-        Validate(currency, amount);
+        if (amount < 0) throw new ArgumentException(AmountCannotBeNegative, nameof(amount));
 
         Currency = currency;
         Amount = amount;
     }
 
-    private static void Validate(string currency, decimal amount)
-    {
-        if (string.IsNullOrWhiteSpace(currency))
-            throw new ArgumentException("Currency cannot be empty", nameof(currency));
-
-        if (amount < 0)
-            throw new ArgumentException("Amount cannot be negative", nameof(amount));
-
-        if (currency.Length != CurrencyCodeLength)
-            throw new ArgumentException($"Currency must have {CurrencyCodeLength} characters", nameof(currency));
-    }
+    public override string ToString() => Currency.Format(Amount);
 }

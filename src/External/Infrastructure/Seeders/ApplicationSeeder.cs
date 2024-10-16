@@ -1,4 +1,5 @@
-﻿using Domain.Games;
+﻿using Domain.Enums;
+using Domain.Games;
 using Domain.Users;
 
 namespace Infrastructure.Seeders;
@@ -36,7 +37,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext)
             "Game",
             "Game description",
             100.0m,
-            "PLN",
+            Currency.Pln,
             DateTime.Now,
             "Test",
             "test",

@@ -38,10 +38,7 @@ public abstract class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>
     public override int GetHashCode() =>
         Value.GetHashCode();
 
-    public override string ToString()
-    {
-        return Name;
-    }
+    public override string ToString() => Name;
 
     private static Dictionary<int, TEnum> CreateEnumerations()
     {
