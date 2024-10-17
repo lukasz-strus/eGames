@@ -6,7 +6,9 @@ namespace Infrastructure.Repositories;
 internal sealed class UserRepository(
     ApplicationDbContext dbContext) : IUserRepository
 {
-    public async Task<Customer> GetCustomerAsync(UserId id, CancellationToken cancellationToken) =>
-        await dbContext.Customers.FirstOrDefaultAsync(x => x.Id == id, cancellationToken)
-        ?? throw new UserNotFoundException(id.Value.ToString());
+    public async Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default) =>
+        await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+    public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) =>
+        await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
 }

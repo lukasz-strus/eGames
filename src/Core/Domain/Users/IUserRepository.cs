@@ -2,5 +2,6 @@
 
 public interface IUserRepository
 {
-    Task<Customer> GetCustomerAsync(UserId id, CancellationToken cancellationToken);
+    Task<User?> GetAsync(UserId id, CancellationToken cancellationToken = default);
+    Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 }
