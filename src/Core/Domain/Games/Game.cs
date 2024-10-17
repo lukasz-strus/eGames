@@ -1,6 +1,7 @@
 ﻿using Domain.Core.Primitives;
 using Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 
 namespace Domain.Games;
 
@@ -8,6 +9,14 @@ public abstract class Game : Entity<GameId>
 {
     private protected Game()
     {
+        Id = new GameId(Guid.NewGuid());
+        Description = string.Empty;
+        Name = string.Empty;
+        Price = new Money(Currency.Pln, 0);
+        ReleaseDate = DateTime.Now;
+        Publisher = string.Empty;
+        DownloadLink = string.Empty;
+        FileSize = 0;
     }
 
     private protected Game(
@@ -30,16 +39,17 @@ public abstract class Game : Entity<GameId>
         FileSize = fileSize;
     }
 
-    [Required] [MaxLength(100)] public string Name { get; private set; } = string.Empty;
+    [Required] [MaxLength(100)] public string Name { get; private set; }
 
-    [Required] [MaxLength(1000)] public string Description { get; private set; } = string.Empty;
+    [Required] [MaxLength(1000)] public string Description { get; private set; }
 
     [Required] public Money Price { get; private set; }
 
     [Required] public DateTime ReleaseDate { get; private set; }
 
-    [Required] [MaxLength(100)] public string Publisher { get; private set; } = string.Empty;
-    [Required] [MaxLength(100)] public string DownloadLink { get; private set; } = string.Empty;
+    [Required] [MaxLength(100)] public string Publisher { get; private set; }
+
+    [Required] [MaxLength(100)] public string DownloadLink { get; private set; }
 
     [Required] public ulong FileSize { get; private set; }
 }

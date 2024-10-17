@@ -7,6 +7,7 @@ public sealed class FullGame : Game
 {
     private readonly HashSet<DlcGame> _dlcGames = [];
 
+    // ReSharper disable once UnusedMember.Local
     private FullGame()
     {
     }

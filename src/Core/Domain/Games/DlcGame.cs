@@ -6,6 +6,7 @@ namespace Domain.Games;
 
 public sealed class DlcGame : Game
 {
+    // ReSharper disable once UnusedMember.Local
     private DlcGame()
     {
     }

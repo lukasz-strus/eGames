@@ -10,6 +10,12 @@ public sealed class Currency : Enumeration<Currency>
     internal static readonly Currency None = new(default, string.Empty, string.Empty);
     public string Code { get; }
 
+    // ReSharper disable once UnusedMember.Local
+    private Currency()
+    {
+        Code = string.Empty;
+    }
+
     private Currency(int value, string name, string code)
         : base(value, name)
     {

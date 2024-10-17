@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using Domain.Games;
+﻿using Domain.Games;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,12 +13,22 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
                 gameId => gameId.Value,
                 value => new GameId(value));
 
-        builder.ComplexProperty(oi => oi.Price, priceBuilder =>
+        builder.OwnsOne(oi => oi.Price, moneyBuilder =>
         {
-            priceBuilder.Property(m => m.Currency)
-                .HasConversion(
-                    currency => currency.Value,
-                    value => Currency.FromValue(value)!);
+            moneyBuilder.WithOwner();
+
+            moneyBuilder.Property(money => money.Amount).HasColumnName("Amount");
+
+            moneyBuilder.OwnsOne(money => money.Currency, currencyBuilder =>
+            {
+                currencyBuilder.WithOwner();
+
+                currencyBuilder.Property(currency => currency.Value).HasColumnName("Currency").IsRequired();
+
+                currencyBuilder.Ignore(currency => currency.Code);
+
+                currencyBuilder.Ignore(currency => currency.Name);
+            });
         });
     }
 }

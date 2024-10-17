@@ -1,18 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.ValueObjects;
 
-[ComplexType]
 public record Money
 {
+    private Money()
+    {
+        Currency = Currency.Pln;
+        Amount = 0;
+    }
+
     private const string AmountCannotBeNegative = "Amount cannot be negative";
 
-    [Required] public Currency Currency { get; private set; }
+    [Required] public Currency Currency { get; }
 
-    [Required] [Precision(18, 3)] public decimal Amount { get; private set; }
+    [Required] [Precision(18, 3)] public decimal Amount { get; }
 
     public Money(Currency currency, decimal amount)
     {

@@ -9,6 +9,9 @@ public class OrderItem : Entity<OrderItemId>
 {
     private OrderItem()
     {
+        OrderId = default!;
+        GameId = default!;
+        Price = default!;
     }
 
     public OrderItem(OrderItemId id,

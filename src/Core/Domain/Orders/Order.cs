@@ -12,6 +12,8 @@ public class Order : Entity<OrderId>
 
     private Order()
     {
+        CustomerId = default!;
+        Status = default!;
     }
 
     [Required] public UserId CustomerId { get; private set; }

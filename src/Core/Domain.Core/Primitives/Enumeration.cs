@@ -2,20 +2,17 @@
 
 namespace Domain.Core.Primitives;
 
-public abstract class Enumeration<TEnum> : IEquatable<Enumeration<TEnum>>
+public abstract class Enumeration<TEnum>(int value, string name) : IEquatable<Enumeration<TEnum>>
     where TEnum : Enumeration<TEnum>
 {
     private static readonly Dictionary<int, TEnum> Enumerations = CreateEnumerations();
 
-
-    protected Enumeration(int value, string name)
+    protected Enumeration() : this(default, string.Empty)
     {
-        Value = value;
-        Name = name;
     }
 
-    public int Value { get; protected init; }
-    public string Name { get; protected init; } = string.Empty;
+    public int Value { get; protected init; } = value;
+    public string Name { get; protected init; } = name;
 
     public static TEnum? FromValue(int value) =>
         Enumerations.GetValueOrDefault(value);
