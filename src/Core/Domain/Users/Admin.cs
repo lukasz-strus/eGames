@@ -6,21 +6,11 @@ public class Admin : User
     {
     }
 
-    public static Admin Create(
-        string login,
-        string email,
-        string firstName,
-        string lastName,
-        string phoneNumber)
+    public static Admin Create()
     {
         var admin = new Admin
         {
-            Id = new UserId(Guid.NewGuid()),
-            Login = login,
-            Email = email,
-            FirstName = firstName,
-            LastName = lastName,
-            PhoneNumber = phoneNumber
+            Id = new UserId(Guid.NewGuid())
         };
 
         return admin;

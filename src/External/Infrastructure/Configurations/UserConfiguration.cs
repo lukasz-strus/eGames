@@ -8,17 +8,12 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        builder.ToTable("Users");
+
         builder.Property(u => u.Id)
             .HasConversion(
                 userId => userId.Value,
                 value => new UserId(value));
-
-        builder.HasIndex(u => u.Login).IsUnique();
-
-        builder.HasIndex(u => u.Email).IsUnique();
-
-        builder.HasIndex(u => u.PhoneNumber).IsUnique();
-
     }
 }
 
@@ -32,6 +27,13 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 internal class AdminConfiguration : IEntityTypeConfiguration<Admin>
 {
     public void Configure(EntityTypeBuilder<Admin> builder)
+    {
+    }
+}
+
+internal class SuperAdminConfiguration : IEntityTypeConfiguration<SuperAdmin>
+{
+    public void Configure(EntityTypeBuilder<SuperAdmin> builder)
     {
     }
 }

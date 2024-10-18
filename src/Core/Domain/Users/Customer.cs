@@ -6,21 +6,11 @@ public class Customer : User
     {
     }
 
-    public static Customer Create(
-        string login,
-        string email,
-        string firstName,
-        string lastName,
-        string phoneNumber)
+    public static Customer Create()
     {
         var customer = new Customer
         {
-            Id = new UserId(Guid.NewGuid()),
-            Login = login,
-            Email = email,
-            FirstName = firstName,
-            LastName = lastName,
-            PhoneNumber = phoneNumber
+            Id = new UserId(Guid.NewGuid())
         };
 
         return customer;
