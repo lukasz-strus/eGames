@@ -13,7 +13,7 @@ internal sealed class CreateOrderCommandHandler(
 {
     public async Task Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var customer = await UserRepository.GetAsync(new UserId(request.CustomerId), cancellationToken);
+        var customer = await UserRepository.GetCustomerAsync(new UserId(request.CustomerId), cancellationToken);
 
         var order = Order.Create(customer.Id);
 
