@@ -13,6 +13,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [HttpGet(ApiRoutes.Games.GetGames)]
     [ProducesResponseType(typeof(GameListResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetGames(CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(new GetAllGamesQuery(), cancellationToken);
