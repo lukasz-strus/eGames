@@ -1,5 +1,4 @@
 ﻿using Application.Core.Abstractions.Data;
-using Domain.Core.Primitives;
 using Domain.Orders;
 using Domain.Users;
 using MediatR;
@@ -7,18 +6,18 @@ using MediatR;
 namespace Application.Orders.Create;
 
 internal sealed class CreateOrderCommandHandler(
-    IUserRepository UserRepository,
-    IOrderRepository OrderRepository,
-    IUnitOfWork UnitOfWork) : IRequestHandler<CreateOrderCommand>
+    IUserRepository userRepository,
+    IOrderRepository orderRepository,
+    IUnitOfWork unitOfWork) : IRequestHandler<CreateOrderCommand>
 {
     public async Task Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        var customer = await UserRepository.GetCustomerAsync(new UserId(request.CustomerId), cancellationToken);
+        var customer = await userRepository.GetCustomerAsync(new UserId(request.CustomerId), cancellationToken);
 
         var order = Order.Create(customer.Id);
 
-        await OrderRepository.AddAsync(order, cancellationToken);
+        await orderRepository.AddAsync(order, cancellationToken);
 
-        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

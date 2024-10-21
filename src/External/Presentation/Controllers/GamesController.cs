@@ -8,7 +8,7 @@ using Presentation.Contracts;
 
 namespace Presentation.Controllers;
 
-public class GameController(IMediator mediator) : ApiController(mediator)
+public class GamesController(IMediator mediator) : ApiController(mediator)
 {
     [HttpGet(ApiRoutes.Games.GetGames)]
     [ProducesResponseType(typeof(GameListResponse), StatusCodes.Status200OK)]

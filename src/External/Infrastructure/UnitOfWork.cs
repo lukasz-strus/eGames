@@ -7,6 +7,17 @@ internal sealed class UnitOfWork(
 {
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        await applicationDbContext.SaveChangesAsync(cancellationToken);
+        await using var transaction = await applicationDbContext.Database.BeginTransactionAsync(cancellationToken);
+
+        try
+        {
+            await applicationDbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
 }

@@ -3,6 +3,7 @@ using Infrastructure;
 using Infrastructure.Identity;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
+using Web.Extensions;
 using Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,7 +55,7 @@ app.UseHttpsRedirection();
 
 //app.UseAuthorization();
 
-app.MapIdentityApi<ApplicationUser>();
+app.MapCustomIdentityApi<ApplicationUser>();
 
 app.MapControllers();
 
