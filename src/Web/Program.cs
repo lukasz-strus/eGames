@@ -3,29 +3,57 @@ using Application.Authentication;
 using Infrastructure;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 using Web.Extensions;
 using Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var presentationAssembly = typeof(Presentation.AssemblyReference).Assembly;
-
-builder.Services.AddControllers().AddApplicationPart(presentationAssembly);
-
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+var presentationAssembly = typeof(Presentation.AssemblyReference).Assembly;
+
+builder.Services.AddControllers().AddApplicationPart(presentationAssembly);
+
 builder.Services.AddScoped<ErrorHandlerMiddleware>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "bearerAuth"
+                }
+            },
+            []
+        }
+    });
+});
 
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication()
-    .AddCookie(IdentityConstants.ApplicationScheme)
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = IdentityConstants.BearerScheme;
+        options.DefaultAuthenticateScheme = IdentityConstants.BearerScheme;
+        options.DefaultChallengeScheme = IdentityConstants.BearerScheme;
+    })
     .AddBearerToken(IdentityConstants.BearerScheme);
+
 
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
@@ -55,12 +83,15 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 app.MapGroup("/api/identity")
     .WithTags("Identity")
     .MapCustomIdentityApi<ApplicationUser>();
 
-app.UseAuthorization();
-
-app.MapControllers();
 
 app.Run();

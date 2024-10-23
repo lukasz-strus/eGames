@@ -21,21 +21,28 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
 
     private async Task SeedUsers()
     {
-        string[] roles = ["Customer", "Admin", "SuperAdmin"];
+        var roles = GetRoles();
         await SeedRoles(roles);
 
         var superAdminId = await SeedSuperAdmin();
         var superAdminIdentityUser = GetSuperAdminIdentityUser(superAdminId);
-        await SeedIdentityUser(superAdminIdentityUser, roles);
+        await SeedIdentityUser(superAdminIdentityUser, [UserRoles.Customer, UserRoles.Admin, UserRoles.SuperAdmin]);
 
         var adminId = await SeedAdmin();
         var adminIdentityUser = GetAdminIdentityUser(adminId);
-        await SeedIdentityUser(adminIdentityUser, ["Customer", "Admin"]);
+        await SeedIdentityUser(adminIdentityUser, [UserRoles.Customer, UserRoles.Admin]);
 
         var customerId = await SeedCustomer();
         var customerIdentityUser = GetCustomerIdentityUser(customerId);
-        await SeedIdentityUser(customerIdentityUser, ["Customer"]);
+        await SeedIdentityUser(customerIdentityUser, [UserRoles.Customer]);
     }
+
+    private static string[] GetRoles() =>
+    [
+        UserRoles.Customer,
+        UserRoles.Admin,
+        UserRoles.SuperAdmin
+    ];
 
     private async Task<UserId> SeedSuperAdmin()
     {
@@ -95,8 +102,8 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
     {
         var applicationUser = new ApplicationUser
         {
-            UserName = "Super Admin",
-            NormalizedUserName = "SUPER ADMIN",
+            UserName = "superadmin@test.com",
+            NormalizedUserName = "SUPERADMIN@TEST.COM",
             Email = "superadmin@test.com",
             NormalizedEmail = "SUPERADMIN@TEST.COM",
             PhoneNumber = "+111111111111",
@@ -107,7 +114,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         };
 
         var passwordHasher = new PasswordHasher<ApplicationUser>();
-        applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "super-admin123!");
+        applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "Super-admin123!");
 
         return applicationUser;
     }
@@ -116,8 +123,8 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
     {
         var applicationUser = new ApplicationUser
         {
-            UserName = "Admin",
-            NormalizedUserName = "ADMIN",
+            UserName = "admin@test.com",
+            NormalizedUserName = "ADMIN@TEST.COM",
             Email = "admin@test.com",
             NormalizedEmail = "ADMIN@TEST.COM",
             PhoneNumber = "+222222222222",
@@ -128,7 +135,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         };
 
         var passwordHasher = new PasswordHasher<ApplicationUser>();
-        applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "admin123!");
+        applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "Admin123!");
 
         return applicationUser;
     }
@@ -137,8 +144,8 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
     {
         var applicationUser = new ApplicationUser
         {
-            UserName = "Customer",
-            NormalizedUserName = "CUSTOMER",
+            UserName = "customer@test.com",
+            NormalizedUserName = "CUSTOMER@TEST.COM",
             Email = "customer@test.com",
             NormalizedEmail = "CUSTOMER@TEST.COM",
             PhoneNumber = "+333333333333",
@@ -149,7 +156,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         };
 
         var passwordHasher = new PasswordHasher<ApplicationUser>();
-        applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "customer123!");
+        applicationUser.PasswordHash = passwordHasher.HashPassword(applicationUser, "Customer123!");
 
         return applicationUser;
     }

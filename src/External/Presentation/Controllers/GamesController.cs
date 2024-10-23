@@ -2,7 +2,9 @@
 using Application.Games.Create;
 using Application.Games.Get;
 using Application.Games.GetAll;
+using Domain.Users;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Contracts;
@@ -32,6 +34,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
         return Ok(result);
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPost(ApiRoutes.Games.CreateGame)]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
