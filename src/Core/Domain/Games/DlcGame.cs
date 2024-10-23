@@ -12,14 +12,13 @@ public sealed class DlcGame : Game
     }
 
     private DlcGame(
-        GameId id,
         string name,
         string description,
         Money price,
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize) : base(id, name, description, price, releaseDate, publisher, downloadLink, fileSize)
+        ulong fileSize) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize)
     {
     }
 
@@ -38,7 +37,6 @@ public sealed class DlcGame : Game
         FullGame fullGame)
     {
         var game = new DlcGame(
-            new GameId(Guid.NewGuid()),
             name,
             description,
             new Money(currency, price),

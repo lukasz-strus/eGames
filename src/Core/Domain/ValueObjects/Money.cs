@@ -6,6 +6,7 @@ namespace Domain.ValueObjects;
 
 public record Money
 {
+    // ReSharper disable once UnusedMember.Local
     private Money()
     {
         Currency = Currency.Pln;

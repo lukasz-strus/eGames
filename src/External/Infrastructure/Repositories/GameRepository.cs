@@ -21,4 +21,9 @@ internal sealed class GameRepository(
                    .FirstOrDefaultAsync(g => g.Id == id, cancellationToken)
                ?? throw new NotFoundException(NotFoundMessage, nameof(Game), id.Value);
     }
+
+    public async Task AddAsync(Game game, CancellationToken cancellationToken)
+    {
+        await dbContext.AddAsync(game, cancellationToken);
+    }
 }

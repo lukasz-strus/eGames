@@ -20,7 +20,6 @@ public abstract class Game : Entity<GameId>
     }
 
     private protected Game(
-        GameId id,
         string name,
         string description,
         Money price,
@@ -29,7 +28,7 @@ public abstract class Game : Entity<GameId>
         string downloadLink,
         ulong fileSize)
     {
-        Id = id;
+        Id = new GameId(Guid.NewGuid());
         Name = name;
         Description = description;
         Price = price;

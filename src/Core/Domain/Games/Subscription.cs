@@ -5,19 +5,19 @@ namespace Domain.Games;
 
 public sealed class Subscription : Game
 {
+    // ReSharper disable once UnusedMember.Local
     private Subscription()
     {
     }
 
     private Subscription(
-        GameId id,
         string name,
         string description,
         Money price,
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize) : base(id, name, description, price, releaseDate, publisher, downloadLink, fileSize)
+        ulong fileSize) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize)
     {
     }
 
@@ -35,7 +35,6 @@ public sealed class Subscription : Game
         int periodInDays)
     {
         var game = new Subscription(
-            new GameId(Guid.NewGuid()),
             name,
             description,
             new Money(currency, price),

@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Games;
+using Application.Games.Create;
 using Application.Games.Get;
 using Application.Games.GetAll;
 using MediatR;
@@ -29,5 +30,18 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
         var result = await Mediator.Send(new GetGameByIdQuery(id), cancellationToken);
 
         return Ok(result);
+    }
+
+    [HttpPost(ApiRoutes.Games.CreateGame)]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> CreateGame(
+        [FromBody] CreateGameRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(new CreateFullGameCommand(request), cancellationToken);
+
+        return CreatedAtAction(nameof(GetGameById), new { id = result.Id }, result);
     }
 }
