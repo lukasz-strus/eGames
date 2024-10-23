@@ -1,6 +1,6 @@
 using Application;
+using Application.Authentication;
 using Infrastructure;
-using Infrastructure.Identity;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Web.Extensions;
@@ -23,7 +23,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+builder.Services.AddAuthentication()
+    .AddCookie(IdentityConstants.ApplicationScheme)
+    .AddBearerToken(IdentityConstants.BearerScheme);
 
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
@@ -53,9 +55,11 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.MapGroup("/api/identity")
+    .WithTags("Identity")
+    .MapCustomIdentityApi<ApplicationUser>();
 
-app.MapCustomIdentityApi<ApplicationUser>();
+app.UseAuthorization();
 
 app.MapControllers();
 

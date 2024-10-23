@@ -6,11 +6,12 @@ public class SuperAdmin : User
     {
     }
 
-    public static SuperAdmin Create()
+    public static SuperAdmin Create(string userName)
     {
         var superAdmin = new SuperAdmin
         {
-            Id = new UserId(Guid.NewGuid())
+            Id = new UserId(Guid.NewGuid()),
+            UserName = userName
         };
 
         return superAdmin;

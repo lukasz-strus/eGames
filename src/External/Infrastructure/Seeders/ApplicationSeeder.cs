@@ -1,7 +1,7 @@
-﻿using Domain.Enums;
+﻿using Application.Authentication;
+using Domain.Enums;
 using Domain.Games;
 using Domain.Users;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +42,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         if (dbContext.SuperAdmins.Any())
             return await dbContext.SuperAdmins.Select(s => s.Id).FirstAsync();
 
-        var superAdmin = SuperAdmin.Create();
+        var superAdmin = SuperAdmin.Create("Super Admin");
 
         await dbContext.SuperAdmins.AddAsync(superAdmin);
         await dbContext.SaveChangesAsync();
@@ -55,7 +55,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         if (dbContext.Admins.Any())
             return await dbContext.Admins.Select(a => a.Id).FirstAsync();
 
-        var admin = Admin.Create();
+        var admin = Admin.Create("Admin");
 
         await dbContext.Admins.AddAsync(admin);
         await dbContext.SaveChangesAsync();
@@ -68,7 +68,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         if (dbContext.Customers.Any())
             return await dbContext.Customers.Select(c => c.Id).FirstAsync();
 
-        var customer = Customer.Create();
+        var customer = Customer.Create("Customer");
 
         await dbContext.Customers.AddAsync(customer);
         await dbContext.SaveChangesAsync();

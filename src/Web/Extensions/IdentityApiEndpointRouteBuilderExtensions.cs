@@ -3,9 +3,10 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using Application.Authentication;
+using Application.Contracts.User;
 using Application.Users.Create;
 using Application.Users.Delete;
-using Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -35,12 +36,13 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         // We'll figure out a unique endpoint name based on the final route pattern during endpoint generation.
         string? confirmEmailEndpointName = null;
 
-        var routeGroup = endpoints.MapGroup("/api");
+        var routeGroup = endpoints.MapGroup("");
 
         // NOTE: We cannot inject UserManager<TUser> directly because the TUser generic parameter is currently unsupported by RDG.
         // https://github.com/dotnet/aspnetcore/issues/47338
         routeGroup.MapPost("/register", async Task<Results<Ok, ValidationProblem>>
-            ([FromBody] RegisterRequest registration, HttpContext context, [FromServices] IServiceProvider sp) =>
+        ([FromBody] Application.Contracts.Identity.RegisterRequest registration, HttpContext context,
+            [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
 
@@ -59,21 +61,27 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
             }
 
-
+            //Start custom logic 
+            var userName = registration.UserName;
             var mediator = sp.GetRequiredService<IMediator>();
-            var domainUserId = await mediator.Send(new CreateUserCommand());
-
+            var createUserRequest = new CreateUserRequest(userName);
+            var domainUserId = await mediator.Send(new CreateUserCommand(createUserRequest));
             var user = new TUser
             {
                 UserId = domainUserId
             };
+            //var user = new TUser();
+            //End custom logic
             await userStore.SetUserNameAsync(user, email, CancellationToken.None);
             await emailStore.SetEmailAsync(user, email, CancellationToken.None);
             var result = await userManager.CreateAsync(user, registration.Password);
 
             if (!result.Succeeded)
             {
+                //Start custom logic 
                 await mediator.Send(new DeleteUserCommand(domainUserId));
+                //End custom logic
+
                 return CreateValidationProblem(result);
             }
 

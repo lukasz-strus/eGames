@@ -10,7 +10,7 @@ internal sealed class CreateUserCommandHandler(
 {
     public async Task<UserId> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = Customer.Create();
+        var user = Customer.Create(request.User.UserName);
 
         await userRepository.AddCustomerAsync(user, cancellationToken);
 

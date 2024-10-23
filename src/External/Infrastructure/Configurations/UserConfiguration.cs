@@ -14,6 +14,9 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion(
                 userId => userId.Value,
                 value => new UserId(value));
+
+        builder.HasIndex(x => x.UserName)
+            .IsUnique();
     }
 }
 

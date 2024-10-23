@@ -6,11 +6,12 @@ public class Customer : User
     {
     }
 
-    public static Customer Create()
+    public static Customer Create(string userName)
     {
         var customer = new Customer
         {
-            Id = new UserId(Guid.NewGuid())
+            Id = new UserId(Guid.NewGuid()),
+            UserName = userName
         };
 
         return customer;

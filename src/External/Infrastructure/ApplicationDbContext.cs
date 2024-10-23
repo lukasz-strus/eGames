@@ -1,7 +1,7 @@
-﻿using Domain.Games;
+﻿using Application.Authentication;
+using Domain.Games;
 using Domain.Orders;
 using Domain.Users;
-using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
