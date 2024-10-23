@@ -92,9 +92,13 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         });
 
         routeGroup.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>>
-        ([FromBody] LoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies,
+        ([FromBody] LoginRequest login,
+            //[FromQuery] bool? useCookies,
+            //[FromQuery] bool? useSessionCookies,
             [FromServices] IServiceProvider sp) =>
         {
+            bool? useCookies = null;
+            bool? useSessionCookies = null;
             var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
 
             var useCookieScheme = (useCookies == true) || (useSessionCookies == true);
