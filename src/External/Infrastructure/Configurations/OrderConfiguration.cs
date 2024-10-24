@@ -14,9 +14,9 @@ internal class OrderConfiguration : IEntityTypeConfiguration<Order>
                 orderId => orderId.Value,
                 value => new OrderId(value));
 
-        builder.HasOne<Customer>()
+        builder.HasOne<User>()
             .WithMany()
-            .HasForeignKey(o => o.CustomerId);
+            .HasForeignKey(o => o.UserId);
 
         builder.HasOne(o => o.Status)
             .WithMany()

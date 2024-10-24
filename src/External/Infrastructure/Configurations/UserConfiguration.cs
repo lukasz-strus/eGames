@@ -19,24 +19,3 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
             .IsUnique();
     }
 }
-
-internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
-{
-    public void Configure(EntityTypeBuilder<Customer> builder)
-    {
-    }
-}
-
-internal class AdminConfiguration : IEntityTypeConfiguration<Admin>
-{
-    public void Configure(EntityTypeBuilder<Admin> builder)
-    {
-    }
-}
-
-internal class SuperAdminConfiguration : IEntityTypeConfiguration<SuperAdmin>
-{
-    public void Configure(EntityTypeBuilder<SuperAdmin> builder)
-    {
-    }
-}

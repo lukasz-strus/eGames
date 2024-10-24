@@ -34,7 +34,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
         return Ok(result);
     }
 
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize("Admin")]
     [HttpPost(ApiRoutes.Games.CreateGame)]
     [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

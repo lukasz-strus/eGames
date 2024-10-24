@@ -15,8 +15,11 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
     {
         if (!await dbContext.Database.CanConnectAsync()) return;
 
-        await SeedUsers();
-        await SeedGame();
+        if (!await dbContext.DomainUsers.AnyAsync() && !await dbContext.Users.AnyAsync())
+            await SeedUsers();
+
+        if (!await dbContext.FullGames.AnyAsync())
+            await SeedGame();
     }
 
     private async Task SeedUsers()
@@ -24,68 +27,39 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         var roles = GetRoles();
         await SeedRoles(roles);
 
-        var superAdminId = await SeedSuperAdmin();
-        var superAdminIdentityUser = GetSuperAdminIdentityUser(superAdminId);
-        await SeedIdentityUser(superAdminIdentityUser, [UserRoles.Customer, UserRoles.Admin, UserRoles.SuperAdmin]);
+        var superAdmin = await SeedUser("Super admin", roles);
+        var superAdminIdentityUser = GetSuperAdminIdentityUser();
+        await SeedIdentityUser(superAdminIdentityUser, superAdmin);
 
-        var adminId = await SeedAdmin();
-        var adminIdentityUser = GetAdminIdentityUser(adminId);
-        await SeedIdentityUser(adminIdentityUser, [UserRoles.Customer, UserRoles.Admin]);
+        var admin = await SeedUser("Admin", roles.Where(x => !x.Equals(UserRole.SuperAdmin)));
+        var adminIdentityUser = GetAdminIdentityUser();
+        await SeedIdentityUser(adminIdentityUser, admin);
 
-        var customerId = await SeedCustomer();
-        var customerIdentityUser = GetCustomerIdentityUser(customerId);
-        await SeedIdentityUser(customerIdentityUser, [UserRoles.Customer]);
+        var customer = await SeedUser("Customer", [UserRole.Customer]);
+        var customerIdentityUser = GetCustomerIdentityUser();
+        await SeedIdentityUser(customerIdentityUser, customer);
     }
 
-    private static string[] GetRoles() =>
+    private static List<UserRole> GetRoles() =>
     [
-        UserRoles.Customer,
-        UserRoles.Admin,
-        UserRoles.SuperAdmin
+        UserRole.Customer,
+        UserRole.Admin,
+        UserRole.SuperAdmin
     ];
 
-    private async Task<UserId> SeedSuperAdmin()
+    private async Task<User> SeedUser(string userName, IEnumerable<UserRole> roles)
     {
-        if (dbContext.SuperAdmins.Any())
-            return await dbContext.SuperAdmins.Select(s => s.Id).FirstAsync();
-
-        var superAdmin = SuperAdmin.Create("Super Admin");
-
-        await dbContext.SuperAdmins.AddAsync(superAdmin);
+        var domainUser = User.Create(userName, roles);
+        await dbContext.DomainUsers.AddAsync(domainUser);
         await dbContext.SaveChangesAsync();
-
-        return superAdmin.Id;
+        return domainUser;
     }
 
-    private async Task<UserId> SeedAdmin()
-    {
-        if (dbContext.Admins.Any())
-            return await dbContext.Admins.Select(a => a.Id).FirstAsync();
-
-        var admin = Admin.Create("Admin");
-
-        await dbContext.Admins.AddAsync(admin);
-        await dbContext.SaveChangesAsync();
-
-        return admin.Id;
-    }
-
-    private async Task<UserId> SeedCustomer()
-    {
-        if (dbContext.Customers.Any())
-            return await dbContext.Customers.Select(c => c.Id).FirstAsync();
-
-        var customer = Customer.Create("Customer");
-
-        await dbContext.Customers.AddAsync(customer);
-        await dbContext.SaveChangesAsync();
-
-        return customer.Id;
-    }
-
-    private async Task SeedIdentityUser(ApplicationUser applicationUser, string[] roles)
+    private async Task SeedIdentityUser(ApplicationUser applicationUser, User user)
     {
         if (applicationUser.Email is null) return;
+
+        applicationUser.UserId = user.Id;
 
         var userStore = new UserStore<ApplicationUser>(dbContext);
         if (!dbContext.Users.Any(u => u.UserId == applicationUser.UserId))
@@ -93,12 +67,14 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             await userStore.CreateAsync(applicationUser);
         }
 
+        var roles = user.Roles.Select(x => x.Name).ToArray();
+
         await AssignRoles(applicationUser.Email, roles);
 
         await dbContext.SaveChangesAsync();
     }
 
-    private static ApplicationUser GetSuperAdminIdentityUser(UserId? userId)
+    private static ApplicationUser GetSuperAdminIdentityUser()
     {
         var applicationUser = new ApplicationUser
         {
@@ -110,7 +86,6 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
             SecurityStamp = Guid.NewGuid().ToString("D"),
-            UserId = userId
         };
 
         var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -119,7 +94,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         return applicationUser;
     }
 
-    private static ApplicationUser GetAdminIdentityUser(UserId? userId)
+    private static ApplicationUser GetAdminIdentityUser()
     {
         var applicationUser = new ApplicationUser
         {
@@ -130,8 +105,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             PhoneNumber = "+222222222222",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
-            SecurityStamp = Guid.NewGuid().ToString("D"),
-            UserId = userId
+            SecurityStamp = Guid.NewGuid().ToString("D")
         };
 
         var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -140,7 +114,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         return applicationUser;
     }
 
-    private static ApplicationUser GetCustomerIdentityUser(UserId? userId)
+    private static ApplicationUser GetCustomerIdentityUser()
     {
         var applicationUser = new ApplicationUser
         {
@@ -151,8 +125,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             PhoneNumber = "+333333333333",
             EmailConfirmed = true,
             PhoneNumberConfirmed = true,
-            SecurityStamp = Guid.NewGuid().ToString("D"),
-            UserId = userId
+            SecurityStamp = Guid.NewGuid().ToString("D")
         };
 
         var passwordHasher = new PasswordHasher<ApplicationUser>();
@@ -161,15 +134,15 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         return applicationUser;
     }
 
-    private async Task SeedRoles(string[] roles)
+    private async Task SeedRoles(IEnumerable<UserRole> roles)
     {
         var roleStore = new RoleStore<IdentityRole>(dbContext);
         foreach (var role in roles)
         {
-            if (!dbContext.Roles.Any(r => r.Name == role))
-                await roleStore.CreateAsync(new IdentityRole(role)
+            if (!dbContext.Roles.Any(r => r.Name == role.Name))
+                await roleStore.CreateAsync(new IdentityRole(role.Name)
                 {
-                    NormalizedName = role.ToUpper(),
+                    NormalizedName = role.Name.ToUpper(),
                     ConcurrencyStamp = Guid.NewGuid().ToString("D")
                 });
         }

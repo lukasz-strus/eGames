@@ -12,11 +12,11 @@ public class Order : Entity<OrderId>
 
     private Order()
     {
-        CustomerId = default!;
+        UserId = default!;
         Status = default!;
     }
 
-    [Required] public UserId CustomerId { get; private set; }
+    [Required] public UserId UserId { get; private set; }
 
     [Required] public int StatusId { get; private set; }
     [Required] public OrderStatus Status { get; private set; }
@@ -28,7 +28,7 @@ public class Order : Entity<OrderId>
         var order = new Order
         {
             Id = new OrderId(Guid.NewGuid()),
-            CustomerId = userId,
+            UserId = userId,
             StatusId = OrderStatus.Pending.Value,
             Status = OrderStatus.Pending
         };
