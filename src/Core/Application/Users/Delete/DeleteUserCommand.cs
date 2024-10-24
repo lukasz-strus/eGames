@@ -1,6 +1,7 @@
-﻿using Domain.Users;
+﻿using Domain.Core.Results;
+using Domain.Users;
 using MediatR;
 
 namespace Application.Users.Delete;
 
-public record DeleteUserCommand(UserId Id) : IRequest<Unit>;
+public record DeleteUserCommand(UserId Id) : IRequest<Result>;

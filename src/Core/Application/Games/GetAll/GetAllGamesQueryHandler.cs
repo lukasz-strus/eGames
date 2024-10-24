@@ -1,17 +1,18 @@
 ﻿using Application.Contracts.Games;
+using Domain.Core.Results;
 using Domain.Games;
 using MediatR;
 
 namespace Application.Games.GetAll;
 
 internal sealed class GetAllGamesQueryHandler(
-    IGameRepository gameRepository) : IRequestHandler<GetAllGamesQuery, GameListResponse>
+    IGameRepository gameRepository) : IRequestHandler<GetAllGamesQuery, Result<GameListResponse>>
 {
-    public async Task<GameListResponse> Handle(GetAllGamesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<GameListResponse>> Handle(GetAllGamesQuery request, CancellationToken cancellationToken)
     {
         var games = await gameRepository.GetAllAsync(cancellationToken);
 
-        return new GameListResponse(games
+        var gameListResponse = new GameListResponse(games
             .Select(g => new GameResponse(
                 g.Id.Value,
                 g.Name,
@@ -21,5 +22,7 @@ internal sealed class GetAllGamesQueryHandler(
                 g.ReleaseDate,
                 g.Publisher))
             .ToList());
+
+        return Result.Success(gameListResponse);
     }
 }

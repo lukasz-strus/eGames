@@ -13,7 +13,8 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
 {
     public async Task Seed()
     {
-        if (!await dbContext.Database.CanConnectAsync()) return;
+        if (!await dbContext.Database.CanConnectAsync())
+            return;
 
         if (!await dbContext.DomainUsers.AnyAsync() && !await dbContext.Users.AnyAsync())
             await SeedUsers();

@@ -7,6 +7,7 @@ using Application.Authentication;
 using Application.Contracts.User;
 using Application.Users.Create;
 using Application.Users.Delete;
+using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -65,7 +66,8 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var userName = registration.UserName;
             var mediator = sp.GetRequiredService<IMediator>();
             var createUserRequest = new CreateUserRequest(userName);
-            var domainUserId = await mediator.Send(new CreateUserCommand(createUserRequest));
+            var createdUser = await mediator.Send(new CreateUserCommand(createUserRequest));
+            var domainUserId = new UserId(createdUser.Value().Id);
             var user = new TUser
             {
                 UserId = domainUserId

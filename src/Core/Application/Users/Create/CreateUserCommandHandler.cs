@@ -1,4 +1,6 @@
-﻿using Application.Core.Abstractions.Data;
+﻿using Application.Contracts.Common;
+using Application.Core.Abstractions.Data;
+using Domain.Core.Results;
 using Domain.Users;
 using MediatR;
 
@@ -6,9 +8,10 @@ namespace Application.Users.Create;
 
 internal sealed class CreateUserCommandHandler(
     IUserRepository userRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateUserCommand, UserId>
+    IUnitOfWork unitOfWork) : IRequestHandler<CreateUserCommand, Result<EntityCreatedResponse>>
 {
-    public async Task<UserId> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EntityCreatedResponse>> Handle(CreateUserCommand request,
+        CancellationToken cancellationToken)
     {
         var user = User.Create(request.User.UserName);
 
@@ -16,6 +19,6 @@ internal sealed class CreateUserCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return user.Id;
+        return Result.Success(new EntityCreatedResponse(user.Id.Value));
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Application.Core.Abstractions.Data;
+using Domain.Core.Results;
 using Domain.Users;
 using MediatR;
 
@@ -6,14 +7,13 @@ namespace Application.Users.Delete;
 
 internal sealed class DeleteUserCommandHandler(
     IUserRepository userRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<DeleteUserCommand, Unit>
+    IUnitOfWork unitOfWork) : IRequestHandler<DeleteUserCommand, Result>
 {
-    public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         await userRepository.DeleteAsync(request.Id, cancellationToken);
-
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return Unit.Value;
+        return Result.Success();
     }
 }

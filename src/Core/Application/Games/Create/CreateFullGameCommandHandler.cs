@@ -1,5 +1,7 @@
 ﻿using Application.Contracts.Common;
 using Application.Core.Abstractions.Data;
+using Domain;
+using Domain.Core.Results;
 using Domain.Enums;
 using Domain.Games;
 using Domain.ValueObjects;
@@ -9,15 +11,16 @@ namespace Application.Games.Create;
 
 internal sealed class CreateFullGameCommandHandler(
     IGameRepository gameRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateFullGameCommand, EntityCreatedResponse>
+    IUnitOfWork unitOfWork) : IRequestHandler<CreateFullGameCommand, Result<EntityCreatedResponse>>
 {
-    public async Task<EntityCreatedResponse> Handle(CreateFullGameCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EntityCreatedResponse>> Handle(CreateFullGameCommand request,
+        CancellationToken cancellationToken)
     {
-        var currency = Currency.FromValue(request.Game.CurrencyId)
-                       ?? throw new InvalidOperationException(
-                           $"The currency with ID {request.Game.CurrencyId} was not found.");
+        var currency = Currency.FromValue(request.Game.CurrencyId);
 
-        var money = new Money(currency, request.Game.Price);
+        if (currency is null)
+            return Result.Failure<EntityCreatedResponse>(
+                Errors.Currency.FromValue.InvalidCurrencyValue(request.Game.CurrencyId));
 
         var game = FullGame.Create(
             request.Game.Name,
@@ -32,6 +35,6 @@ internal sealed class CreateFullGameCommandHandler(
         await gameRepository.AddAsync(game, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return new EntityCreatedResponse(game.Id.Value);
+        return Result.Success(new EntityCreatedResponse(game.Id.Value));
     }
 }
