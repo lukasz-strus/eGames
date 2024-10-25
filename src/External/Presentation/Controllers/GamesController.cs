@@ -6,6 +6,7 @@ using Application.Games.GetAll;
 using Domain;
 using Domain.Core.Results;
 using Domain.Core.Results.Extensions;
+using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,27 +25,35 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<GameListResponse, IActionResult>(Ok, BadRequest);
 
-    [HttpGet(ApiRoutes.Games.GetGame)]
-    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+    [HttpGet(ApiRoutes.Games.GetFullGame)]
+    [ProducesResponseType(typeof(FullGameResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetGameById(Guid id, CancellationToken cancellationToken) =>
-        await Result.Success(new GetGameByIdQuery(id))
+    public async Task<IActionResult> GetFullGameById(Guid id, CancellationToken cancellationToken) =>
+        await Result.Success(new GetFullGameByIdQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<GameResponse, IActionResult>(Ok, NotFound);
+            .Match<FullGameResponse, IActionResult>(Ok, NotFound);
 
-    [Authorize("Admin")]
-    [HttpPost(ApiRoutes.Games.CreateGame)]
+    [HttpGet(ApiRoutes.Games.GetDlcGame)]
+    [ProducesResponseType(typeof(DlcGameResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDlcGameById(Guid id, CancellationToken cancellationToken) =>
+        await Result.Success(new GetDlcGameByIdQuery(id))
+            .Bind(query => Mediator.Send(query, cancellationToken))
+            .Match<DlcGameResponse, IActionResult>(Ok, NotFound);
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPost(ApiRoutes.Games.CreateFullGame)]
     [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> CreateGame(
+    public async Task<IActionResult> CreateFullGame(
         [FromBody] CreateGameRequest request,
         CancellationToken cancellationToken) =>
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new CreateFullGameCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
             .Match<EntityCreatedResponse, IActionResult>(
-                entityCreated => CreatedAtAction(nameof(GetGameById), new { id = entityCreated.Id }, entityCreated),
+                entityCreated => CreatedAtAction(nameof(GetFullGameById), new { id = entityCreated.Id }, entityCreated),
                 BadRequest);
 
     //TODO: Dodać endpointy do pobierania, tworzenia, edytowania i usuwania gier (rózne dla różnych typów)

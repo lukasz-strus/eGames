@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Games.Get;
 
-public record GetGameByIdQuery(Guid Id) : IRequest<Result<GameResponse>>;
+public record GetFullGameByIdQuery(Guid Id) : IRequest<Result<FullGameResponse>>;

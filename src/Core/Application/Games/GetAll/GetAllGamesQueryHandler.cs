@@ -21,7 +21,8 @@ internal sealed class GetAllGamesQueryHandler(
                 g.Price.Currency.ToString(),
                 g.Price.Amount,
                 g.ReleaseDate,
-                g.Publisher))
+                g.Publisher,
+                g.FileSize))
             .OrderBy(x => x.Type)
             .ToList());
 
