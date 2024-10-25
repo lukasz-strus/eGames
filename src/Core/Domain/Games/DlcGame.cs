@@ -22,8 +22,7 @@ public sealed class DlcGame : Game
     {
     }
 
-    [Required] public GameId BaseGameId { get; private set; } = null!;
-    [Required] public FullGame BaseGame { get; private set; } = null!;
+    [Required] public GameId FullGameId { get; private set; } = null!;
 
     public static DlcGame Create(
         string name,
@@ -34,7 +33,7 @@ public sealed class DlcGame : Game
         string publisher,
         string downloadLink,
         ulong fileSize,
-        FullGame fullGame)
+        GameId fullGameId)
     {
         var game = new DlcGame(
             name,
@@ -45,7 +44,7 @@ public sealed class DlcGame : Game
             downloadLink,
             fileSize)
         {
-            BaseGame = fullGame
+            FullGameId = fullGameId
         };
 
         return game;

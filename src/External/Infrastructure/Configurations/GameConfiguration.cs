@@ -1,4 +1,5 @@
-﻿using Domain.Games;
+﻿using Domain.Enums;
+using Domain.Games;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,20 +16,13 @@ internal class GameConfiguration : IEntityTypeConfiguration<Game>
 
         builder.OwnsOne(oi => oi.Price, moneyBuilder =>
         {
-            moneyBuilder.WithOwner();
+            moneyBuilder.Property(m => m.Amount).HasColumnName("Price_Amount").HasPrecision(18, 2);
 
-            moneyBuilder.Property(money => money.Amount).HasColumnName("Amount");
-
-            moneyBuilder.OwnsOne(money => money.Currency, currencyBuilder =>
-            {
-                currencyBuilder.WithOwner();
-
-                currencyBuilder.Property(currency => currency.Value).HasColumnName("Currency").IsRequired();
-
-                currencyBuilder.Ignore(currency => currency.Code);
-
-                currencyBuilder.Ignore(currency => currency.Name);
-            });
+            moneyBuilder.Property(m => m.Currency)
+                .HasColumnName("Price_Currency")
+                .HasConversion(
+                    currency => currency.Value,
+                    value => Currency.FromValue(value)!);
         });
     }
 }
@@ -44,9 +38,9 @@ internal class DlcGameConfiguration : IEntityTypeConfiguration<DlcGame>
 {
     public void Configure(EntityTypeBuilder<DlcGame> builder)
     {
-        builder.HasOne(dg => dg.BaseGame)
+        builder.HasOne<FullGame>()
             .WithMany(fg => fg.DlcGames)
-            .HasForeignKey(dg => dg.BaseGameId)
+            .HasForeignKey(dg => dg.FullGameId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -18,6 +18,7 @@ internal sealed class GetGameByIdQueryHandler(
 
         var gameResponse = new GameResponse(
             game.Id.Value,
+            game.GetType().ToString(),
             game.Name,
             game.Description,
             game.Price.Currency.ToString(),

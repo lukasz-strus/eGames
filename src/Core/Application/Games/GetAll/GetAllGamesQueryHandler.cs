@@ -15,12 +15,14 @@ internal sealed class GetAllGamesQueryHandler(
         var gameListResponse = new GameListResponse(games
             .Select(g => new GameResponse(
                 g.Id.Value,
+                g.GetType().Name,
                 g.Name,
                 g.Description,
                 g.Price.Currency.ToString(),
                 g.Price.Amount,
                 g.ReleaseDate,
                 g.Publisher))
+            .OrderBy(x => x.Type)
             .ToList());
 
         return Result.Success(gameListResponse);

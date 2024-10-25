@@ -4,7 +4,6 @@ using Domain;
 using Domain.Core.Results;
 using Domain.Enums;
 using Domain.Games;
-using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Games.Create;
@@ -30,7 +29,8 @@ internal sealed class CreateFullGameCommandHandler(
             request.Game.ReleaseDate,
             request.Game.Publisher,
             request.Game.DownloadLink,
-            request.Game.FileSize);
+            request.Game.FileSize,
+            []);
 
         await gameRepository.AddAsync(game, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);

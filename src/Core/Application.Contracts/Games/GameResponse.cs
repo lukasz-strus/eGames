@@ -2,6 +2,7 @@
 
 public sealed class GameResponse(
     Guid id,
+    string type,
     string name,
     string description,
     string currency,
@@ -10,6 +11,7 @@ public sealed class GameResponse(
     string publisher)
 {
     public Guid Id { get; } = id;
+    public string Type { get; } = type;
     public string Name { get; } = name;
     public string Description { get; } = description;
     public string Currency { get; } = currency;

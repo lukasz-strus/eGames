@@ -33,7 +33,8 @@ public sealed class FullGame : Game
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize)
+        ulong fileSize,
+        IEnumerable<DlcGame> dlcGames)
     {
         var game = new FullGame(
             name,
@@ -44,11 +45,28 @@ public sealed class FullGame : Game
             downloadLink,
             fileSize);
 
+        game.InitializeDlcGames(dlcGames);
+
         return game;
+    }
+
+    private void InitializeDlcGames(IEnumerable<DlcGame> dlcGames)
+    {
+        _dlcGames.Clear();
+
+        foreach (var dlcGame in dlcGames)
+        {
+            AddDlcGame(dlcGame);
+        }
     }
 
     public void AddDlcGame(DlcGame dlcGame)
     {
         _dlcGames.Add(dlcGame);
+    }
+
+    public void RemoveDlcGame(DlcGame dlcGame)
+    {
+        _dlcGames.Remove(dlcGame);
     }
 }

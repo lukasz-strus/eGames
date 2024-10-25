@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 using Domain.ValueObjects;
 
 namespace Domain.Games;
@@ -21,7 +22,7 @@ public sealed class Subscription : Game
     {
     }
 
-    public int PeriodInDays { get; set; }
+    [Required] public uint PeriodInDays { get; private set; }
 
     public static Subscription Create(
         string name,
@@ -32,7 +33,7 @@ public sealed class Subscription : Game
         string publisher,
         string downloadLink,
         ulong fileSize,
-        int periodInDays)
+        uint periodInDays)
     {
         var game = new Subscription(
             name,

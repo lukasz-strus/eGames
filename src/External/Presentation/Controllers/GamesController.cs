@@ -47,7 +47,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 entityCreated => CreatedAtAction(nameof(GetGameById), new { id = entityCreated.Id }, entityCreated),
                 BadRequest);
 
-    //TODO: Podzielić na fullgame itp może inne tabele?
+    //TODO: Dodać endpointy do pobierania, tworzenia, edytowania i usuwania gier (rózne dla różnych typów)
     //TODO: Refactor excpetion middleware
     //TODO: Add logging
 }
