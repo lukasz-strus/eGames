@@ -17,6 +17,9 @@ internal sealed class GameRepository(
     public async Task<DlcGame?> GetDlcGameByIdAsync(GameId id, CancellationToken cancellationToken) =>
         await dbContext.DlcGames.FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
 
+    public async Task<Subscription?> GetSubscriptionByIdAsync(GameId id, CancellationToken cancellationToken) =>
+        await dbContext.Subscriptions.FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
+
     public async Task AddAsync(Game game, CancellationToken cancellationToken) =>
         await dbContext.AddAsync(game, cancellationToken);
 }

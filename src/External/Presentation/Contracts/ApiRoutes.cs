@@ -12,5 +12,7 @@ public static class ApiRoutes
         public const string GetDlcGames = "games/{baseGameId:guid}/dlc";
         public const string GetDlcGame = "games/dlc/{id:guid}";
         public const string CreateDlcGame = "games/{baseGameId:guid}/dlc";
+
+        public const string GetSubscription = "games/subscription/{id:guid}";
     }
 }

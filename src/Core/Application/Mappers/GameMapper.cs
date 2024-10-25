@@ -38,7 +38,7 @@ internal static class GameMapper
             game.FileSize,
             game.FullGameId.Value);
 
-    internal static SubscriptionGameResponse ToResponse(this Subscription game) =>
+    internal static SubscriptionResponse ToResponse(this Subscription game) =>
         new(game.Id.Value,
             game.Name,
             game.Description,

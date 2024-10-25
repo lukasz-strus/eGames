@@ -41,6 +41,14 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<DlcGameResponse, IActionResult>(Ok, NotFound);
 
+    [HttpGet(ApiRoutes.Games.GetSubscription)]
+    [ProducesResponseType(typeof(SubscriptionResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSubscriptionGameById(Guid id, CancellationToken cancellationToken) =>
+        await Result.Success(new GetSubscriptionByIdQuery(id))
+            .Bind(query => Mediator.Send(query, cancellationToken))
+            .Match<SubscriptionResponse, IActionResult>(Ok, NotFound);
+
     [Authorize(UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.CreateFullGame)]
     [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
@@ -56,7 +64,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 entityCreated => CreatedAtAction(nameof(GetFullGameById), new { id = entityCreated.Id }, entityCreated),
                 BadRequest);
 
-    //TODO: Dodać endpointy do pobierania, tworzenia, edytowania i usuwania gier (rózne dla różnych typów)
+    //TODO: Dodać endpointy do tworzenia, edytowania i usuwania gier (rózne dla różnych typów)
     //TODO: Refactor excpetion middleware
     //TODO: Add logging
 }

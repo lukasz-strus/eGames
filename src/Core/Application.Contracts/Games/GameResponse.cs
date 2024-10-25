@@ -52,7 +52,7 @@ public sealed class DlcGameResponse(
     public Guid BaseGameId { get; } = baseGameId;
 }
 
-public sealed class SubscriptionGameResponse(
+public sealed class SubscriptionResponse(
     Guid id,
     string name,
     string description,
