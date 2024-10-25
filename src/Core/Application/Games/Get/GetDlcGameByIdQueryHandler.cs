@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Games;
+using Application.Mappers;
 using Domain;
 using Domain.Core.Results;
 using Domain.Games;
@@ -13,20 +14,8 @@ internal sealed class GetDlcGameByIdQueryHandler(
     {
         var game = await gameRepository.GetDlcGameByIdAsync(new GameId(request.Id), cancellationToken);
 
-        if (game is null)
-            return Result.Failure<DlcGameResponse>(Errors.Games.GetGameById.GameNotFound(request.Id));
-
-        var gameResponse = new DlcGameResponse(
-            game.Id.Value,
-            game.Name,
-            game.Description,
-            game.Price.Currency.Name,
-            game.Price.Amount,
-            game.ReleaseDate,
-            game.Publisher,
-            game.FileSize,
-            game.FullGameId.Value);
-
-        return Result.Success(gameResponse);
+        return game is not null
+            ? Result.Success(game.ToResponse())
+            : Result.Failure<DlcGameResponse>(Errors.Games.GetGameById.GameNotFound(request.Id));
     }
 }

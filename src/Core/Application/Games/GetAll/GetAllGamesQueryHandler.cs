@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Games;
+using Application.Mappers;
 using Domain.Core.Results;
 using Domain.Games;
 using MediatR;
@@ -12,19 +13,10 @@ internal sealed class GetAllGamesQueryHandler(
     {
         var games = await gameRepository.GetAllAsync(cancellationToken);
 
-        var gameListResponse = new GameListResponse(games
-            .Select(g => new GameResponse(
-                g.Id.Value,
-                g.GetType().Name,
-                g.Name,
-                g.Description,
-                g.Price.Currency.ToString(),
-                g.Price.Amount,
-                g.ReleaseDate,
-                g.Publisher,
-                g.FileSize))
-            .OrderBy(x => x.Type)
-            .ToList());
+        var gameListResponse = new GameListResponse(
+        [
+            .. games.Select(g => g.ToResponse()).OrderBy(x => x.Type)
+        ]);
 
         return Result.Success(gameListResponse);
     }

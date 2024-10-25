@@ -1,4 +1,5 @@
 ﻿using Application.Contracts.Games;
+using Application.Mappers;
 using Domain;
 using Domain.Core.Results;
 using Domain.Games;
@@ -14,29 +15,8 @@ internal sealed class GetFullGameByIdQueryHandler(
     {
         var game = await gameRepository.GetFullGameByIdAsync(new GameId(request.Id), cancellationToken);
 
-        if (game is null)
-            return Result.Failure<FullGameResponse>(Errors.Games.GetGameById.GameNotFound(request.Id));
-
-        var gameResponse = new FullGameResponse(
-            game.Id.Value,
-            game.Name,
-            game.Description,
-            game.Price.Currency.Name,
-            game.Price.Amount,
-            game.ReleaseDate,
-            game.Publisher,
-            game.FileSize,
-            game.DlcGames.Select(x => new DlcGameResponse(
-                x.Id.Value,
-                x.Name,
-                x.Description,
-                x.Price.Currency.Name,
-                x.Price.Amount,
-                x.ReleaseDate,
-                x.Publisher,
-                x.FileSize,
-                x.FullGameId.Value)));
-
-        return Result.Success(gameResponse);
+        return game is not null
+            ? Result.Success(game.ToResponse())
+            : Result.Failure<FullGameResponse>(Errors.Games.GetGameById.GameNotFound(request.Id));
     }
 }
