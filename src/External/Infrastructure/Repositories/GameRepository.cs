@@ -9,6 +9,15 @@ internal sealed class GameRepository(
     public async Task<List<Game>> GetAllAsync(CancellationToken cancellationToken) =>
         await dbContext.Games.ToListAsync(cancellationToken);
 
+    public async Task<List<FullGame>> GetAllFullGamesAsync(CancellationToken cancellationToken) =>
+        await dbContext.FullGames.ToListAsync(cancellationToken);
+
+    public async Task<List<DlcGame>> GetAllDlcGamesAsync(GameId fullGameId, CancellationToken cancellationToken) =>
+        await dbContext.DlcGames.Where(x => x.FullGameId == fullGameId).ToListAsync(cancellationToken);
+
+    public async Task<List<Subscription>> GetAllSubscriptionAsync(CancellationToken cancellationToken) =>
+        await dbContext.Subscriptions.ToListAsync(cancellationToken);
+
     public async Task<FullGame?> GetFullGameByIdAsync(GameId id, CancellationToken cancellationToken) =>
         await dbContext.FullGames
             .Include(x => x.DlcGames)
