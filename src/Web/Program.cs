@@ -4,8 +4,8 @@ using Infrastructure;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using Web.Extensions;
 using Web.Middleware;
+using Web.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,6 +1,6 @@
 ﻿namespace Application.Contracts.Games;
 
-public sealed class CreateGameRequest(
+public sealed class CreateSubscriptionRequest(
     string name,
     string description,
     decimal price,
@@ -8,7 +8,8 @@ public sealed class CreateGameRequest(
     DateTime releaseDate,
     string publisher,
     string downloadLink,
-    ulong fileSize)
+    ulong fileSize,
+    uint periodInDays)
 {
     public string Name { get; set; } = name;
     public string Description { get; set; } = description;
@@ -18,4 +19,5 @@ public sealed class CreateGameRequest(
     public string Publisher { get; set; } = publisher;
     public string DownloadLink { get; set; } = downloadLink;
     public ulong FileSize { get; set; } = fileSize;
+    public uint PeriodInDays { get; set; } = periodInDays;
 }

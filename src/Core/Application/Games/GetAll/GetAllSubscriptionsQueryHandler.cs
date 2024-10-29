@@ -13,7 +13,10 @@ internal sealed class GetAllSubscriptionsQueryHandler(
         GetAllSubscriptionsQuery request,
         CancellationToken cancellationToken)
     {
-        var subscriptions = await gameRepository.GetAllSubscriptionsAsync(cancellationToken);
+        var subscriptions = await gameRepository.GetAllSubscriptionsAsync(
+            request.IsPublished,
+            cancellationToken);
+
         var subscriptionListResponse = new SubscriptionListResponse(
             [
                 ..subscriptions.Select(g => g.ToResponse())

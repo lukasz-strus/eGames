@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Games.GetAll;
 
-public record GetAllSubscriptionsQuery : IRequest<Result<SubscriptionListResponse>>;
+public record GetAllSubscriptionsQuery(bool? IsPublished) : IRequest<Result<SubscriptionListResponse>>;

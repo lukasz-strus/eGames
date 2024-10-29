@@ -36,6 +36,9 @@ public abstract class Game : Entity<GameId>
         Publisher = publisher;
         DownloadLink = downloadLink;
         FileSize = fileSize;
+
+        IsDeleted = false;
+        IsPublished = false;
     }
 
     [Required] [MaxLength(100)] public string Name { get; private set; }
@@ -51,4 +54,46 @@ public abstract class Game : Entity<GameId>
     [Required] [MaxLength(100)] public string DownloadLink { get; private set; }
 
     [Required] public ulong FileSize { get; private set; }
+
+    [Required] public bool IsDeleted { get; private set; }
+
+    [Required] public bool IsPublished { get; private set; }
+
+    public void Update(
+        string name,
+        string description,
+        Money price,
+        DateTime releaseDate,
+        string publisher,
+        string downloadLink,
+        ulong fileSize)
+    {
+        Name = name;
+        Description = description;
+        Price = price;
+        ReleaseDate = releaseDate;
+        Publisher = publisher;
+        DownloadLink = downloadLink;
+        FileSize = fileSize;
+    }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
+
+    public void Restore()
+    {
+        IsDeleted = false;
+    }
+
+    public void Publish()
+    {
+        IsPublished = true;
+    }
+
+    public void Unpublish()
+    {
+        IsPublished = false;
+    }
 }

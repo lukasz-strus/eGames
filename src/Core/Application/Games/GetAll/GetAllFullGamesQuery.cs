@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Games.GetAll;
 
-public record GetAllFullGamesQuery : IRequest<Result<FullGameListResponse>>;
+public record GetAllFullGamesQuery(bool? IsPublished) : IRequest<Result<FullGameListResponse>>;

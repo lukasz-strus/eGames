@@ -188,6 +188,8 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             5000000000,
             30);
 
+        subscription.Publish();
+
         await dbContext.Subscriptions.AddAsync(subscription);
         await dbContext.SaveChangesAsync();
     }
@@ -206,6 +208,9 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             "https://eGames.com/7b3b0f63-bb5e-4df7-afe3-667785e63511",
             2000000000,
             fullGameId);
+
+        dlcGame1.Publish();
+
         await dbContext.DlcGames.AddAsync(dlcGame1);
 
         var dlcGame2 = DlcGame.Create(
@@ -218,6 +223,9 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             "https://eGames.com/7b3b0f63-bb5e-4df7-afe3-667785e63511",
             1000000000,
             fullGameId);
+
+        dlcGame2.Publish();
+
         await dbContext.DlcGames.AddAsync(dlcGame2);
 
         await dbContext.SaveChangesAsync();
@@ -237,6 +245,8 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             "https://eGames.com/b52c0f63-bb5e-4df7-afe3-667785e63511",
             8000000000,
             []);
+
+        fullGame.Publish();
 
         await dbContext.FullGames.AddAsync(fullGame);
         await dbContext.SaveChangesAsync();

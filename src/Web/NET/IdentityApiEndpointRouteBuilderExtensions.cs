@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
-namespace Web.Extensions;
+namespace Web.NET;
 
 public static class IdentityApiEndpointRouteBuilderExtensions
 {

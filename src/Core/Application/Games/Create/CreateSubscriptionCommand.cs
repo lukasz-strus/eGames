@@ -5,4 +5,4 @@ using MediatR;
 
 namespace Application.Games.Create;
 
-public record CreateFullGameCommand(CreateGameRequest Game) : IRequest<Result<EntityCreatedResponse>>;
+public record CreateSubscriptionCommand(CreateSubscriptionRequest Game) : IRequest<Result<EntityCreatedResponse>>;

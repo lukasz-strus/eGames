@@ -3,6 +3,7 @@ using Application.Contracts.Games;
 using Application.Games.Create;
 using Application.Games.Get;
 using Application.Games.GetAll;
+using Application.Games.Update;
 using Domain;
 using Domain.Core.Results;
 using Domain.Core.Results.Extensions;
@@ -22,16 +23,18 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [HttpGet(ApiRoutes.Games.GetGames)]
     [ProducesResponseType(typeof(GameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames(
+        [FromQuery] bool? isPublished,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllGamesQuery())
+        await Result.Success(new GetAllGamesQuery(isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<GameListResponse, IActionResult>(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetFullGames)]
     [ProducesResponseType(typeof(FullGameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetFullGames(
+        [FromQuery] bool? isPublished,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllFullGamesQuery())
+        await Result.Success(new GetAllFullGamesQuery(isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<FullGameListResponse, IActionResult>(Ok, BadRequest);
 
@@ -39,16 +42,18 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [ProducesResponseType(typeof(DlcGameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDlcGames(
         Guid fullGameId,
+        [FromQuery] bool? isPublished,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllDlcGamesQuery(fullGameId))
+        await Result.Success(new GetAllDlcGamesQuery(fullGameId, isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<DlcGameListResponse, IActionResult>(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetSubscriptions)]
     [ProducesResponseType(typeof(SubscriptionListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSubscriptions(
+        [FromQuery] bool? isPublished,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllSubscriptionsQuery())
+        await Result.Success(new GetAllSubscriptionsQuery(isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<SubscriptionListResponse, IActionResult>(Ok, BadRequest);
 
@@ -70,7 +75,6 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [ProducesResponseType(typeof(DlcGameResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDlcGameById(
-        Guid fullGameId,
         Guid id,
         CancellationToken cancellationToken) =>
         await Result.Success(new GetDlcGameByIdQuery(id))
@@ -103,12 +107,132 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
             .Map(value => new CreateFullGameCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
             .Match<EntityCreatedResponse, IActionResult>(
-                entityCreated => CreatedAtAction(nameof(GetFullGameById), new { id = entityCreated.Id }, entityCreated),
+                entityCreated => CreatedAtAction(
+                    nameof(GetFullGameById),
+                    new { id = entityCreated.Id },
+                    entityCreated),
+                BadRequest);
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPost(ApiRoutes.Games.CreateDlcGame)]
+    [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> CreateDlcGame(
+        Guid fullGameId,
+        [FromBody] CreateGameRequest request,
+        CancellationToken cancellationToken) =>
+        await Result.Create(request, Errors.General.BadRequest)
+            .Map(value => new CreateDlcGameCommand(fullGameId, value))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<EntityCreatedResponse, IActionResult>(
+                entityCreated => CreatedAtAction(
+                    nameof(GetDlcGameById),
+                    new { id = entityCreated.Id },
+                    entityCreated),
+                BadRequest);
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPost(ApiRoutes.Games.CreateSubscription)]
+    [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> CreateSubscription(
+        [FromBody] CreateSubscriptionRequest request,
+        CancellationToken cancellationToken) =>
+        await Result.Create(request, Errors.General.BadRequest)
+            .Map(value => new CreateSubscriptionCommand(value))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<EntityCreatedResponse, IActionResult>(
+                entityCreated => CreatedAtAction(
+                    nameof(GetSubscriptionGameById),
+                    new { id = entityCreated.Id },
+                    entityCreated),
                 BadRequest);
 
     #endregion
 
-    //TODO: Dodać endpointy do tworzenia, edytowania i usuwania gier (rózne dla różnych typów)
+    #region Update
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPut(ApiRoutes.Games.UpdateFullGame)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdateFullGame(
+        Guid id,
+        [FromBody] UpdateGameRequest request,
+        CancellationToken cancellationToken) =>
+        await Result.Create(request, Errors.General.BadRequest)
+            .Map(value => new UpdateFullGameCommand(id, value))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPut(ApiRoutes.Games.UpdateDlcGame)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdateDlcGame(
+        Guid id,
+        [FromBody] UpdateGameRequest request,
+        CancellationToken cancellationToken) =>
+        await Result.Create(request, Errors.General.BadRequest)
+            .Map(value => new UpdateDlcGameCommand(id, value))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPut(ApiRoutes.Games.UpdateSubscription)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UpdateSubscription(
+        Guid id,
+        [FromBody] UpdateSubscriptionRequest request,
+        CancellationToken cancellationToken) =>
+        await Result.Create(request, Errors.General.BadRequest)
+            .Map(value => new UpdateSubscriptionCommand(id, value))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPatch(ApiRoutes.Games.PublishGame)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> PublishGame(
+        Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new PublishGameCommand(id))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    [Authorize(UserRoleNames.Admin)]
+    [HttpPatch(ApiRoutes.Games.UnpublishGame)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> UnpublishGame(
+        Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new UnpublishGameCommand(id))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    #endregion
+
+    //TODO: Dodać endpointy usuwania miękkiego i twardego gier i PRZETESTOWAĆ !!!
     //TODO: Refactor excpetion middleware
     //TODO: Add logging
 }

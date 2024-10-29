@@ -56,17 +56,7 @@ public sealed class FullGame : Game
 
         foreach (var dlcGame in dlcGames)
         {
-            AddDlcGame(dlcGame);
+            _dlcGames.Add(dlcGame);
         }
-    }
-
-    public void AddDlcGame(DlcGame dlcGame)
-    {
-        _dlcGames.Add(dlcGame);
-    }
-
-    public void RemoveDlcGame(DlcGame dlcGame)
-    {
-        _dlcGames.Remove(dlcGame);
     }
 }

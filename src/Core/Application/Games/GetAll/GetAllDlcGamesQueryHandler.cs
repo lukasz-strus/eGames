@@ -13,7 +13,11 @@ internal sealed class GetAllDlcGamesQueryHandler(
         GetAllDlcGamesQuery request,
         CancellationToken cancellationToken)
     {
-        var dlcGames = await gameRepository.GetAllDlcGamesAsync(new GameId(request.FullGameId), cancellationToken);
+        var dlcGames = await gameRepository.GetAllDlcGamesAsync(
+            new GameId(request.FullGameId),
+            request.IsPublished,
+            cancellationToken);
+
         var dlcGameListResponse = new DlcGameListResponse(
             [
                 ..dlcGames.Select(g => g.ToResponse())

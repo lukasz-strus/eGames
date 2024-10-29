@@ -49,4 +49,18 @@ public sealed class Subscription : Game
 
         return game;
     }
+
+    public void Update(
+        string name,
+        string description,
+        Money price,
+        DateTime releaseDate,
+        string publisher,
+        string downloadLink,
+        ulong fileSize,
+        uint periodInDays)
+    {
+        PeriodInDays = periodInDays;
+        Update(name, description, price, releaseDate, publisher, downloadLink, fileSize);
+    }
 }

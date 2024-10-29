@@ -11,7 +11,9 @@ internal sealed class GetAllGamesQueryHandler(
 {
     public async Task<Result<GameListResponse>> Handle(GetAllGamesQuery request, CancellationToken cancellationToken)
     {
-        var games = await gameRepository.GetAllAsync(cancellationToken);
+        var games = await gameRepository.GetAllAsync(
+            request.IsPublished,
+            cancellationToken);
 
         var gameListResponse = new GameListResponse(
         [

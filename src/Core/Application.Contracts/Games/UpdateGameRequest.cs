@@ -1,6 +1,6 @@
 ﻿namespace Application.Contracts.Games;
 
-public sealed class CreateGameRequest(
+public sealed class UpdateGameRequest(
     string name,
     string description,
     decimal price,

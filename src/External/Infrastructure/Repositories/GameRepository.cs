@@ -6,17 +6,54 @@ namespace Infrastructure.Repositories;
 internal sealed class GameRepository(
     ApplicationDbContext dbContext) : IGameRepository
 {
-    public async Task<List<Game>> GetAllAsync(CancellationToken cancellationToken) =>
-        await dbContext.Games.ToListAsync(cancellationToken);
+    public async Task<List<Game>> GetAllAsync(bool? isPublished, CancellationToken cancellationToken)
+    {
+        var query = dbContext.Games.AsQueryable();
 
-    public async Task<List<FullGame>> GetAllFullGamesAsync(CancellationToken cancellationToken) =>
-        await dbContext.FullGames.ToListAsync(cancellationToken);
+        if (isPublished.HasValue)
+            query = query.Where(x => x.IsPublished == isPublished);
 
-    public async Task<List<DlcGame>> GetAllDlcGamesAsync(GameId fullGameId, CancellationToken cancellationToken) =>
-        await dbContext.DlcGames.Where(x => x.FullGameId == fullGameId).ToListAsync(cancellationToken);
+        return await query.ToListAsync(cancellationToken);
+    }
 
-    public async Task<List<Subscription>> GetAllSubscriptionAsync(CancellationToken cancellationToken) =>
-        await dbContext.Subscriptions.ToListAsync(cancellationToken);
+    public async Task<List<FullGame>> GetAllFullGamesAsync(
+        bool? isPublished, CancellationToken cancellationToken)
+    {
+        var query = dbContext.FullGames.AsQueryable();
+
+        if (isPublished.HasValue)
+            query = query.Where(x => x.IsPublished == isPublished);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<DlcGame>> GetAllDlcGamesAsync(
+        GameId fullGameId,
+        bool? isPublished,
+        CancellationToken cancellationToken)
+    {
+        var query = dbContext.DlcGames.Where(x => x.FullGameId == fullGameId);
+
+        if (isPublished.HasValue)
+            query = query.Where(x => x.IsPublished == isPublished);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<List<Subscription>> GetAllSubscriptionsAsync(
+        bool? isPublished,
+        CancellationToken cancellationToken)
+    {
+        var query = dbContext.Subscriptions.AsQueryable();
+
+        if (isPublished.HasValue)
+            query = query.Where(x => x.IsPublished == isPublished);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken) =>
+        await dbContext.Games.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
     public async Task<FullGame?> GetFullGameByIdAsync(GameId id, CancellationToken cancellationToken) =>
         await dbContext.FullGames

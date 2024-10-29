@@ -12,7 +12,9 @@ internal sealed class GetAllFullGamesQueryHandler(
     public async Task<Result<FullGameListResponse>> Handle(GetAllFullGamesQuery request,
         CancellationToken cancellationToken)
     {
-        var fullGames = await gameRepository.GetAllFullGamesAsync(cancellationToken);
+        var fullGames = await gameRepository.GetAllFullGamesAsync(
+            request.IsPublished,
+            cancellationToken);
 
         var fullGameListResponse = new FullGameListResponse(
             [
