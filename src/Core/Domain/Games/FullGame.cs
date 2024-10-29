@@ -59,4 +59,18 @@ public sealed class FullGame : Game
             _dlcGames.Add(dlcGame);
         }
     }
+
+    public override void Delete()
+    {
+        _dlcGames.ToList().ForEach(dlcGame => dlcGame.Delete());
+
+        base.Delete();
+    }
+
+    public override void Restore()
+    {
+        _dlcGames.ToList().ForEach(dlcGame => dlcGame.Restore());
+
+        base.Restore();
+    }
 }

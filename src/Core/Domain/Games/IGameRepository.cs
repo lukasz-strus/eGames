@@ -2,7 +2,7 @@
 
 public interface IGameRepository
 {
-    Task<List<Game>> GetAllAsync(bool? isPublished, CancellationToken cancellationToken);
+    Task<List<Game>> GetAllAsync(bool? isPublished, bool? isSoftDeleted, CancellationToken cancellationToken);
     Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken);
     Task<List<FullGame>> GetAllFullGamesAsync(bool? isPublished, CancellationToken cancellationToken);
     Task<List<DlcGame>> GetAllDlcGamesAsync(GameId fullGameId, bool? isPublished, CancellationToken cancellationToken);
@@ -13,4 +13,5 @@ public interface IGameRepository
     Task<Subscription?> GetSubscriptionByIdAsync(GameId id, CancellationToken cancellationToken);
 
     Task AddAsync(Game game, CancellationToken cancellationToken);
+    void Delete(Game game);
 }

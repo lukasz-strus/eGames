@@ -6,12 +6,18 @@ namespace Infrastructure.Repositories;
 internal sealed class GameRepository(
     ApplicationDbContext dbContext) : IGameRepository
 {
-    public async Task<List<Game>> GetAllAsync(bool? isPublished, CancellationToken cancellationToken)
+    public async Task<List<Game>> GetAllAsync(
+        bool? isPublished,
+        bool? isSoftDeleted,
+        CancellationToken cancellationToken)
     {
         var query = dbContext.Games.AsQueryable();
 
         if (isPublished.HasValue)
             query = query.Where(x => x.IsPublished == isPublished);
+
+        if (isSoftDeleted.HasValue)
+            query = query.Where(x => x.IsDeleted == isSoftDeleted);
 
         return await query.ToListAsync(cancellationToken);
     }
@@ -68,4 +74,7 @@ internal sealed class GameRepository(
 
     public async Task AddAsync(Game game, CancellationToken cancellationToken) =>
         await dbContext.AddAsync(game, cancellationToken);
+
+    public void Delete(Game game) =>
+        dbContext.Remove(game);
 }

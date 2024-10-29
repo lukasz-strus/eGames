@@ -1,6 +1,7 @@
 ﻿using Application.Contracts.Common;
 using Application.Contracts.Games;
 using Application.Games.Create;
+using Application.Games.Delete;
 using Application.Games.Get;
 using Application.Games.GetAll;
 using Application.Games.Update;
@@ -24,8 +25,9 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [ProducesResponseType(typeof(GameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames(
         [FromQuery] bool? isPublished,
+        [FromQuery] bool? isSoftDeleted,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllGamesQuery(isPublished))
+        await Result.Success(new GetAllGamesQuery(isPublished, isSoftDeleted))
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<GameListResponse, IActionResult>(Ok, BadRequest);
 
@@ -95,7 +97,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
 
     #region Create
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.CreateFullGame)]
     [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -113,7 +115,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                     entityCreated),
                 BadRequest);
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.CreateDlcGame)]
     [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -132,7 +134,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                     entityCreated),
                 BadRequest);
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.CreateSubscription)]
     [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -154,7 +156,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
 
     #region Update
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPut(ApiRoutes.Games.UpdateFullGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -170,7 +172,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 _ => NoContent(),
                 _ => BadRequest());
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPut(ApiRoutes.Games.UpdateDlcGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -186,7 +188,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 _ => NoContent(),
                 _ => BadRequest());
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPut(ApiRoutes.Games.UpdateSubscription)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -202,7 +204,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 _ => NoContent(),
                 _ => BadRequest());
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPatch(ApiRoutes.Games.PublishGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -216,7 +218,7 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 _ => NoContent(),
                 _ => BadRequest());
 
-    [Authorize(UserRoleNames.Admin)]
+    [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPatch(ApiRoutes.Games.UnpublishGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -230,9 +232,42 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 _ => NoContent(),
                 _ => BadRequest());
 
+    [Authorize(Roles = UserRoleNames.Admin)]
+    [HttpPatch(ApiRoutes.Games.RestoreGame)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> RestoreGame(
+        Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new RestoreGameCommand(id))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
     #endregion
 
-    //TODO: Dodać endpointy usuwania miękkiego i twardego gier i PRZETESTOWAĆ !!!
+    #region Delete
+
+    [Authorize(Roles = UserRoleNames.Admin)]
+    [HttpDelete(ApiRoutes.Games.DeleteGame)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> DeleteGame(
+        Guid id,
+        [FromQuery] bool? destroy,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new DeleteGameCommand(id, destroy))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    #endregion
+
+    //TODO: PRZETESTOWAĆ !!! (Dodać testy w Postmanie)
     //TODO: Refactor excpetion middleware
     //TODO: Add logging
 }

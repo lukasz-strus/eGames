@@ -8,9 +8,20 @@ public sealed class FullGameResponse(
     decimal amount,
     DateTime releaseDate,
     string publisher,
+    string downloadLink,
     ulong fileSize,
     IEnumerable<DlcGameResponse> dlcGame)
-    : GameResponse(id, "Full game", name, description, currency, amount, releaseDate, publisher, fileSize)
+    : GameResponse(
+        id,
+        "Full game",
+        name,
+        description,
+        currency,
+        amount,
+        releaseDate,
+        publisher,
+        downloadLink,
+        fileSize)
 {
     public IEnumerable<DlcGameResponse> DlcGames { get; } = dlcGame;
 }

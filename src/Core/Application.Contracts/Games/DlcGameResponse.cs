@@ -8,9 +8,20 @@ public sealed class DlcGameResponse(
     decimal amount,
     DateTime releaseDate,
     string publisher,
+    string downloadLink,
     ulong fileSize,
     Guid baseGameId)
-    : GameResponse(id, "DLC", name, description, currency, amount, releaseDate, publisher, fileSize)
+    : GameResponse(
+        id,
+        "DLC",
+        name,
+        description,
+        currency,
+        amount,
+        releaseDate,
+        publisher,
+        downloadLink,
+        fileSize)
 {
     public Guid BaseGameId { get; } = baseGameId;
 }

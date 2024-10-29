@@ -9,6 +9,7 @@ public class GameResponse(
     decimal amount,
     DateTime releaseDate,
     string publisher,
+    string downloadLink,
     ulong fileSize)
 {
     public Guid Id { get; } = id;
@@ -19,5 +20,6 @@ public class GameResponse(
     public decimal Amount { get; } = amount;
     public DateTime ReleaseDate { get; } = releaseDate;
     public string Publisher { get; } = publisher;
+    public string DownloadLink { get; } = downloadLink;
     public ulong FileSize { get; } = fileSize;
 }

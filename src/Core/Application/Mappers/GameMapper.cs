@@ -10,20 +10,22 @@ internal static class GameMapper
             game.GetType().Name,
             game.Name,
             game.Description,
-            game.Price.Currency.Name,
+            game.Price.Currency.Code,
             game.Price.Amount,
             game.ReleaseDate,
             game.Publisher,
+            game.DownloadLink,
             game.FileSize);
 
     internal static FullGameResponse ToResponse(this FullGame game) =>
         new(game.Id.Value,
             game.Name,
             game.Description,
-            game.Price.Currency.Name,
+            game.Price.Currency.Code,
             game.Price.Amount,
             game.ReleaseDate,
             game.Publisher,
+            game.DownloadLink,
             game.FileSize,
             game.DlcGames.Select(x => x.ToResponse()));
 
@@ -31,10 +33,11 @@ internal static class GameMapper
         new(game.Id.Value,
             game.Name,
             game.Description,
-            game.Price.Currency.Name,
+            game.Price.Currency.Code,
             game.Price.Amount,
             game.ReleaseDate,
             game.Publisher,
+            game.DownloadLink,
             game.FileSize,
             game.FullGameId.Value);
 
@@ -42,10 +45,11 @@ internal static class GameMapper
         new(game.Id.Value,
             game.Name,
             game.Description,
-            game.Price.Currency.Name,
+            game.Price.Currency.Code,
             game.Price.Amount,
             game.ReleaseDate,
             game.Publisher,
+            game.DownloadLink,
             game.FileSize,
             game.PeriodInDays);
 }

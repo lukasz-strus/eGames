@@ -7,6 +7,8 @@ public static class ApiRoutes
         public const string GetGames = "games";
         public const string PublishGame = "games/{id:guid}/publish";
         public const string UnpublishGame = "games/{id:guid}/unpublish";
+        public const string DeleteGame = "games/{id:guid}";
+        public const string RestoreGame = "games/{id:guid}/restore";
 
         public const string GetFullGames = "games/full";
         public const string GetFullGame = "games/full/{id:guid}";

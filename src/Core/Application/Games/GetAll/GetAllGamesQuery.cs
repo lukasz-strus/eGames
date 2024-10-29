@@ -4,4 +4,4 @@ using MediatR;
 
 namespace Application.Games.GetAll;
 
-public record GetAllGamesQuery(bool? IsPublished) : IRequest<Result<GameListResponse>>;
+public record GetAllGamesQuery(bool? IsPublished, bool? IsSoftDeleted) : IRequest<Result<GameListResponse>>;

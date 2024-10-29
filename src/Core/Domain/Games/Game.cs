@@ -77,12 +77,12 @@ public abstract class Game : Entity<GameId>
         FileSize = fileSize;
     }
 
-    public void Delete()
+    public virtual void Delete()
     {
         IsDeleted = true;
     }
 
-    public void Restore()
+    public virtual void Restore()
     {
         IsDeleted = false;
     }

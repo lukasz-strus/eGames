@@ -13,6 +13,7 @@ internal sealed class GetAllGamesQueryHandler(
     {
         var games = await gameRepository.GetAllAsync(
             request.IsPublished,
+            request.IsSoftDeleted,
             cancellationToken);
 
         var gameListResponse = new GameListResponse(
