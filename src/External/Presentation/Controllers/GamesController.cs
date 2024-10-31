@@ -43,10 +43,10 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [HttpGet(ApiRoutes.Games.GetDlcGames)]
     [ProducesResponseType(typeof(DlcGameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDlcGames(
-        Guid fullGameId,
+        Guid id,
         [FromQuery] bool? isPublished,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllDlcGamesQuery(fullGameId, isPublished))
+        await Result.Success(new GetAllDlcGamesQuery(id, isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
             .Match<DlcGameListResponse, IActionResult>(Ok, BadRequest);
 
@@ -121,11 +121,11 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> CreateDlcGame(
-        Guid fullGameId,
+        Guid id,
         [FromBody] CreateGameRequest request,
         CancellationToken cancellationToken) =>
         await Result.Create(request, Errors.General.BadRequest)
-            .Map(value => new CreateDlcGameCommand(fullGameId, value))
+            .Map(value => new CreateDlcGameCommand(id, value))
             .Bind(command => Mediator.Send(command, cancellationToken))
             .Match<EntityCreatedResponse, IActionResult>(
                 entityCreated => CreatedAtAction(
@@ -266,8 +266,4 @@ public class GamesController(IMediator mediator) : ApiController(mediator)
                 _ => BadRequest());
 
     #endregion
-
-    //TODO: PRZETESTOWAĆ !!! (Dodać testy w Postmanie)
-    //TODO: Refactor excpetion middleware
-    //TODO: Add logging
 }

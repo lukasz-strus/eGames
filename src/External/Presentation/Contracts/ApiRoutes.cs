@@ -15,14 +15,27 @@ public static class ApiRoutes
         public const string CreateFullGame = "games/full";
         public const string UpdateFullGame = "games/full/{id:guid}";
 
-        public const string GetDlcGames = "games/{fullGameId:guid}/dlc";
+        public const string GetDlcGames = "games/full/{id:guid}/dlc";
         public const string GetDlcGame = "games/dlc/{id:guid}";
-        public const string CreateDlcGame = "games/{fullGameId:guid}/dlc";
+        public const string CreateDlcGame = "games/full/{id:guid}/dlc";
         public const string UpdateDlcGame = "games/dlc/{id:guid}";
 
         public const string GetSubscriptions = "games/subscriptions";
         public const string GetSubscription = "games/subscriptions/{id:guid}";
         public const string CreateSubscription = "games/subscriptions";
         public const string UpdateSubscription = "games/subscriptions/{id:guid}";
+    }
+
+
+    public static class Orders
+    {
+        public const string CreateOrder = "orders";
+        public const string GetById = "orders/{id:guid}";
+        public const string GetOrderItems = "orders/{id:guid}/items";
+        public const string GetOrderItem = "orders/items/{id:guid}";
+        public const string CreateOrderItem = "orders/{id:guid}/items";
+        public const string RemoveOrderItem = "orders/{id:guid}/items/{itemId:guid}";
+        public const string PayOrder = "orders/{id:guid}/pay";
+        public const string CancelOrder = "orders/{id:guid}/cancel";
     }
 }

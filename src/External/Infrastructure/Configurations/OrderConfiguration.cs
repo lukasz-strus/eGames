@@ -18,13 +18,14 @@ internal class OrderConfiguration : IEntityTypeConfiguration<Order>
             .WithMany()
             .HasForeignKey(o => o.UserId);
 
-        builder.HasOne(o => o.Status)
+        builder.HasOne<OrderStatus>()
             .WithMany()
             .HasForeignKey(o => o.StatusId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(o => o.Items)
             .WithOne()
-            .HasForeignKey(oi => oi.OrderId);
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

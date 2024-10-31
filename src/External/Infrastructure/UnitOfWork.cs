@@ -17,8 +17,9 @@ internal sealed class UnitOfWork(
             await applicationDbContext.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
         }
-        catch
+        catch (Exception ex)
         {
+            //TODO Add logs
             await transaction.RollbackAsync(cancellationToken);
             throw new DatabaseException(SaveChangesExceptionMessage);
         }

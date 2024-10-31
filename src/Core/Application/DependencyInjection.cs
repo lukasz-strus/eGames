@@ -11,7 +11,7 @@ public static class DependencyInjection
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         services.AddScoped<IUserContext, UserContext>();
-
+        services.AddHttpContextAccessor();
 
         return services;
     }

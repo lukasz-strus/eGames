@@ -1,5 +1,6 @@
 using Application;
 using Application.Authentication;
+using Application.Authorization;
 using Infrastructure;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,7 @@ using Web.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// AddItem services to the container.
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -45,7 +46,9 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy(PolicyNames.HasDomainUser, b => b.RequireClaim(AppClaimTypes.DomainUserId));
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.BearerScheme;
@@ -57,6 +60,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddRoles<IdentityRole>()
+    .AddClaimsPrincipalFactory<CustomUserClaimsPrincipalFactory>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddApiEndpoints();
 

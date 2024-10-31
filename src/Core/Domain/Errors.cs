@@ -12,6 +12,20 @@ public static class Errors
                 new("Orders.CreateOrder.CustomerNotFound",
                     $"Customer with ID {customerId} was not found.");
         }
+
+        public static class GetOrderById
+        {
+            public static Error OrderNotFound(Guid orderId) =>
+                new("Orders.GetOrderById.OrderNotFound",
+                    $"Order with ID {orderId} was not found.");
+        }
+
+        public static class GetOrderItemById
+        {
+            public static Error OrderItemNotFound(Guid orderItemId) =>
+                new("Orders.GetOrderItemById.OrderItemNotFound",
+                    $"Order item with ID {orderItemId} was not found.");
+        }
     }
 
     public static class Games
