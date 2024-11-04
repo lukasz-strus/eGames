@@ -19,8 +19,7 @@ internal class OrderStatusConfiguration : IEntityTypeConfiguration<OrderStatus>
 
         builder.HasData(
             OrderStatus.Pending,
-            OrderStatus.Paid,
-            OrderStatus.Canceled
+            OrderStatus.Paid
         );
     }
 }

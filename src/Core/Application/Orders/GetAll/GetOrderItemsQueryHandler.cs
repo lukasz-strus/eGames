@@ -1,5 +1,4 @@
 ﻿using Application.Contracts.Orders;
-using Domain;
 using Domain.Core.Results;
 using Domain.Orders;
 using MediatR;

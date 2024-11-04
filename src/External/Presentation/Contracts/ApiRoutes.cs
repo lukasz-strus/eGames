@@ -36,6 +36,12 @@ public static class ApiRoutes
         public const string CreateOrderItem = "orders/{id:guid}/items";
         public const string RemoveOrderItem = "orders/{id:guid}/items/{itemId:guid}";
         public const string PayOrder = "orders/{id:guid}/pay";
-        public const string CancelOrder = "orders/{id:guid}/cancel";
+        public const string DeleteOrder = "orders/{id:guid}";
+
+        public static class Users
+        {
+            public const string GetOwnOrders = "me/orders";
+            public const string GetUserOrders = "users/{id:guid}/orders";
+        }
     }
 }

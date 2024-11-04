@@ -18,6 +18,36 @@ namespace Presentation.Controllers;
 
 public class OrderController(IMediator mediator) : ApiController(mediator)
 {
+    #region GetAll
+
+    [Authorize(Roles = UserRoleNames.Admin)]
+    [HttpGet(ApiRoutes.Orders.Users.GetUserOrders)]
+    [ProducesResponseType(typeof(OrderListResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetUserOrders(
+        Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new GetUserOrdersQuery(id))
+            .Bind(query => Mediator.Send(query, cancellationToken))
+            .Match<OrderListResponse, IActionResult>(Ok, BadRequest);
+
+
+    [Authorize(Roles = UserRoleNames.Customer)]
+    [HttpGet(ApiRoutes.Orders.Users.GetOwnOrders)]
+    [ProducesResponseType(typeof(OrderListResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> GetOwnOrders(
+        CancellationToken cancellationToken) =>
+        await Result.Success(new GetUserOrdersQuery())
+            .Bind(query => Mediator.Send(query, cancellationToken))
+            .Match<OrderListResponse, IActionResult>(Ok, BadRequest);
+
+    #endregion
+
+    #region Get
+
     [Authorize(Roles = UserRoleNames.Customer)]
     [HttpGet(ApiRoutes.Orders.GetById)]
     [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
@@ -57,6 +87,11 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
             .Bind(value => Mediator.Send(new GetOrderItemByIdQuery(value), cancellationToken))
             .Match<OrderItemResponse, IActionResult>(Ok, NotFound);
 
+    #endregion
+
+
+    #region Create
+
     [Authorize(Roles = UserRoleNames.Customer)]
     [HttpPost(ApiRoutes.Orders.CreateOrder)]
     [ProducesResponseType(typeof(EntityCreatedResponse), StatusCodes.Status201Created)]
@@ -89,20 +124,9 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
             .Bind(command => Mediator.Send(command, cancellationToken))
             .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
 
-    [Authorize(Roles = UserRoleNames.Customer)]
-    [HttpDelete(ApiRoutes.Orders.RemoveOrderItem)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RemoveOrderItem(
-        Guid id,
-        Guid itemId,
-        CancellationToken cancellationToken) =>
-        await Result.Success((id, itemId))
-            .Map(value => new DeleteOrderItemCommand(value.id, value.itemId))
-            .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+    #endregion
+
+    #region Update
 
     [Authorize(Roles = UserRoleNames.Customer)]
     [HttpPatch(ApiRoutes.Orders.PayOrder)]
@@ -118,17 +142,39 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
             .Bind(command => Mediator.Send(command, cancellationToken))
             .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
 
+    #endregion
+
+    #region Delete
+
     [Authorize(Roles = UserRoleNames.Customer)]
-    [HttpPatch(ApiRoutes.Orders.CancelOrder)]
+    [HttpDelete(ApiRoutes.Orders.RemoveOrderItem)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelOrder(
+    public async Task<IActionResult> RemoveOrderItem(
+        Guid id,
+        Guid itemId,
+        CancellationToken cancellationToken) =>
+        await Result.Success((id, itemId))
+            .Map(value => new DeleteOrderItemCommand(value.id, value.itemId))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+
+
+    [Authorize(Roles = UserRoleNames.Customer)]
+    [HttpDelete(ApiRoutes.Orders.DeleteOrder)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteOrder(
         Guid id,
         CancellationToken cancellationToken) =>
         await Result.Success(id)
-            .Map(value => new CancelOrderCommand(value))
+            .Map(value => new DeleteOrderCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
             .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+
+    #endregion
 }

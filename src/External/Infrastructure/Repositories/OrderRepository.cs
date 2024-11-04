@@ -1,4 +1,5 @@
 ﻿using Domain.Orders;
+using Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -8,6 +9,12 @@ internal sealed class OrderRepository(
 {
     public async Task AddAsync(Order order, CancellationToken cancellationToken) =>
         await dbContext.Orders.AddAsync(order, cancellationToken);
+
+    public async Task<List<Order>> GetByUserIdAsync(UserId userId, CancellationToken cancellationToken) =>
+        await dbContext.Orders
+            .Include(x => x.Items)
+            .Where(x => x.UserId == userId)
+            .ToListAsync(cancellationToken);
 
     public async Task<Order?> GetByIdAsync(OrderId id, CancellationToken cancellationToken) =>
         await dbContext.Orders
@@ -23,4 +30,7 @@ internal sealed class OrderRepository(
     public async Task<OrderItem?> GetOrderItemByIdAsync(OrderItemId id, CancellationToken cancellationToken) =>
         await dbContext.OrderItems
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+    public void Delete(Order order) =>
+        dbContext.Orders.Remove(order);
 }

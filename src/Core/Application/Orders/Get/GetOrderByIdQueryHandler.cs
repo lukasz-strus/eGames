@@ -19,7 +19,7 @@ internal sealed class GetOrderByIdQueryHandler(
         return Result.Success(new OrderResponse(
             order.Id.Value,
             order.UserId.Value,
-            order.Status.Name,
+            order.Status?.Name ?? string.Empty,
             order.Items.Select(orderItem => new OrderItemResponse(
                 orderItem.Id.Value,
                 orderItem.GameId.Value,

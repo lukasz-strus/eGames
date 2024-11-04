@@ -64,9 +64,4 @@ public class Order : Entity<OrderId>
     {
         StatusId = OrderStatus.Paid.Value;
     }
-
-    public void Cancel()
-    {
-        StatusId = OrderStatus.Canceled.Value;
-    }
 }
