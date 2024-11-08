@@ -10,7 +10,7 @@ internal sealed class OrderRepository(
     public async Task AddAsync(Order order, CancellationToken cancellationToken) =>
         await dbContext.Orders.AddAsync(order, cancellationToken);
 
-    public async Task<List<Order>> GetByUserIdAsync(UserId userId, CancellationToken cancellationToken) =>
+    public async Task<List<Order>> GetAllByUserIdAsync(UserId userId, CancellationToken cancellationToken) =>
         await dbContext.Orders
             .Include(x => x.Items)
             .Where(x => x.UserId == userId)
@@ -22,7 +22,7 @@ internal sealed class OrderRepository(
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
 
-    public async Task<List<OrderItem>> GetOrderItems(OrderId id, CancellationToken cancellationToken) =>
+    public async Task<List<OrderItem>> GetAllOrderItems(OrderId id, CancellationToken cancellationToken) =>
         await dbContext.OrderItems
             .Where(x => x.OrderId == id)
             .ToListAsync(cancellationToken);

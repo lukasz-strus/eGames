@@ -5,9 +5,7 @@ using Domain.Users;
 
 namespace Domain.Libraries;
 
-//TODO EF configuration
-
-public sealed class LibraryGame : Entity<LibraryGameId>
+public class LibraryGame : Entity<LibraryGameId>
 {
     // ReSharper disable once UnusedMember.Local
     private LibraryGame()
@@ -15,11 +13,14 @@ public sealed class LibraryGame : Entity<LibraryGameId>
         UserId = default!;
         GameId = default!;
         LicenceKey = default!;
+        Game = default!;
     }
 
     [Required] public UserId UserId { get; private set; }
 
     [Required] public GameId GameId { get; private set; }
+
+    public Game Game { get; private set; }
 
     [Required] public LicenceKey LicenceKey { get; private set; }
 
@@ -39,21 +40,5 @@ public sealed class LibraryGame : Entity<LibraryGameId>
         };
 
         return libraryGame;
-    }
-}
-
-public record LibraryGameId(Guid Id);
-
-public record LicenceKey
-{
-    private LicenceKey(string value) => Value = value;
-
-    public string Value { get; init; }
-
-    public static LicenceKey Create()
-    {
-        var key = Guid.NewGuid();
-
-        return new LicenceKey(key.ToString());
     }
 }

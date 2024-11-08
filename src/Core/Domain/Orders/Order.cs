@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Domain.ValueObjects;
 using Domain.Core.Primitives;
 using Domain.Enums;
+using Domain.Libraries;
 
 namespace Domain.Orders;
 
@@ -60,8 +61,10 @@ public class Order : Entity<OrderId>
         _items.Remove(item);
     }
 
-    public void Pay()
+    public List<LibraryGame> CompleteOrder()
     {
         StatusId = OrderStatus.Paid.Value;
+
+        return Items.Select(orderItem => LibraryGame.Create(UserId, orderItem.GameId)).ToList();
     }
 }

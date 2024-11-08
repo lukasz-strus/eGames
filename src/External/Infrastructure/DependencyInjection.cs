@@ -1,5 +1,6 @@
 ﻿using Application.Core.Abstractions.Data;
 using Domain.Games;
+using Domain.Libraries;
 using Domain.Orders;
 using Domain.Users;
 using Infrastructure.Repositories;
@@ -22,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGameRepository, GameRepository>();
+        services.AddScoped<ILibraryRepository, LibraryRepository>();
 
         services.AddScoped<ApplicationSeeder>();
 

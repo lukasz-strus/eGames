@@ -26,6 +26,16 @@ public static class ApiRoutes
         public const string UpdateSubscription = "games/subscriptions/{id:guid}";
     }
 
+    public static class Libraries
+    {
+        public const string GetOwnLibraryGames = "me/library-games";
+        public const string GetUserLibraryGames = "users/{userId:guid}/library-games";
+
+        public const string GetLibraryGame = "library-games/{id:guid}";
+
+        public const string DeleteLibraryGame = "library-games/{id:guid}";
+    }
+
 
     public static class Orders
     {

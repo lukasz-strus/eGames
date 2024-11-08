@@ -15,7 +15,7 @@ internal sealed class GetUserOrdersQueryHandler(
     {
         var userId = request.UserId ?? userContext.GetCurrentUser().DomainUserId;
 
-        var orders = await orderRepository.GetByUserIdAsync(new UserId(userId), cancellationToken);
+        var orders = await orderRepository.GetAllByUserIdAsync(new UserId(userId), cancellationToken);
 
         return Result.Success(new OrderListResponse(
             orders

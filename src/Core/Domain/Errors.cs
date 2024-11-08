@@ -38,6 +38,20 @@ public static class Errors
         }
     }
 
+    public static class Libraries
+    {
+        public static class GetLibraryGameById
+        {
+            public static Error LibraryGameNotFound(Guid libraryId) =>
+                new("Libraries.GetLibraryById.LibraryNotFound",
+                    $"Library with ID {libraryId} was not found.");
+
+            public static Error UserNotAuthorized(Guid requestLibraryGameId) =>
+                new("Libraries.GetLibraryById.UserNotAuthorized",
+                    $"User is not authorized to access library game with ID {requestLibraryGameId}.");
+        }
+    }
+
     public static class Currency
     {
         public static class FromValue

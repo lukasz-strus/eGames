@@ -1,5 +1,6 @@
 ﻿using Application.Authentication;
 using Domain.Games;
+using Domain.Libraries;
 using Domain.Orders;
 using Domain.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -35,4 +36,5 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<OrderStatus> OrderStatuses { get; set; }
+    public DbSet<LibraryGame> LibraryGames { get; set; }
 }

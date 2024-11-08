@@ -17,7 +17,7 @@ using Presentation.Contracts;
 
 namespace Presentation.Controllers;
 
-public class GamesController(IMediator mediator) : ApiController(mediator)
+public class GameController(IMediator mediator) : ApiController(mediator)
 {
     #region GetAll
 

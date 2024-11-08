@@ -11,7 +11,7 @@ internal sealed class GetOrderItemsQueryHandler(
     public async Task<Result<OrderItemListResponse>> Handle(GetOrderItemsQuery request,
         CancellationToken cancellationToken)
     {
-        var orders = await orderRepository.GetOrderItems(new OrderId(request.OrderId), cancellationToken);
+        var orders = await orderRepository.GetAllOrderItems(new OrderId(request.OrderId), cancellationToken);
 
         return Result.Success(new OrderItemListResponse(
             orders.Select(orderItem => new OrderItemResponse(
