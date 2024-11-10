@@ -4,6 +4,23 @@ namespace Domain;
 
 public static class Errors
 {
+    public static class Users
+    {
+        public static class GetUserById
+        {
+            public static Error UserNotFound(Guid userId) =>
+                new("Users.GetUserById.UserNotFound",
+                    $"User with ID {userId} was not found.");
+        }
+
+        public static class AddRole
+        {
+            public static Error RoleNotFound(int roleId) =>
+                new("Users.AddRole.RoleNotFound",
+                    $"Role with ID {roleId} was not found.");
+        }
+    }
+
     public static class Orders
     {
         public static class CreateOrder

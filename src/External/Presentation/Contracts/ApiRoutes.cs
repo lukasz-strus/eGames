@@ -2,6 +2,17 @@
 
 public static class ApiRoutes
 {
+    public static class Users
+    {
+        public const string GetAll = "users";
+        public const string GetAllRoles = "users/roles";
+        public const string Get = "users/{id:guid}";
+        public const string GetUserRoles = "users/{id:guid}/roles";
+
+        public const string AddRole = "users/{id:guid}/roles";
+        public const string RemoveRole = "users/{id:guid}/roles/{roleId:int}";
+    }
+
     public static class Games
     {
         public const string GetGames = "games";

@@ -45,4 +45,6 @@ public sealed class User : Entity<UserId>
 
         _roles.Remove(role);
     }
+
+    public bool HasRole(UserRole role) => _roles.Contains(role);
 }
