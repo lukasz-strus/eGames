@@ -205,7 +205,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
                 _ => BadRequest());
 
     [Authorize(Roles = UserRoleNames.Admin)]
-    [HttpPatch(ApiRoutes.Games.PublishGame)]
+    [HttpPost(ApiRoutes.Games.PublishGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -219,7 +219,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
                 _ => BadRequest());
 
     [Authorize(Roles = UserRoleNames.Admin)]
-    [HttpPatch(ApiRoutes.Games.UnpublishGame)]
+    [HttpPost(ApiRoutes.Games.UnpublishGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -233,7 +233,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
                 _ => BadRequest());
 
     [Authorize(Roles = UserRoleNames.Admin)]
-    [HttpPatch(ApiRoutes.Games.RestoreGame)]
+    [HttpPost(ApiRoutes.Games.RestoreGame)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

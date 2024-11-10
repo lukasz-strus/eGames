@@ -128,7 +128,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
     #region Update
 
     [Authorize(Roles = UserRoleNames.Customer)]
-    [HttpPatch(ApiRoutes.Orders.PayOrder)]
+    [HttpPost(ApiRoutes.Orders.PayOrder)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

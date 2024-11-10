@@ -62,24 +62,6 @@ public class UserController(IMediator mediator) : ApiController(mediator)
 
     #endregion
 
-    #region Post
-
-    [HttpPost(ApiRoutes.Users.AddRole)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> AddRole(
-        [FromRoute] Guid id,
-        [FromBody] AddRoleToUserRequest request,
-        CancellationToken cancellationToken) =>
-        await Result.Success(new AddRoleCommand(id, request.RoleId))
-            .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
-
-    #endregion
-
     #region Delete
 
     [HttpDelete(ApiRoutes.Users.RemoveRole)]
@@ -98,9 +80,23 @@ public class UserController(IMediator mediator) : ApiController(mediator)
 
     #endregion
 
-    #region Patch
+    #region Update
 
-    [HttpPatch(ApiRoutes.Users.Ban)]
+    [HttpPost(ApiRoutes.Users.AddRole)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> AddRole(
+        [FromRoute] Guid id,
+        [FromBody] AddRoleToUserRequest request,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new AddRoleCommand(id, request.RoleId))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    [HttpPost(ApiRoutes.Users.Ban)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -114,7 +110,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
                 _ => BadRequest());
 
 
-    [HttpPatch(ApiRoutes.Users.Unban)]
+    [HttpPost(ApiRoutes.Users.Unban)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
