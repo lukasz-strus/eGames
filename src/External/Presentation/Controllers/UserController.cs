@@ -97,4 +97,35 @@ public class UserController(IMediator mediator) : ApiController(mediator)
                 _ => BadRequest());
 
     #endregion
+
+    #region Patch
+
+    [HttpPatch(ApiRoutes.Users.Ban)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Ban(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new BanUserCommand(id))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+
+    [HttpPatch(ApiRoutes.Users.Unban)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Unban(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new UnbanUserCommand(id))
+            .Bind(command => Mediator.Send(command, cancellationToken))
+            .Match<Unit, IActionResult>(
+                _ => NoContent(),
+                _ => BadRequest());
+
+    #endregion
 }

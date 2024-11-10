@@ -11,6 +11,9 @@ public static class ApiRoutes
 
         public const string AddRole = "users/{id:guid}/roles";
         public const string RemoveRole = "users/{id:guid}/roles/{roleId:int}";
+
+        public const string Ban = "users/{id:guid}/ban";
+        public const string Unban = "users/{id:guid}/unban";
     }
 
     public static class Games

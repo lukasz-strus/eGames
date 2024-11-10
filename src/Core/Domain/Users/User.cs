@@ -12,6 +12,9 @@ public sealed class User : Entity<UserId>
 
     [NotMapped] public IReadOnlyCollection<UserRole> Roles => _roles;
 
+    public bool IsBanned { get; private set; } = false;
+    public DateTime? BannedDate { get; private set; }
+
     public static User Create(string userName, IEnumerable<UserRole>? roles = null)
     {
         var user = new User
@@ -47,4 +50,16 @@ public sealed class User : Entity<UserId>
     }
 
     public bool HasRole(UserRole role) => _roles.Contains(role);
+
+    public void Ban()
+    {
+        IsBanned = true;
+        BannedDate = DateTime.UtcNow;
+    }
+
+    public void Unban()
+    {
+        IsBanned = false;
+        BannedDate = null;
+    }
 }
