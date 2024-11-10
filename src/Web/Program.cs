@@ -5,12 +5,19 @@ using Infrastructure;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using NLog.Web;
 using Web.Middleware;
 using Web.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // AddItem services to the container.
+
+// NLog: Setup NLog for Dependency injection
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
+builder.Host.UseNLog();
+
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration);

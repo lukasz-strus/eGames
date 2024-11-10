@@ -1,10 +1,12 @@
 ﻿using Application.Core.Abstractions.Data;
 using Infrastructure.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure;
 
 internal sealed class UnitOfWork(
-    ApplicationDbContext applicationDbContext) : IUnitOfWork
+    ApplicationDbContext applicationDbContext,
+    ILogger<UnitOfWork> logger) : IUnitOfWork
 {
     private const string SaveChangesExceptionMessage = "An error occurred while saving changes to the database.";
 
@@ -19,7 +21,8 @@ internal sealed class UnitOfWork(
         }
         catch (Exception ex)
         {
-            //TODO Add logs
+            logger.LogError(ex, ex.Message);
+
             await transaction.RollbackAsync(cancellationToken);
             throw new DatabaseException(SaveChangesExceptionMessage);
         }
