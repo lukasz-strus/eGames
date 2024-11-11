@@ -38,28 +38,28 @@ public static class ResultExtensions
         return await predicate(result.Value()) ? Result.Success(result.Value()) : Result.Failure<TValue>(error);
     }
 
-    public static async Task<T> Match<T>(this Task<Result> resultTask, Func<T> onSuccess, Func<Error, T> onFailure)
+    public static async Task<T> Match<T>(this Task<Result> resultTask, Func<T> onSuccess, Func<Result, T> onFailure)
     {
         var result = await resultTask;
 
         return result.Match(onSuccess, onFailure);
     }
 
-    public static T Match<T>(this Result result, Func<T> onSuccess, Func<Error, T> onFailure)
-        => result.IsSuccess ? onSuccess() : onFailure(result.Error);
+    public static T Match<T>(this Result result, Func<T> onSuccess, Func<Result, T> onFailure)
+        => result.IsSuccess ? onSuccess() : onFailure(result);
 
     public static async Task<T> Match<TValue, T>(
         this Task<Result<TValue>> resultTask,
         Func<TValue, T> onSuccess,
-        Func<Error, T> onFailure)
+        Func<Result, T> onFailure)
     {
         var result = await resultTask;
 
         return result.Match(onSuccess, onFailure);
     }
 
-    public static T Match<TValue, T>(this Result<TValue> result, Func<TValue, T> onSuccess, Func<Error, T> onFailure)
-        => result.IsSuccess ? onSuccess(result.Value()) : onFailure(result.Error);
+    public static T Match<TValue, T>(this Result<TValue> result, Func<TValue, T> onSuccess, Func<Result, T> onFailure)
+        => result.IsSuccess ? onSuccess(result.Value()) : onFailure(result);
 
     public static Result<T> Map<T>(this Result result, Func<Result<T>> func)
         => result.IsSuccess ? func() : Result.Failure<T>(result.Error);

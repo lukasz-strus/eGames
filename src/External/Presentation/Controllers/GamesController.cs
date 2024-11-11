@@ -29,7 +29,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetAllGamesQuery(isPublished, isSoftDeleted))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<GameListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetFullGames)]
     [ProducesResponseType(typeof(FullGameListResponse), StatusCodes.Status200OK)]
@@ -38,7 +38,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetAllFullGamesQuery(isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<FullGameListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetDlcGames)]
     [ProducesResponseType(typeof(DlcGameListResponse), StatusCodes.Status200OK)]
@@ -48,7 +48,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetAllDlcGamesQuery(id, isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<DlcGameListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetSubscriptions)]
     [ProducesResponseType(typeof(SubscriptionListResponse), StatusCodes.Status200OK)]
@@ -57,7 +57,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetAllSubscriptionsQuery(isPublished))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<SubscriptionListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     #endregion
 
@@ -71,7 +71,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetFullGameByIdQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<FullGameResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     [HttpGet(ApiRoutes.Games.GetDlcGame)]
     [ProducesResponseType(typeof(DlcGameResponse), StatusCodes.Status200OK)]
@@ -81,7 +81,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetDlcGameByIdQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<DlcGameResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     [HttpGet(ApiRoutes.Games.GetSubscription)]
     [ProducesResponseType(typeof(SubscriptionResponse), StatusCodes.Status200OK)]
@@ -91,7 +91,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetSubscriptionByIdQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<SubscriptionResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     #endregion
 
@@ -108,8 +108,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new CreateFullGameCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<EntityCreatedResponse, IActionResult>(
-                entityCreated => CreatedAtAction(
+            .Match(entityCreated => CreatedAtAction(
                     nameof(GetFullGameById),
                     new { id = entityCreated.Id },
                     entityCreated),
@@ -127,8 +126,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new CreateDlcGameCommand(id, value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<EntityCreatedResponse, IActionResult>(
-                entityCreated => CreatedAtAction(
+            .Match(entityCreated => CreatedAtAction(
                     nameof(GetDlcGameById),
                     new { id = entityCreated.Id },
                     entityCreated),
@@ -145,8 +143,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new CreateSubscriptionCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<EntityCreatedResponse, IActionResult>(
-                entityCreated => CreatedAtAction(
+            .Match(entityCreated => CreatedAtAction(
                     nameof(GetSubscriptionGameById),
                     new { id = entityCreated.Id },
                     entityCreated),
@@ -168,9 +165,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new UpdateFullGameCommand(id, value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPut(ApiRoutes.Games.UpdateDlcGame)]
@@ -184,9 +179,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new UpdateDlcGameCommand(id, value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPut(ApiRoutes.Games.UpdateSubscription)]
@@ -200,9 +193,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         await Result.Create(request, Errors.General.BadRequest)
             .Map(value => new UpdateSubscriptionCommand(id, value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.PublishGame)]
@@ -214,9 +205,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new PublishGameCommand(id))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.UnpublishGame)]
@@ -228,9 +217,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new UnpublishGameCommand(id))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     [Authorize(Roles = UserRoleNames.Admin)]
     [HttpPost(ApiRoutes.Games.RestoreGame)]
@@ -242,9 +229,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new RestoreGameCommand(id))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     #endregion
 
@@ -261,9 +246,7 @@ public class GameController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new DeleteGameCommand(id, destroy))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     #endregion
 }
