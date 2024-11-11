@@ -32,6 +32,13 @@ builder.Services.AddScoped<ErrorHandlerMiddleware>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo()
+    {
+        Title = "eGamesAPI",
+        Version = "v1",
+        Description = "API for the eGames platform"
+    });
+
     c.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.Http,
