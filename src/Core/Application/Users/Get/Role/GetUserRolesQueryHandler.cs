@@ -14,7 +14,7 @@ internal sealed class GetUserRolesQueryHandler(
         GetUserRolesQuery request,
         CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetAsync(new UserId(request.UserId), cancellationToken);
+        var user = await userRepository.GetByIdAsync(new UserId(request.UserId), cancellationToken);
 
         return user is null
             ? Result.Failure<UserRoleListResponse>(Errors.Users.GetUserById.UserNotFound(request.UserId))

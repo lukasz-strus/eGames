@@ -13,7 +13,7 @@ using Application.Games.GetAll.Game;
 using Application.Games.GetAll.Subscription;
 using Application.Games.Update.DlcGame;
 using Application.Games.Update.FullGame;
-using Application.Games.Update.Release;
+using Application.Games.Update.MakePublic;
 using Application.Games.Update.Restore;
 using Application.Games.Update.Subscription;
 using Domain;

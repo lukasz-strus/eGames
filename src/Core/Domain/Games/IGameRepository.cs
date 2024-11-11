@@ -4,6 +4,7 @@ public interface IGameRepository
 {
     Task<List<Game>> GetAllAsync(bool? isPublished, bool? isSoftDeleted, CancellationToken cancellationToken);
     Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken);
+    Task<Game?> GetByName(string value, CancellationToken cancellationToken);
     Task<List<FullGame>> GetAllFullGamesAsync(bool? isPublished, CancellationToken cancellationToken);
     Task<List<DlcGame>> GetAllDlcGamesAsync(GameId fullGameId, bool? isPublished, CancellationToken cancellationToken);
     Task<List<Subscription>> GetAllSubscriptionsAsync(bool? isPublished, CancellationToken cancellationToken);

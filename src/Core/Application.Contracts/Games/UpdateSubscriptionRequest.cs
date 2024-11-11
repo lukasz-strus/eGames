@@ -1,7 +1,6 @@
 ﻿namespace Application.Contracts.Games;
 
 public sealed class UpdateSubscriptionRequest(
-    string name,
     string description,
     decimal price,
     int currencyId,
@@ -11,7 +10,6 @@ public sealed class UpdateSubscriptionRequest(
     ulong fileSize,
     uint periodInDays)
 {
-    public string Name { get; set; } = name;
     public string Description { get; set; } = description;
     public decimal Price { get; set; } = price;
     public int CurrencyId { get; set; } = currencyId;

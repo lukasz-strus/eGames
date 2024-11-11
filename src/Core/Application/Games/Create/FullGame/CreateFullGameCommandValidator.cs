@@ -1,14 +1,24 @@
-﻿using FluentValidation;
+﻿using Domain.Games;
+using FluentValidation;
 
 namespace Application.Games.Create.FullGame;
 
 internal sealed class CreateFullGameCommandValidator : AbstractValidator<CreateFullGameCommand>
 {
-    public CreateFullGameCommandValidator()
+    private const string GameWithThisNameAlreadyExists = "Game with this name already exists.";
+
+    public CreateFullGameCommandValidator(IGameRepository gameRepository)
     {
         RuleFor(x => x.Game.Name)
             .NotEmpty()
-            .MaximumLength(100);
+            .MaximumLength(100)
+            .CustomAsync(async (value, context, cancellationToken) =>
+            {
+                var game = await gameRepository.GetByName(value, cancellationToken);
+
+                if (game is not null)
+                    context.AddFailure(GameWithThisNameAlreadyExists);
+            });
 
         RuleFor(x => x.Game.Description)
             .NotEmpty()

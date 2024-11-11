@@ -1,14 +1,24 @@
-﻿using FluentValidation;
+﻿using Domain.Games;
+using FluentValidation;
 
 namespace Application.Games.Create.Subscription;
 
 internal sealed class CreateSubscriptionCommandValidator : AbstractValidator<CreateSubscriptionCommand>
 {
-    public CreateSubscriptionCommandValidator()
+    private const string SubscriptionWithThisNameAlreadyExists = "Subscription with this name already exists.";
+
+    public CreateSubscriptionCommandValidator(IGameRepository gameRepository)
     {
         RuleFor(x => x.Game.Name)
             .NotEmpty()
-            .MaximumLength(100);
+            .MaximumLength(100)
+            .CustomAsync(async (value, context, cancellationToken) =>
+            {
+                var game = await gameRepository.GetByName(value, cancellationToken);
+
+                if (game is not null)
+                    context.AddFailure(SubscriptionWithThisNameAlreadyExists);
+            });
 
         RuleFor(x => x.Game.Description)
             .NotEmpty()

@@ -22,6 +22,9 @@ internal sealed class GameRepository(
         return await query.ToListAsync(cancellationToken);
     }
 
+    public async Task<Game?> GetByName(string value, CancellationToken cancellationToken) =>
+        await dbContext.Games.FirstOrDefaultAsync(x => x.Name == value, cancellationToken);
+
     public async Task<List<FullGame>> GetAllFullGamesAsync(
         bool? isPublished, CancellationToken cancellationToken)
     {

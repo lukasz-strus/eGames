@@ -12,7 +12,7 @@ internal sealed class BanUserCommandHandler(
 {
     public async Task<Result<Unit>> Handle(BanUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await userRepository.GetAsync(new UserId(request.UserId), cancellationToken);
+        var user = await userRepository.GetByIdAsync(new UserId(request.UserId), cancellationToken);
         if (user is null)
             return Result.Failure<Unit>(Errors.Users.GetUserById.UserNotFound(request.UserId));
 

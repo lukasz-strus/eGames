@@ -29,13 +29,21 @@ internal sealed class UserRepository(
     }
 
 
-    public async Task<User?> GetAsync(UserId id, CancellationToken cancellationToken)
+    public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
     {
         var user = await dbContext.DomainUsers.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         if (user is null) return null;
 
         await PopulateUserRoles([user], cancellationToken);
 
+        return user;
+    }
+
+    public async Task<User?> GetByUserName(string userName, CancellationToken cancellationToken)
+    {
+        var user = await dbContext.DomainUsers.FirstOrDefaultAsync(x => x.UserName == userName, cancellationToken);
+        if (user is null) return null;
+        await PopulateUserRoles([user], cancellationToken);
         return user;
     }
 

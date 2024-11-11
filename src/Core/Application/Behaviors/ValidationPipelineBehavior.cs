@@ -18,8 +18,11 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
         if (!validators.Any())
             return await next();
 
-        var errors = validators
-            .Select(v => v.Validate(request))
+        var validationResults = await Task.WhenAll(
+            validators.Select(v => v.ValidateAsync(request, cancellationToken))
+        );
+
+        var errors = validationResults
             .SelectMany(result => result.Errors)
             .Where(failure => failure is not null)
             .Select(failure => new Error(failure.PropertyName, failure.ErrorMessage))

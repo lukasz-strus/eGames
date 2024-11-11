@@ -60,7 +60,6 @@ public abstract class Game : Entity<GameId>
     [Required] public bool IsPublished { get; private set; }
 
     public void Update(
-        string name,
         string description,
         Money price,
         DateTime releaseDate,
@@ -68,7 +67,6 @@ public abstract class Game : Entity<GameId>
         string downloadLink,
         ulong fileSize)
     {
-        Name = name;
         Description = description;
         Price = price;
         ReleaseDate = releaseDate;
