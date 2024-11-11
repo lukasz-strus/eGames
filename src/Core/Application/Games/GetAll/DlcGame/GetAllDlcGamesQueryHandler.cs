@@ -1,5 +1,5 @@
 ﻿using Application.Contracts.Games;
-using Application.Mappers;
+using Application.Internals.Mappers;
 using Domain.Core.Results;
 using Domain.Games;
 using MediatR;

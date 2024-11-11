@@ -1,5 +1,4 @@
-﻿using Domain;
-using Domain.Core.Primitives;
+﻿using Domain.Core.Primitives;
 
 namespace Presentation.Contracts;
 

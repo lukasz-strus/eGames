@@ -1,5 +1,5 @@
 ﻿using Application.Contracts.User;
-using Application.Mappers;
+using Application.Internals.Mappers;
 using Domain;
 using Domain.Core.Results;
 using Domain.Users;

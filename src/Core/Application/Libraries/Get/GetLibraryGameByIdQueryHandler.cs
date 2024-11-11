@@ -1,6 +1,6 @@
 ﻿using Application.Authentication;
 using Application.Contracts.Libraries;
-using Application.Mappers;
+using Application.Internals.Mappers;
 using Domain;
 using Domain.Core.Results;
 using Domain.Libraries;

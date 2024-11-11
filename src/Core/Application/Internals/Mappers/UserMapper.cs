@@ -1,7 +1,7 @@
 ﻿using Application.Contracts.User;
 using Domain.Users;
 
-namespace Application.Mappers;
+namespace Application.Internals.Mappers;
 
 internal static class UserMapper
 {
