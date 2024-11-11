@@ -13,11 +13,21 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
 {
     public async Task Seed()
     {
-        if (!await dbContext.Database.CanConnectAsync())
-            return;
+        if (!await dbContext.Database.CanConnectAsync()) return;
+
+        await MigratePendingChanges();
 
         await SeedUsers();
         await SeedGame();
+    }
+
+    private async Task MigratePendingChanges()
+    {
+        var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+        if (pendingMigrations.Any())
+        {
+            await dbContext.Database.MigrateAsync();
+        }
     }
 
     #region User
