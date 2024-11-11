@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using Application.Authentication;
+﻿using Application.Authentication;
 using Application.Contracts.User;
-using Application.Users.Create;
-using Application.Users.Delete;
+using Application.Users.Create.User;
+using Application.Users.Delete.User;
 using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
@@ -16,6 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Web.NET;
 

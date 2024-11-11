@@ -1,10 +1,14 @@
 ﻿using Application.Contracts.Common;
 using Application.Contracts.Orders;
-using Application.Orders.Create;
-using Application.Orders.Delete;
-using Application.Orders.Get;
+using Application.Orders.Create.Order;
+using Application.Orders.Create.OrderItem;
+using Application.Orders.Delete.Order;
+using Application.Orders.Delete.OrderItem;
+using Application.Orders.Get.Order;
+using Application.Orders.Get.OrderItem;
 using Application.Orders.GetAll;
-using Application.Orders.Update;
+using Application.Orders.GetAll.OrderItem;
+using Application.Orders.Update.Pay;
 using Domain.Core.Results;
 using Domain.Core.Results.Extensions;
 using Domain.Users;
@@ -30,7 +34,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetUserOrdersQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<OrderListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
 
     [Authorize(Roles = UserRoleNames.Customer)]
@@ -42,7 +46,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetUserOrdersQuery())
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<OrderListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     #endregion
 
@@ -59,7 +63,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(id)
             .Bind(value => Mediator.Send(new GetOrderByIdQuery(value), cancellationToken))
-            .Match<OrderResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     [Authorize(Roles = UserRoleNames.Customer)]
     [HttpGet(ApiRoutes.Orders.GetOrderItems)]
@@ -72,7 +76,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(id)
             .Bind(value => Mediator.Send(new GetOrderItemsQuery(value), cancellationToken))
-            .Match<OrderItemListResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     [Authorize(Roles = UserRoleNames.Customer)]
     [HttpGet(ApiRoutes.Orders.GetOrderItem)]
@@ -85,7 +89,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(id)
             .Bind(value => Mediator.Send(new GetOrderItemByIdQuery(value), cancellationToken))
-            .Match<OrderItemResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     #endregion
 
@@ -101,8 +105,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         await Result.Success(User.Claims)
             .Map(_ => new CreateOrderCommand())
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<EntityCreatedResponse, IActionResult>(
-                entityCreated => CreatedAtAction(
+            .Match(entityCreated => CreatedAtAction(
                     nameof(GetOrderById),
                     new { id = entityCreated.Id },
                     entityCreated),
@@ -121,7 +124,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         await Result.Success((id, request))
             .Map(value => new CreateOrderItemCommand(value.id, value.request))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+            .Match(NoContent, NotFound);
 
     #endregion
 
@@ -139,7 +142,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         await Result.Success(id)
             .Map(value => new PayOrderCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+            .Match(NoContent, NotFound);
 
     #endregion
 
@@ -158,7 +161,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         await Result.Success((id, itemId))
             .Map(value => new DeleteOrderItemCommand(value.id, value.itemId))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+            .Match(NoContent, NotFound);
 
 
     [Authorize(Roles = UserRoleNames.Customer)]
@@ -173,7 +176,7 @@ public class OrderController(IMediator mediator) : ApiController(mediator)
         await Result.Success(id)
             .Map(value => new DeleteOrderCommand(value))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(_ => NoContent(), NotFound);
+            .Match(NoContent, NotFound);
 
     #endregion
 }

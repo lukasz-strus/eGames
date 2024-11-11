@@ -23,7 +23,7 @@ public class LibraryController(IMediator mediator) : ApiController(mediator)
     public async Task<IActionResult> GetOwnGames(CancellationToken cancellationToken) =>
         await Result.Success(new GetAllLibraryGamesQuery())
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<LibraryGameListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     [Authorize(Roles = UserRoleNames.SuperAdmin)]
     [HttpGet(ApiRoutes.Libraries.GetUserLibraryGames)]
@@ -33,7 +33,7 @@ public class LibraryController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetAllLibraryGamesQuery(userId))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<LibraryGameListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     #endregion
 
@@ -48,7 +48,7 @@ public class LibraryController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetLibraryGameByIdQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<FullLibraryGameResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     #endregion
 
@@ -64,9 +64,7 @@ public class LibraryController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new DeleteLibraryGameCommand(id))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     #endregion
 }

@@ -1,8 +1,11 @@
 ﻿using Application.Contracts.User;
-using Application.Users.Delete;
-using Application.Users.Get;
-using Application.Users.GetAll;
-using Application.Users.Update;
+using Application.Users.Delete.Role;
+using Application.Users.Get.Role;
+using Application.Users.Get.User;
+using Application.Users.GetAll.Role;
+using Application.Users.GetAll.User;
+using Application.Users.Update.Ban;
+using Application.Users.Update.Role;
 using Domain.Core.Results;
 using Domain.Core.Results.Extensions;
 using Domain.Users;
@@ -25,7 +28,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken) =>
         await Result.Success(new GetAllUsersQuery())
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<UserListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Users.GetAllRoles)]
     [ProducesResponseType(typeof(UserRoleListResponse), StatusCodes.Status200OK)]
@@ -33,7 +36,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
     public async Task<IActionResult> GetAllRoles(CancellationToken cancellationToken) =>
         await Result.Success(new GetAllRolesQuery())
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<UserRoleListResponse, IActionResult>(Ok, BadRequest);
+            .Match(Ok, BadRequest);
 
     #endregion
 
@@ -48,7 +51,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetUserQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<UserResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     [HttpGet(ApiRoutes.Users.GetUserRoles)]
     [ProducesResponseType(typeof(UserRoleListResponse), StatusCodes.Status200OK)]
@@ -58,7 +61,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new GetUserRolesQuery(id))
             .Bind(query => Mediator.Send(query, cancellationToken))
-            .Match<UserRoleListResponse, IActionResult>(Ok, NotFound);
+            .Match(Ok, NotFound);
 
     #endregion
 
@@ -74,9 +77,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new RemoveRoleCommand(id, roleId))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     #endregion
 
@@ -92,9 +93,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new AddRoleCommand(id, request.RoleId))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     [HttpPost(ApiRoutes.Users.Ban)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -105,9 +104,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new BanUserCommand(id))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
 
     [HttpPost(ApiRoutes.Users.Unban)]
@@ -119,9 +116,7 @@ public class UserController(IMediator mediator) : ApiController(mediator)
         CancellationToken cancellationToken) =>
         await Result.Success(new UnbanUserCommand(id))
             .Bind(command => Mediator.Send(command, cancellationToken))
-            .Match<Unit, IActionResult>(
-                _ => NoContent(),
-                _ => BadRequest());
+            .Match(NoContent, BadRequest);
 
     #endregion
 }

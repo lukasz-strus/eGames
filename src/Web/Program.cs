@@ -1,6 +1,7 @@
 using Application;
 using Application.Authentication;
 using Application.Authorization;
+using FluentValidation;
 using Infrastructure;
 using Infrastructure.Seeders;
 using Microsoft.AspNetCore.Identity;
@@ -80,6 +81,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
+
+ValidatorOptions.Global.LanguageManager.Enabled = false;
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
