@@ -2,6 +2,9 @@
 
 **eGames** is a game distribution platform inspired by Steam, allowing users to browse, purchase, and manage various types of games, including full versions, DLCs, and subscriptions. The application also provides features for managing orders, a user game library, user authorization, and role management.
 
+## Architecture
+The eGames project is built with a strong focus on **Domain-Driven Design (DDD)** and **Clean Architecture**, ensuring a well-structured, maintainable, and scalable codebase. These principles help separate business logic from infrastructure, making the application easier to understand, modify, and extend
+
 ## Features
 
 - **Game Browsing and Filtering**: Users can browse available games, filter by different criteria, and search by keywords.
