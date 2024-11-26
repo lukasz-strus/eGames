@@ -79,6 +79,16 @@ builder.Services.AddIdentityCore<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddApiEndpoints();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -100,6 +110,8 @@ app.UseSwaggerUI(options =>
 
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

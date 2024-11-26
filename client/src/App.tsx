@@ -1,16 +1,19 @@
+import React from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import { Button } from 'react-bootstrap'
-
-function App() {
+const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
 	htmlElement?.setAttribute('data-bs-theme', 'dark') // TODDO: to toggle functionality
-
 	return (
-		<main>
-			<Button variant='secondary'>Click me</Button>
-		</main>
+		<Router>
+			<Routes>
+				<Route path='/' element={<HomePage />} />
+			</Routes>
+		</Router>
 	)
 }
 

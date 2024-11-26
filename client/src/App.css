@@ -1,42 +1,88 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #242424;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+h1 {
+	text-align: center;
+	color: rgba(255, 255, 255, 0.87);
+	margin-bottom: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container {
+	width: 90%;
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.cards-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 16px; /* Odstępy między kartami */
+	justify-content: center;
+	padding: 16px;
 }
 
 .card {
-  padding: 2em;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	min-height: 100%;
+	min-width: '250px';
 }
 
-.read-the-docs {
-  color: #888;
+.game-price {
+	font-weight: bold;
+	color: green;
+}
+
+.games-grid {
+	display: flex;
+	flex-wrap: wrap; /* Automatyczne zawijanie kolumn */
+	gap: 1rem; /* Odstępy między kartami */
+	justify-content: center; /* Wyśrodkowanie siatki */
+}
+
+.game-card-wrapper {
+	flex: 1 1 calc(20% - 1rem); /* 20% szerokości na dużych ekranach z marginesem */
+	max-width: calc(20% - 1rem);
+	min-width: 200px; /* Minimalna szerokość karty */
+	box-sizing: border-box; /* Wlicz marginesy w szerokość */
+}
+
+@media (max-width: 1200px) {
+	.game-card-wrapper {
+		flex: 1 1 calc(25% - 1rem); /* 25% szerokości na średnich ekranach */
+		max-width: calc(25% - 1rem);
+	}
+}
+
+@media (max-width: 992px) {
+	.game-card-wrapper {
+		flex: 1 1 calc(33.33% - 1rem); /* 3 kolumny na tabletach */
+		max-width: calc(33.33% - 1rem);
+	}
+}
+
+@media (max-width: 768px) {
+	.game-card-wrapper {
+		flex: 1 1 calc(50% - 1rem); /* 2 kolumny na wąskich ekranach */
+		max-width: calc(50% - 1rem);
+	}
+}
+
+@media (max-width: 576px) {
+	.game-card-wrapper {
+		flex: 1 1 calc(100% - 1rem); /* 1 kolumna na bardzo małych ekranach */
+		max-width: calc(100% - 1rem);
+	}
 }
