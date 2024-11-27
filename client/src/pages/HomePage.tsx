@@ -3,6 +3,7 @@ import { fetchGames } from '../services/api'
 import { Game } from '../contracts/Game'
 import GameCard from '../components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
+import './HomePage.css'
 
 const HomePage: React.FC = () => {
 	const [games, setGames] = useState<Game[]>([])
@@ -24,6 +25,10 @@ const HomePage: React.FC = () => {
 		loadGames()
 	}, [])
 
+	function handleOnGameClick(gameId: string) {
+		console.log('Game clicked:', gameId)
+	}
+
 	if (loading) {
 		return (
 			<Container className='d-flex justify-content-center align-items-center vh-100'>
@@ -41,13 +46,16 @@ const HomePage: React.FC = () => {
 	}
 
 	return (
-		<Container>
-			<div className='d-flex justify-content-between align-content-around flex-wrap'>
-				{games.map(game => (
-					<GameCard game={game} />
-				))}
-			</div>
-		</Container>
+		<>
+			<div className='bcg-image' />
+			<Container className='content-container'>
+				<div className='d-flex justify-content-between align-content-around flex-wrap'>
+					{games.map(game => (
+						<GameCard key={game.id} game={game} onGameClick={handleOnGameClick} />
+					))}
+				</div>
+			</Container>
+		</>
 	)
 }
 

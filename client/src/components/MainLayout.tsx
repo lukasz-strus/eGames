@@ -27,10 +27,10 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 	return (
 		<>
-			<Navbar expand='lg' className='mb-6 fs-3'>
+			<Navbar expand='lg' className='fs-3 bg-dark sticky-top'>
 				<Container>
 					<Navbar.Brand href='/'>
-						<Image src={brandImg} alt='eGames' width='200' />
+						<Image src={brandImg} alt='eGames' width='90px' />
 					</Navbar.Brand>
 					<Navbar.Toggle aria-controls='basic-navbar-nav' />
 					<Navbar.Collapse id='basic-navbar-nav'>
