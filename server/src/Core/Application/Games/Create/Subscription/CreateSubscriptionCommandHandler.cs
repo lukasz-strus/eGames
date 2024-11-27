@@ -31,6 +31,7 @@ internal sealed class CreateSubscriptionCommandHandler(
             request.Game.Publisher,
             request.Game.DownloadLink,
             request.Game.FileSize,
+            request.Game.ImageUrl,
             request.Game.PeriodInDays);
 
         await gameRepository.AddAsync(game, cancellationToken);

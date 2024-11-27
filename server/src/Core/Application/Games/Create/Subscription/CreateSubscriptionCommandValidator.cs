@@ -49,5 +49,8 @@ internal sealed class CreateSubscriptionCommandValidator : AbstractValidator<Cre
 
         RuleFor(x => x.Game.PeriodInDays)
             .NotEmpty();
+
+        RuleFor(x => x.Game.ImageUrl)
+            .NotEmpty();
     }
 }

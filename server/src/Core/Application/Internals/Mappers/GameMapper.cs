@@ -15,7 +15,8 @@ internal static class GameMapper
             game.ReleaseDate,
             game.Publisher,
             game.DownloadLink,
-            game.FileSize);
+            game.FileSize,
+            game.ImageUrl);
 
     internal static FullGameResponse ToResponse(this FullGame game) =>
         new(game.Id.Value,
@@ -27,6 +28,7 @@ internal static class GameMapper
             game.Publisher,
             game.DownloadLink,
             game.FileSize,
+            game.ImageUrl,
             game.DlcGames.Select(x => x.ToResponse()));
 
     internal static DlcGameResponse ToResponse(this DlcGame game) =>
@@ -39,6 +41,7 @@ internal static class GameMapper
             game.Publisher,
             game.DownloadLink,
             game.FileSize,
+            game.ImageUrl,
             game.FullGameId.Value);
 
     internal static SubscriptionResponse ToResponse(this Subscription game) =>
@@ -51,5 +54,6 @@ internal static class GameMapper
             game.Publisher,
             game.DownloadLink,
             game.FileSize,
+            game.ImageUrl,
             game.PeriodInDays);
 }

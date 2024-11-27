@@ -35,7 +35,8 @@ internal sealed class UpdateDlcGameCommandHandler(
             request.Game.ReleaseDate,
             request.Game.Publisher,
             request.Game.DownloadLink,
-            request.Game.FileSize);
+            request.Game.FileSize,
+            request.Game.ImageUrl);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -18,7 +18,8 @@ public sealed class Subscription : Game
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize)
+        ulong fileSize,
+        string imageUrl) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize, imageUrl)
     {
     }
 
@@ -33,6 +34,7 @@ public sealed class Subscription : Game
         string publisher,
         string downloadLink,
         ulong fileSize,
+        string imageUrl,
         uint periodInDays)
     {
         var game = new Subscription(
@@ -42,7 +44,8 @@ public sealed class Subscription : Game
             releaseDate,
             publisher,
             downloadLink,
-            fileSize)
+            fileSize,
+            imageUrl)
         {
             PeriodInDays = periodInDays
         };
@@ -57,9 +60,10 @@ public sealed class Subscription : Game
         string publisher,
         string downloadLink,
         ulong fileSize,
+        string imageUrl,
         uint periodInDays)
     {
         PeriodInDays = periodInDays;
-        Update(description, price, releaseDate, publisher, downloadLink, fileSize);
+        Update(description, price, releaseDate, publisher, downloadLink, fileSize, imageUrl);
     }
 }

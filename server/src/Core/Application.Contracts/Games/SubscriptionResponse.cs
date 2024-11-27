@@ -10,6 +10,7 @@ public sealed class SubscriptionResponse(
     string publisher,
     string downloadLink,
     ulong fileSize,
+    string imageUrl,
     uint subscriptionPeriodInDays)
     : GameResponse(
         id,
@@ -21,7 +22,8 @@ public sealed class SubscriptionResponse(
         releaseDate,
         publisher,
         downloadLink,
-        fileSize)
+        fileSize,
+        imageUrl)
 {
     public uint SubscriptionPeriodInDays { get; } = subscriptionPeriodInDays;
 }

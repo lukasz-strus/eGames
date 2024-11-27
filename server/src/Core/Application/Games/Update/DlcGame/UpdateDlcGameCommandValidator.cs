@@ -35,5 +35,8 @@ internal sealed class UpdateDlcGameCommandValidator : AbstractValidator<UpdateDl
 
         RuleFor(x => x.Game.FileSize)
             .NotEmpty();
+
+        RuleFor(x => x.Game.ImageUrl)
+            .NotEmpty();
     }
 }

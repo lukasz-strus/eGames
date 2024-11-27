@@ -36,6 +36,7 @@ internal sealed class UpdateSubscriptionCommandHandler(
             request.Game.Publisher,
             request.Game.DownloadLink,
             request.Game.FileSize,
+            request.Game.ImageUrl,
             request.Game.PeriodInDays);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

@@ -18,7 +18,8 @@ public sealed class DlcGame : Game
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize)
+        ulong fileSize,
+        string imageUrl) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize, imageUrl)
     {
     }
 
@@ -33,6 +34,7 @@ public sealed class DlcGame : Game
         string publisher,
         string downloadLink,
         ulong fileSize,
+        string imageUrl,
         GameId fullGameId)
     {
         var game = new DlcGame(
@@ -42,7 +44,8 @@ public sealed class DlcGame : Game
             releaseDate,
             publisher,
             downloadLink,
-            fileSize)
+            fileSize,
+            imageUrl)
         {
             FullGameId = fullGameId
         };

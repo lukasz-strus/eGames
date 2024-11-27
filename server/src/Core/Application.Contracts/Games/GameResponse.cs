@@ -10,7 +10,8 @@ public class GameResponse(
     DateTime releaseDate,
     string publisher,
     string downloadLink,
-    ulong fileSize)
+    ulong fileSize,
+    string imageUrl)
 {
     public Guid Id { get; } = id;
     public string Type { get; } = type;
@@ -22,4 +23,5 @@ public class GameResponse(
     public string Publisher { get; } = publisher;
     public string DownloadLink { get; } = downloadLink;
     public ulong FileSize { get; } = fileSize;
+    public string ImageUrl { get; } = imageUrl;
 }

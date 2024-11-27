@@ -46,5 +46,8 @@ internal sealed class CreateFullGameCommandValidator : AbstractValidator<CreateF
 
         RuleFor(x => x.Game.FileSize)
             .NotEmpty();
+
+        RuleFor(x => x.Game.ImageUrl)
+            .NotEmpty();
     }
 }

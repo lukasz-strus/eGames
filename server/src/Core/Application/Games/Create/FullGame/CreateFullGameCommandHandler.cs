@@ -30,6 +30,7 @@ internal sealed class CreateFullGameCommandHandler(
             request.Game.Publisher,
             request.Game.DownloadLink,
             request.Game.FileSize,
+            request.Game.ImageUrl,
             []);
 
         await gameRepository.AddAsync(game, cancellationToken);

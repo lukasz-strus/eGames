@@ -10,6 +10,7 @@ public sealed class DlcGameResponse(
     string publisher,
     string downloadLink,
     ulong fileSize,
+    string imageUrl,
     Guid baseGameId)
     : GameResponse(
         id,
@@ -21,7 +22,8 @@ public sealed class DlcGameResponse(
         releaseDate,
         publisher,
         downloadLink,
-        fileSize)
+        fileSize,
+        imageUrl)
 {
     public Guid BaseGameId { get; } = baseGameId;
 }

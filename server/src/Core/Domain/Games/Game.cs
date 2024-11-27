@@ -17,6 +17,7 @@ public abstract class Game : Entity<GameId>
         Publisher = string.Empty;
         DownloadLink = string.Empty;
         FileSize = 0;
+        ImageUrl = string.Empty;
     }
 
     private protected Game(
@@ -26,7 +27,8 @@ public abstract class Game : Entity<GameId>
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize)
+        ulong fileSize,
+        string imageUrl)
     {
         Id = new GameId(Guid.NewGuid());
         Name = name;
@@ -36,6 +38,7 @@ public abstract class Game : Entity<GameId>
         Publisher = publisher;
         DownloadLink = downloadLink;
         FileSize = fileSize;
+        ImageUrl = imageUrl;
 
         IsDeleted = false;
         IsPublished = false;
@@ -59,13 +62,16 @@ public abstract class Game : Entity<GameId>
 
     [Required] public bool IsPublished { get; private set; }
 
+    [Required] public string ImageUrl { get; private set; }
+
     public void Update(
         string description,
         Money price,
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize)
+        ulong fileSize,
+        string imageUrl)
     {
         Description = description;
         Price = price;
@@ -73,6 +79,7 @@ public abstract class Game : Entity<GameId>
         Publisher = publisher;
         DownloadLink = downloadLink;
         FileSize = fileSize;
+        ImageUrl = imageUrl;
     }
 
     public virtual void Delete()

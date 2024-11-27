@@ -196,6 +196,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             "Blizzard Entertainment",
             "https://eGames.com/7b3b0f63-bb5e-4df7-afe3-667785e63511",
             5000000000,
+            "https://www.gry-online.pl/galeria/gry13/177379296.jpg",
             30);
 
         subscription.Publish();
@@ -217,6 +218,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             "Paradox Interactive",
             "https://eGames.com/7b3b0f63-bb5e-4df7-afe3-667785e63511",
             2000000000,
+            "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcT6EMcNqVRehicYLHSol7bbCV5E6WVf0oek1nuaKoslMVxGEA8ThPBofCOkzIu3wxszdoWj2wOENf_uS4BsqO_dYkQ-D6SfU41CyRET84KF",
             fullGameId);
 
         dlcGame1.Publish();
@@ -224,14 +226,15 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
         await dbContext.DlcGames.AddAsync(dlcGame1);
 
         var dlcGame2 = DlcGame.Create(
-            "Crusader Kings III: Northern Lords",
-            "Northern Lords is the first Flavor Pack for Crusader Kings III. It offers new events and cultural themes related to Norse society.",
+            "Crusader Kings III: Tours & Tournaments",
+            "The Tours & Tournaments expansion for Crusader Kings III opens up new ways for you to experience the medieval grand strategy game. With new systems for grand tours and the jousting lists, you can now live out your knightly fantasies in the game.",
             39.99m,
             Currency.Pln,
             new DateTime(2021, 3, 16),
             "Paradox Interactive",
             "https://eGames.com/7b3b0f63-bb5e-4df7-afe3-667785e63511",
             1000000000,
+            "https://image.api.playstation.com/vulcan/ap/rnd/202410/2815/b9f49a377646b37d7c17610a0c1246e60572536bce9fc406.png",
             fullGameId);
 
         dlcGame2.Publish();
@@ -254,6 +257,7 @@ public class ApplicationSeeder(ApplicationDbContext dbContext, IServiceProvider 
             "Paradox Interactive",
             "https://eGames.com/b52c0f63-bb5e-4df7-afe3-667785e63511",
             8000000000,
+            "https://image.api.playstation.com/vulcan/ap/rnd/202108/1607/czGau6hOvx9iQYOOkACdxqDl.png",
             []);
 
         fullGame.Publish();

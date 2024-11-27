@@ -9,6 +9,7 @@ public sealed class CreateSubscriptionRequest(
     string publisher,
     string downloadLink,
     ulong fileSize,
+    string imageUrl,
     uint periodInDays)
 {
     public string Name { get; set; } = name;
@@ -19,5 +20,6 @@ public sealed class CreateSubscriptionRequest(
     public string Publisher { get; set; } = publisher;
     public string DownloadLink { get; set; } = downloadLink;
     public ulong FileSize { get; set; } = fileSize;
+    public string ImageUrl { get; set; } = imageUrl;
     public uint PeriodInDays { get; set; } = periodInDays;
 }

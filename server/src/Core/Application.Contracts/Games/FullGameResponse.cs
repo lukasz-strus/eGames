@@ -10,6 +10,7 @@ public sealed class FullGameResponse(
     string publisher,
     string downloadLink,
     ulong fileSize,
+    string imageUrl,
     IEnumerable<DlcGameResponse> dlcGame)
     : GameResponse(
         id,
@@ -21,7 +22,8 @@ public sealed class FullGameResponse(
         releaseDate,
         publisher,
         downloadLink,
-        fileSize)
+        fileSize,
+        imageUrl)
 {
     public IEnumerable<DlcGameResponse> DlcGames { get; } = dlcGame;
 }

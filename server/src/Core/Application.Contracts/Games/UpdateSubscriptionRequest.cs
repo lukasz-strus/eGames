@@ -8,6 +8,7 @@ public sealed class UpdateSubscriptionRequest(
     string publisher,
     string downloadLink,
     ulong fileSize,
+    string imageUrl,
     uint periodInDays)
 {
     public string Description { get; set; } = description;
@@ -17,5 +18,6 @@ public sealed class UpdateSubscriptionRequest(
     public string Publisher { get; set; } = publisher;
     public string DownloadLink { get; set; } = downloadLink;
     public ulong FileSize { get; set; } = fileSize;
+    public string ImageUrl { get; set; } = imageUrl;
     public uint PeriodInDays { get; set; } = periodInDays;
 }

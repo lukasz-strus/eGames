@@ -1,8 +1,10 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import MainLayout from './components/MainLayout'
 import HomePage from './pages/HomePage'
+import LibraryPage from './pages/LibraryPage'
 
-import './App.css'
+//import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 const App: React.FC = () => {
@@ -10,9 +12,12 @@ const App: React.FC = () => {
 	htmlElement?.setAttribute('data-bs-theme', 'dark') // TODDO: to toggle functionality
 	return (
 		<Router>
-			<Routes>
-				<Route path='/' element={<HomePage />} />
-			</Routes>
+			<MainLayout>
+				<Routes>
+					<Route path='/' element={<HomePage />} />
+					<Route path='/library' element={<LibraryPage />} />
+				</Routes>
+			</MainLayout>
 		</Router>
 	)
 }

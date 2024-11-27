@@ -36,6 +36,9 @@ internal sealed class UpdateSubscriptionCommandValidator : AbstractValidator<Upd
         RuleFor(x => x.Game.FileSize)
             .NotEmpty();
 
+        RuleFor(x => x.Game.ImageUrl)
+            .NotEmpty();
+
         RuleFor(x => x.Game.PeriodInDays)
             .NotEmpty();
     }

@@ -9,4 +9,5 @@ export interface Game {
 	publisher: string
 	downloadLink: string
 	fileSize: number
+	imageUrl: string
 }

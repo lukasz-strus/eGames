@@ -19,7 +19,8 @@ public sealed class FullGame : Game
         DateTime releaseDate,
         string publisher,
         string downloadLink,
-        ulong fileSize) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize)
+        ulong fileSize,
+        string imageUrl) : base(name, description, price, releaseDate, publisher, downloadLink, fileSize, imageUrl)
     {
     }
 
@@ -34,6 +35,7 @@ public sealed class FullGame : Game
         string publisher,
         string downloadLink,
         ulong fileSize,
+        string imageUrl,
         IEnumerable<DlcGame> dlcGames)
     {
         var game = new FullGame(
@@ -43,7 +45,8 @@ public sealed class FullGame : Game
             releaseDate,
             publisher,
             downloadLink,
-            fileSize);
+            fileSize,
+            imageUrl);
 
         game.InitializeDlcGames(dlcGames);
 

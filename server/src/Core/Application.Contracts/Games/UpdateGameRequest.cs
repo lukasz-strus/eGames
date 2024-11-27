@@ -7,7 +7,8 @@ public sealed class UpdateGameRequest(
     DateTime releaseDate,
     string publisher,
     string downloadLink,
-    ulong fileSize)
+    ulong fileSize,
+    string imageUrl)
 {
     public string Description { get; set; } = description;
     public decimal Price { get; set; } = price;
@@ -16,4 +17,5 @@ public sealed class UpdateGameRequest(
     public string Publisher { get; set; } = publisher;
     public string DownloadLink { get; set; } = downloadLink;
     public ulong FileSize { get; set; } = fileSize;
+    public string ImageUrl { get; set; } = imageUrl;
 }

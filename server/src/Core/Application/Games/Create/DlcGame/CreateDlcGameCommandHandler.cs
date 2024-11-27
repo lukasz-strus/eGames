@@ -31,6 +31,7 @@ internal sealed class CreateDlcGameCommandHandler(
             request.Game.Publisher,
             request.Game.DownloadLink,
             request.Game.FileSize,
+            request.Game.ImageUrl,
             new GameId(request.FullGameId));
 
         await gameRepository.AddAsync(game, cancellationToken);

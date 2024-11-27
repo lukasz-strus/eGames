@@ -42,12 +42,9 @@ const HomePage: React.FC = () => {
 
 	return (
 		<Container>
-			<h1 className='text-center my-4'>eGames Store</h1>
-			<div className='cards-container'>
+			<div className='d-flex justify-content-between align-content-around flex-wrap'>
 				{games.map(game => (
-					<div key={game.id} className='game-card-wrapper'>
-						<GameCard game={game} />
-					</div>
+					<GameCard game={game} />
 				))}
 			</div>
 		</Container>
