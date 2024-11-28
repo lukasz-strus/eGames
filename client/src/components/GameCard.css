@@ -1,6 +1,7 @@
 .game-card {
 	width: 18em;
 	transition: transform 0.3s ease, box-sahdow 0.3s ease;
+	cursor: pointer;
 }
 
 .game-card:hover {
@@ -8,7 +9,7 @@
 	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }
 
-.game-img {
+.game-card-img {
 	height: 300px;
 	position: relative;
 	overflow: hidden;

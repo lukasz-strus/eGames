@@ -4,11 +4,13 @@ import { Game } from '../contracts/Game'
 import GameCard from '../components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
 import './HomePage.css'
+import { useNavigate } from 'react-router-dom'
 
 const HomePage: React.FC = () => {
 	const [games, setGames] = useState<Game[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		const loadGames = async () => {
@@ -25,8 +27,8 @@ const HomePage: React.FC = () => {
 		loadGames()
 	}, [])
 
-	function handleOnGameClick(gameId: string) {
-		console.log('Game clicked:', gameId)
+	function handleOnGameClick(gameId: string, gameType: string) {
+		navigate(`/game/${gameType}/${gameId}`)
 	}
 
 	if (loading) {

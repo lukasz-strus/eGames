@@ -6,6 +6,7 @@ import LibraryPage from './pages/LibraryPage'
 
 //import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import GamePage from './pages/GamePage'
 
 const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
@@ -16,6 +17,7 @@ const App: React.FC = () => {
 				<Routes>
 					<Route path='/' element={<HomePage />} />
 					<Route path='/library' element={<LibraryPage />} />
+					<Route path='/game/:gameType/:gameId' element={<GamePage />} />
 				</Routes>
 			</MainLayout>
 		</Router>

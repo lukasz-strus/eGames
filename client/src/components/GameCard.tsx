@@ -5,19 +5,19 @@ import './GameCard.css'
 
 interface GameCardProps {
 	game: Game
-	onGameClick: (gameId: string) => void
+	onGameClick: (gameId: string, gameType: string) => void
 }
 
 const GameCard: React.FC<GameCardProps> = ({ game, onGameClick }) => {
 	const handleGameClick = (event: FormEvent) => {
 		event.preventDefault()
 
-		onGameClick(game.id)
+		onGameClick(game.id, game.type)
 	}
 
 	return (
 		<Card className='game-card my-4' onClick={handleGameClick}>
-			<Card.Img src={game.imageUrl} alt={game.name} className='game-img' />
+			<Card.Img src={game.imageUrl} alt={game.name} className='game-card-img' />
 			<Card.Body>
 				<Card.Text className='fs-5 fw-bold'>
 					{game.amount} {game.currency}
