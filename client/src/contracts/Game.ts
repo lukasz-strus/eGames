@@ -11,3 +11,15 @@ export interface Game {
 	fileSize: number
 	imageUrl: string
 }
+
+export interface FullGame extends Game {
+	dlcGames: DlcGame[]
+}
+
+export interface DlcGame extends Game {
+	baseGameId: string
+}
+
+export interface Subscription extends Game {
+	subscriptionPeriodInDays: number
+}

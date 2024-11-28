@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { type Game } from '../contracts/Game'
+import { type DlcGame, type Subscription, type FullGame, type Game } from '../contracts/Game'
 
 const API = axios.create({
 	baseURL: 'https://localhost:7164/api',
@@ -18,7 +18,17 @@ export const fetchGameById = async (gameId: string, gameType: string): Promise<G
 	else if (gameType === 'Subscription') gameTypeUrl = 'subscriptions/'
 
 	const { data } = await API.get(`/games/${gameTypeUrl}${gameId}`)
-	return data
+
+	switch (gameType) {
+		case 'FullGame':
+			return data as FullGame
+		case 'DlcGame':
+			return data as DlcGame
+		case 'Subscription':
+			return data as Subscription
+		default:
+			return data
+	}
 }
 
 export default API

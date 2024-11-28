@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Game } from '../contracts/Game'
+import { type FullGame, type Game } from '../contracts/Game'
 import { fetchGameById } from '../services/api'
-import { Container, Spinner, Alert, Card, Button } from 'react-bootstrap'
+import { Container, Spinner, Alert } from 'react-bootstrap'
 import './GamePage.css'
+import GameInfo from '../components/GameInfo'
+import GamePrice from '../components/GamePrice'
+import GameImage from '../components/GameImage'
+import FullGameDlcs from '../components/FullGameDlcs'
 
 const GamePage: React.FC = () => {
 	const { gameId, gameType } = useParams<{ gameId: string; gameType: string }>()
@@ -30,15 +34,6 @@ const GamePage: React.FC = () => {
 		loadGame()
 	}, [gameId])
 
-	function dateToLocaleString(date: string): string {
-		return new Date(date).toLocaleDateString()
-	}
-
-	function toGb(bytes: number): number {
-		const gb = bytes / 1024 / 1024 / 1024
-		return Math.round((gb + Number.EPSILON) * 100) / 100
-	}
-
 	if (loading)
 		return (
 			<Container className='d-flex justify-content-center align-items-center vh-100'>
@@ -59,50 +54,21 @@ const GamePage: React.FC = () => {
 		<>
 			<div className='bcg-image' />
 			<Container className='my-5 game-container'>
-				<Card className='game-img-card'>
-					<Card.Img variant='top' src={game.imageUrl} alt={game.name} className='game-img' />
-				</Card>
-
+				<GameImage src={game.imageUrl} alt={game.name} />
 				<div className='game-info'>
-					<Card className='game-detail'>
-						<Card.Body className='game-detail-description'>
-							<Card.Title className='fs-3'>
-								<p>
-									<strong>{game.name}</strong>
-								</p>
-							</Card.Title>
-							<Card.Text className='fs-5'>
-								<p>{game.type}</p>
-							</Card.Text>
-							<Card.Text className='fs-5'>
-								<p>{game.description}</p>
-							</Card.Text>
-							<Card.Footer className='fs-6 game-detail-footer'>
-								<p>
-									<strong>Release date:</strong> {dateToLocaleString(game.releaseDate)}
-								</p>
-								<p>
-									<strong>Publisher:</strong> {game.publisher}
-								</p>
-								<p>
-									<strong>Size:</strong> {toGb(game.fileSize)} GB
-								</p>
-							</Card.Footer>
-						</Card.Body>
-					</Card>
-
-					<Card className='game-detail'>
-						<Card.Body className='game-detail-price'>
-							<Card.Text className='fs-4 fw-bold'>
-								{game.amount} {game.currency}
-							</Card.Text>
-							<Button variant='success' className='game-detail-button'>
-								Add to order
-							</Button>
-						</Card.Body>
-					</Card>
+					<GameInfo game={game} />
+					<GamePrice amount={game.amount} currency={game.currency} />
 				</div>
 			</Container>
+
+			{game.type === 'Full game' && (
+				<Container className='content-container'>
+					<h1 className='fs-2'>DLC:</h1>
+					<div className='d-flex gap-3  align-content-around flex-wrap'>
+						<FullGameDlcs game={game as FullGame} />
+					</div>
+				</Container>
+			)}
 		</>
 	)
 }
