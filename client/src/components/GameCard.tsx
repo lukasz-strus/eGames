@@ -1,7 +1,6 @@
 import React, { FormEvent } from 'react'
 import { Card } from 'react-bootstrap'
 import { Game } from '../contracts/Game'
-import './GameCard.css'
 
 interface GameCardProps {
 	game: Game | null

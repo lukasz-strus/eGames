@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import MainLayout from './components/MainLayout'
 import HomePage from './pages/HomePage'
 import LibraryPage from './pages/LibraryPage'
-
-//import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GamePage from './pages/GamePage'
 

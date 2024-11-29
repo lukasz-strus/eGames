@@ -1,0 +1,86 @@
+.bcg-image {
+	background-image: url('./assets/store-background.jpg');
+	position: fixed; /* Tło jest stałe i nie przewija się z zawartością */
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-position: center;
+	background-repeat: repeat;
+	z-index: -1;
+}
+
+.content-container {
+	position: relative;
+	z-index: 1;
+	padding-top: 2rem;
+}
+
+.game-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.game-img-card {
+	width: 100%;
+}
+
+.game-info {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+}
+
+.game-detail-description {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.game-detail-footer {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 0px;
+}
+
+.game-detail-price {
+	display: flex;
+	justify-content: space-between;
+}
+
+.game-card {
+	width: 18em;
+	transition: transform 0.3s ease, box-sahdow 0.3s ease;
+	cursor: pointer;
+}
+
+.game-card:hover {
+	transform: scale(1.1);
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.game-card-img {
+	height: 300px;
+	position: relative;
+	overflow: hidden;
+	object-fit: cover;
+}
+
+@media (min-width: 992px) {
+	.game-container {
+		flex-direction: row;
+		gap: 30px;
+		align-items: flex-start;
+	}
+
+	.game-img-card {
+		width: 50%;
+	}
+
+	.game-info {
+		width: 50%;
+	}
+}

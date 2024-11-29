@@ -3,7 +3,6 @@ import { fetchGames } from '../services/api'
 import { Game } from '../contracts/Game'
 import GameCard from '../components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
-import './HomePage.css'
 import { useNavigate } from 'react-router-dom'
 
 const HomePage: React.FC = () => {
