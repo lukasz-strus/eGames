@@ -1,10 +1,10 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import MainLayout from './components/MainLayout'
-import HomePage from './pages/HomePage'
-import LibraryPage from './pages/LibraryPage'
+import MainLayout from './app/layouts/MainLayout'
+import StorePage from './app/features/store/StorePage'
+import LibraryPage from './app/features/library/LibraryPage'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import GamePage from './pages/GamePage'
+import GamePage from './app/features/store/GamePage'
 
 const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
@@ -13,7 +13,7 @@ const App: React.FC = () => {
 		<Router>
 			<MainLayout>
 				<Routes>
-					<Route path='/' element={<HomePage />} />
+					<Route path='/' element={<StorePage />} />
 					<Route path='/library' element={<LibraryPage />} />
 					<Route path='/game/:gameType/:gameId' element={<GamePage />} />
 				</Routes>

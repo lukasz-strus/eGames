@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { FullGame } from '../contracts/Game'
+import { FullGame } from '../../../core/contracts/Game'
 import GameCard from './GameCard'
 
 interface FullGameDlcsProps {

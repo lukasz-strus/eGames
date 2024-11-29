@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { DlcGame, type FullGame, type Game } from '../contracts/Game'
-import { fetchGameById } from '../services/api'
+import { DlcGame, type FullGame, type Game } from '../../core/contracts/Game'
+import { fetchGameById } from '../../core/services/api'
 import { Container, Spinner, Alert } from 'react-bootstrap'
-import GameInfo from '../components/GameInfo'
-import GamePrice from '../components/GamePrice'
-import GameImage from '../components/GameImage'
-import FullGameDlcs from '../components/FullGameDlcs'
-import GameCard from '../components/GameCard'
+import GameInfo from './components/GameInfo'
+import GamePrice from './components/GamePrice'
+import GameImage from './components/GameImage'
+import FullGameDlcs from './components/FullGameDlcs'
+import GameCard from './components/GameCard'
 
 const GamePage: React.FC = () => {
 	const { gameId, gameType } = useParams<{ gameId: string; gameType: string }>()

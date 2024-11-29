@@ -1,4 +1,4 @@
-import { FullGame } from '../contracts/Game'
+import { FullGame } from '../../../core/contracts/Game'
 
 interface FullGameInfoProps {
 	game: FullGame

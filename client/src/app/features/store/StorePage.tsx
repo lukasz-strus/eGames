@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { fetchGames } from '../services/api'
-import { Game } from '../contracts/Game'
-import GameCard from '../components/GameCard'
+import { fetchGames } from '../../core/services/api'
+import { Game } from '../../core/contracts/Game'
+import GameCard from './components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
-const HomePage: React.FC = () => {
+const StorePage: React.FC = () => {
 	const [games, setGames] = useState<Game[]>([])
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
@@ -60,4 +60,4 @@ const HomePage: React.FC = () => {
 	)
 }
 
-export default HomePage
+export default StorePage
