@@ -4,7 +4,7 @@ import { Game } from '../contracts/Game'
 import './GameCard.css'
 
 interface GameCardProps {
-	game: Game
+	game: Game | null
 	onGameClick: (gameId: string, gameType: string) => void
 }
 
@@ -12,8 +12,12 @@ const GameCard: React.FC<GameCardProps> = ({ game, onGameClick }) => {
 	const handleGameClick = (event: FormEvent) => {
 		event.preventDefault()
 
+		if (!game) return
+
 		onGameClick(game.id, game.type)
 	}
+
+	if (!game) return null
 
 	return (
 		<Card className='game-card my-4' onClick={handleGameClick}>

@@ -61,7 +61,7 @@ const GamePage: React.FC = () => {
 				</div>
 			</Container>
 
-			{game.type === 'Full game' && (
+			{game.type === 'FullGame' && (
 				<Container className='content-container'>
 					<h1 className='fs-2'>DLC:</h1>
 					<div className='d-flex gap-3  align-content-around flex-wrap'>

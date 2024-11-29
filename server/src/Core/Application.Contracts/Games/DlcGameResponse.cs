@@ -14,7 +14,7 @@ public sealed class DlcGameResponse(
     Guid baseGameId)
     : GameResponse(
         id,
-        "DLC",
+        "DlcGame",
         name,
         description,
         currency,

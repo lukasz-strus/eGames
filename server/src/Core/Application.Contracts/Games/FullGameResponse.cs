@@ -14,7 +14,7 @@ public sealed class FullGameResponse(
     IEnumerable<DlcGameResponse> dlcGame)
     : GameResponse(
         id,
-        "Full game",
+        "FullGame",
         name,
         description,
         currency,

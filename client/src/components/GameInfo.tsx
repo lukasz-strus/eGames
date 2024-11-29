@@ -1,8 +1,7 @@
 import { Card } from 'react-bootstrap'
-import { Game, type DlcGame, type FullGame, type Subscription } from '../contracts/Game'
+import { type Game, type FullGame, type Subscription } from '../contracts/Game'
 import FullGameInfo from './FullGameInfo'
 import SubscriptionInfo from './SubscriptionInfo'
-import DlcInfo from './DLCInfo'
 
 interface GameInfoProps {
 	game: Game
@@ -37,7 +36,6 @@ const GameInfo: React.FC<GameInfoProps> = ({ game }) => {
 						<strong>Size:</strong> {toGb(game.fileSize)} GB
 					</div>
 					{game.type === 'Full game' && <FullGameInfo game={game as FullGame} />}
-					{game.type === 'DLC' && <DlcInfo game={game as DlcGame} />}
 					{game.type === 'Subscription' && <SubscriptionInfo game={game as Subscription} />}
 				</Card.Footer>
 			</Card.Body>
