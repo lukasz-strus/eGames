@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { fetchGames } from '../../../../core/services/api'
 import { Game } from '../../../../core/contracts/Game'
 import GameCard from '../components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
+import { GameService } from '../../services/GameService'
+
+const gameService = GameService.getInstance()
 
 const StorePage: React.FC = () => {
 	const [games, setGames] = useState<Game[]>([])
@@ -14,7 +16,7 @@ const StorePage: React.FC = () => {
 	useEffect(() => {
 		const loadGames = async () => {
 			try {
-				const data = await fetchGames()
+				const data = await gameService.fetchGames()
 				setGames(data)
 			} catch (err) {
 				setError('Failed to load games.')

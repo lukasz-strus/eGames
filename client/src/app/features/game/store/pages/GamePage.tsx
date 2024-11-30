@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { DlcGame, type FullGame, type Game } from '../../../../core/contracts/Game'
-import { fetchGameById } from '../../../../core/services/api'
 import { Container, Spinner, Alert } from 'react-bootstrap'
 import GameInfo from '../components/GameInfo'
 import GamePrice from '../components/GamePrice'
 import GameImage from '../components/GameImage'
 import FullGameDlcs from '../components/FullGameDlcs'
 import GameCard from '../components/GameCard'
+import { GameService } from '../../services/GameService'
+
+const gameService = GameService.getInstance()
 
 const GamePage: React.FC = () => {
 	const { gameId, gameType } = useParams<{ gameId: string; gameType: string }>()
@@ -21,11 +23,13 @@ const GamePage: React.FC = () => {
 		const loadGame = async () => {
 			try {
 				if (gameId && gameType) {
-					const data = await fetchGameById(gameId, gameType)
+					const data = await gameService.fetchGameById(gameId, gameType)
+
 					setGame(data)
 
 					if (data.type === 'DlcGame') {
-						const baseGame = await fetchGameById((data as DlcGame).baseGameId, 'FullGame')
+						const baseGame = await gameService.fetchGameById((data as DlcGame).baseGameId, 'FullGame')
+
 						setBaseGame(baseGame as FullGame)
 					}
 				} else {

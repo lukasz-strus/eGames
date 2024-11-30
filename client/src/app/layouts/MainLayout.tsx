@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react'
 import { Container, Navbar } from 'react-bootstrap'
 import { useState } from 'react'
-import { getEmail, loginUser } from '../core/services/api'
-import LoginModal from '../features/auth/components/LoginModal'
-import Brand from './components/Brand'
-import NavigationLinks from './components/NavigationLinks'
-import UserMenu from './components/UserMenu'
+import LoginModal from '../features/auth/components/LoginModal.tsx'
+import Brand from './components/Brand.tsx'
+import NavigationLinks from './components/NavigationLinks.tsx'
+import UserMenu from './components/UserMenu.tsx'
+import { AuthService } from '../features/auth/services/AuthService.ts'
+
+const authService = AuthService.getInstance()
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
@@ -14,7 +16,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 	useEffect(() => {
 		const fetchProfile = async (token: string) => {
-			const email = await getEmail(token)
+			const email = await authService.getEmail(token)
 			return email
 		}
 
@@ -34,7 +36,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 	const handleLogin = async (email: string, password: string) => {
 		try {
-			const token = await loginUser(email, password)
+			const token = await authService.loginUser(email, password)
 			localStorage.setItem('authToken', token)
 
 			setIsLoggedIn(true)
