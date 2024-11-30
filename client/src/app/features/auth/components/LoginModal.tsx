@@ -44,10 +44,19 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 
 		try {
 			await onLogin(email, password)
-			onClose()
+			handleClose()
 		} catch {
 			setError('Login failed. Please check your credentials.')
 		}
+	}
+
+	const handleClose = () => {
+		setEmail('')
+		setPassword('')
+		setError(null)
+		setEmailError(null)
+		setPasswordError(null)
+		onClose()
 	}
 
 	const handleKeyDown = (event: KeyboardEvent) => {
@@ -56,7 +65,7 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 			handleLogin()
 		} else if (event.key === 'Escape') {
 			event.preventDefault()
-			onClose()
+			handleClose()
 		}
 	}
 
@@ -73,7 +82,7 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 	}, [show])
 
 	return (
-		<Modal show={show} onHide={onClose}>
+		<Modal show={show} onHide={handleClose}>
 			<Modal.Header closeButton>
 				<Modal.Title>Login</Modal.Title>
 			</Modal.Header>
@@ -105,7 +114,7 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button variant='secondary' onClick={onClose}>
+				<Button variant='secondary' onClick={handleClose}>
 					Close
 				</Button>
 				<Button variant='primary' onClick={handleLogin}>
