@@ -4,6 +4,7 @@ class ApiEndpoints {
 	static readonly AUTH = {
 		LOGIN: '/identity/login',
 		PROFILE: '/identity/manage/info',
+		REGISTER: '/identity/register',
 	}
 
 	static readonly GAMES = {

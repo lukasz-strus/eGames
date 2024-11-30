@@ -6,13 +6,13 @@ import Brand from './components/Brand.tsx'
 import NavigationLinks from './components/NavigationLinks.tsx'
 import UserMenu from './components/UserMenu.tsx'
 import { AuthService } from '../features/auth/services/AuthService.ts'
+import { useAuth } from '../core/context/AuthContext.tsx'
 
 const authService = AuthService.getInstance()
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-	const [userName, setUserName] = useState<string | null>('Guest')
 	const [showLoginModal, setShowLoginModal] = useState(false)
+	const { setIsLoggedIn, setUserName } = useAuth()
 
 	useEffect(() => {
 		const fetchProfile = async (token: string) => {
@@ -21,6 +21,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 		}
 
 		const token = localStorage.getItem('authToken')
+
 		if (token) {
 			fetchProfile(token)
 				.then(result => {
@@ -34,24 +35,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 		}
 	}, [])
 
-	const handleLogin = async (email: string, password: string) => {
-		try {
-			const token = await authService.loginUser(email, password)
-			localStorage.setItem('authToken', token)
-
-			setIsLoggedIn(true)
-			setUserName(email)
-		} catch (error) {
-			throw new Error('Invalid credentials')
-		}
-	}
-
-	const handleLogout = () => {
-		localStorage.removeItem('authToken')
-		setIsLoggedIn(false)
-		setUserName(null)
-	}
-
 	return (
 		<>
 			<Navbar expand='lg' className='fs-4 bg-dark sticky-top'>
@@ -60,11 +43,11 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 					<Navbar.Toggle aria-controls='basic-navbar-nav' />
 					<Navbar.Collapse id='basic-navbar-nav'>
 						<NavigationLinks />
-						<UserMenu isLoggedIn={isLoggedIn} userName={userName} onLogin={handleLogin} onLogout={handleLogout} />
+						<UserMenu />
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>
-			<LoginModal show={showLoginModal} onClose={() => setShowLoginModal(false)} onLogin={handleLogin} />
+			{showLoginModal && <LoginModal show={showLoginModal} onClose={() => setShowLoginModal(false)} />}
 			<Container>{children}</Container>
 		</>
 	)

@@ -1,19 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, Form, Modal, Alert } from 'react-bootstrap'
 import FormField from '../../../core/components/FormField'
+import RegisterModal from './RegisterModal'
+import { useAuth } from '../../../core/context/AuthContext'
+import { AuthService } from '../services/AuthService'
+import SuccessModal from '../../../core/components/SuccessModal'
 
-interface LoginModelProps {
+const authService = AuthService.getInstance()
+
+interface LoginModalProps {
 	show: boolean
 	onClose: () => void
-	onLogin: (email: string, password: string) => Promise<void>
 }
 
-const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ show, onClose }) => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [error, setError] = useState<string | null>(null)
 	const [emailError, setEmailError] = useState<string | null>(null)
 	const [passwordError, setPasswordError] = useState<string | null>(null)
+	const [showRegisterModal, setShowRegisterModal] = useState(false)
+	const { setIsLoggedIn, setUserName } = useAuth()
+	const [showSuccessModal, setShowSuccessModal] = useState(false)
 
 	const validateEmail = (email: string): boolean => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -43,8 +51,13 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 		if (hasError) return
 
 		try {
-			await onLogin(email, password)
-			handleClose()
+			const token = await authService.loginUser(email, password)
+			localStorage.setItem('authToken', token)
+
+			setIsLoggedIn(true)
+			setUserName(email)
+
+			setShowSuccessModal(true)
 		} catch {
 			setError('Login failed. Please check your credentials.')
 		}
@@ -59,27 +72,10 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 		onClose()
 	}
 
-	const handleKeyDown = (event: KeyboardEvent) => {
-		if (event.key === 'Enter') {
-			event.preventDefault()
-			handleLogin()
-		} else if (event.key === 'Escape') {
-			event.preventDefault()
-			handleClose()
-		}
+	const handleSuccessClose = () => {
+		setShowSuccessModal(false)
+		handleClose()
 	}
-
-	useEffect(() => {
-		if (show) {
-			window.addEventListener('keydown', handleKeyDown)
-		} else {
-			window.removeEventListener('keydown', handleKeyDown)
-		}
-
-		return () => {
-			window.removeEventListener('keydown', handleKeyDown)
-		}
-	}, [show])
 
 	return (
 		<Modal show={show} onHide={handleClose}>
@@ -114,6 +110,12 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>
+				<p className='text-muted'>
+					Don't have an account?{' '}
+					<Button variant='link' onClick={() => setShowRegisterModal(true)}>
+						Sign up
+					</Button>
+				</p>
 				<Button variant='secondary' onClick={handleClose}>
 					Close
 				</Button>
@@ -121,6 +123,12 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 					Login
 				</Button>
 			</Modal.Footer>
+
+			{showRegisterModal && <RegisterModal show={showRegisterModal} onClose={() => setShowRegisterModal(false)} />}
+
+			{showSuccessModal && (
+				<SuccessModal show={showSuccessModal} onClose={handleSuccessClose} title='Login Successful' />
+			)}
 		</Modal>
 	)
 }

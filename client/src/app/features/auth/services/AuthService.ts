@@ -24,4 +24,8 @@ export class AuthService extends ApiService {
 		const { data } = await this.API.get(ApiEndpoints.AUTH.PROFILE, this.setAuthorizationHeader(token))
 		return data.email
 	}
+
+	async registerUser(userName: string, email: string, password: string): Promise<void> {
+		await this.API.post(ApiEndpoints.AUTH.REGISTER, { userName, email, password })
+	}
 }
