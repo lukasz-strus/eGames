@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Form, Modal, Alert } from 'react-bootstrap'
+import FormField from '../../../core/components/FormField'
 
 interface LoginModelProps {
 	show: boolean
@@ -83,28 +84,24 @@ const LoginModal: React.FC<LoginModelProps> = ({ show, onClose, onLogin }) => {
 					</Alert>
 				)}
 				<Form>
-					<Form.Group className='mb-3' controlId='formEmail'>
-						<Form.Label>Email</Form.Label>
-						<Form.Control
-							type='email'
-							placeholder='Enter email'
-							value={email}
-							onChange={e => setEmail(e.target.value)}
-							isInvalid={!!emailError}
-						/>
-						<Form.Control.Feedback type='invalid'>{emailError}</Form.Control.Feedback>
-					</Form.Group>
-					<Form.Group className='mb-3' controlId='formPassword'>
-						<Form.Label>Password</Form.Label>
-						<Form.Control
-							type='password'
-							placeholder='Enter password'
-							value={password}
-							onChange={e => setPassword(e.target.value)}
-							isInvalid={!!passwordError}
-						/>
-						<Form.Control.Feedback type='invalid'>{passwordError}</Form.Control.Feedback>
-					</Form.Group>
+					<FormField
+						label='Email'
+						type='email'
+						placeholder='Enter email'
+						value={email}
+						onChange={e => setEmail(e.target.value)}
+						isInvalid={!!emailError}
+						feedback={emailError}
+					/>
+					<FormField
+						label='Password'
+						type='password'
+						placeholder='Enter password'
+						value={password}
+						onChange={e => setPassword(e.target.value)}
+						isInvalid={!!passwordError}
+						feedback={passwordError}
+					/>
 				</Form>
 			</Modal.Body>
 			<Modal.Footer>

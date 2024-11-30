@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react'
 import { Card } from 'react-bootstrap'
-import { Game } from '../../../core/contracts/Game'
+import { Game } from '../../../../core/contracts/Game'
 
 interface GameCardProps {
 	game: Game | null

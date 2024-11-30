@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
-import { Container, Nav, Navbar, Button, NavDropdown, Image } from 'react-bootstrap'
+import { Container, Navbar } from 'react-bootstrap'
 import { useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import brandImg from '../../assets/egames-logo.png'
 import { getEmail, loginUser } from '../core/services/api'
 import LoginModal from '../features/auth/components/LoginModal'
+import Brand from './components/Brand'
+import NavigationLinks from './components/NavigationLinks'
+import UserMenu from './components/UserMenu'
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 	const [userName, setUserName] = useState<string | null>('Guest')
 	const [showLoginModal, setShowLoginModal] = useState(false)
-	const location = useLocation()
 
 	useEffect(() => {
 		const fetchProfile = async (token: string) => {
@@ -32,10 +32,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 		}
 	}, [])
 
-	const getNavLinkClass = (path: string): string => {
-		return location.pathname === path ? 'fw-bold' : ''
-	}
-
 	const handleLogin = async (email: string, password: string) => {
 		try {
 			const token = await loginUser(email, password)
@@ -56,33 +52,13 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 	return (
 		<>
-			<Navbar expand='lg' className='fs-3 bg-dark sticky-top'>
+			<Navbar expand='lg' className='fs-4 bg-dark sticky-top'>
 				<Container>
-					<Navbar.Brand href='/'>
-						<Image src={brandImg} alt='eGames' width='90px' />
-					</Navbar.Brand>
+					<Brand />
 					<Navbar.Toggle aria-controls='basic-navbar-nav' />
 					<Navbar.Collapse id='basic-navbar-nav'>
-						<Nav className='me-auto'>
-							<Nav.Link href='/' className={getNavLinkClass('/')}>
-								Store
-							</Nav.Link>
-							<Nav.Link href='/library' className={getNavLinkClass('/library')}>
-								Library
-							</Nav.Link>
-						</Nav>
-						<Nav>
-							{isLoggedIn ? (
-								<NavDropdown title={userName} id='user-dropdown'>
-									<NavDropdown.Item href='/profile'>Profile</NavDropdown.Item>
-									<NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-								</NavDropdown>
-							) : (
-								<Button variant='outline-light' onClick={() => setShowLoginModal(true)}>
-									Login
-								</Button>
-							)}
-						</Nav>
+						<NavigationLinks />
+						<UserMenu isLoggedIn={isLoggedIn} userName={userName} onLogin={handleLogin} onLogout={handleLogout} />
 					</Navbar.Collapse>
 				</Container>
 			</Navbar>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { fetchGames } from '../../../core/services/api'
-import { Game } from '../../../core/contracts/Game'
-import GameCard from './components/GameCard'
+import { fetchGames } from '../../../../core/services/api'
+import { Game } from '../../../../core/contracts/Game'
+import GameCard from '../components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 

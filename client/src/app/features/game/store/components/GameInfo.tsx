@@ -1,5 +1,5 @@
 import { Card } from 'react-bootstrap'
-import { type Game, type FullGame, type Subscription } from '../../../core/contracts/Game'
+import { type Game, type FullGame, type Subscription } from '../../../../core/contracts/Game'
 import FullGameInfo from './FullGameInfo'
 import SubscriptionInfo from './SubscriptionInfo'
 

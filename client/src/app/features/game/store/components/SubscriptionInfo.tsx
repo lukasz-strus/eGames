@@ -1,4 +1,4 @@
-import { Subscription } from '../../../core/contracts/Game'
+import { Subscription } from '../../../../core/contracts/Game'
 
 interface SubscriptionInfoProps {
 	game: Subscription
