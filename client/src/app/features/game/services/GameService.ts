@@ -21,9 +21,24 @@ export class GameService extends ApiService {
 		return data.items
 	}
 
+	async fetchFullGames(): Promise<Game[]> {
+		const { data } = await this.API.get(ApiEndpoints.GAMES.FULL_GAME)
+		return data.items
+	}
+
+	async fetchDlcGames(): Promise<Game[]> {
+		const { data } = await this.API.get(ApiEndpoints.GAMES.DLC_GAME)
+		return data.items
+	}
+
+	async fetchSubscriptionGames(): Promise<Game[]> {
+		const { data } = await this.API.get(ApiEndpoints.GAMES.SUBSCRIPTION)
+		return data.items
+	}
+
 	async fetchGameById(gameId: string, gameType: string): Promise<Game> {
 		const gameTypeUrl = this.getGameTypeUrl(gameType)
-		const { data } = await this.API.get(`${gameTypeUrl}${gameId}`)
+		const { data } = await this.API.get(`${gameTypeUrl}/${gameId}`)
 		return this.mapGameDataByType(gameType, data)
 	}
 

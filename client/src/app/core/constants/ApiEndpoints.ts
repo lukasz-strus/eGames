@@ -9,9 +9,9 @@ class ApiEndpoints {
 
 	static readonly GAMES = {
 		BASE: '/games',
-		FULL_GAME: '/games/full/',
-		DLC_GAME: '/games/dlc/',
-		SUBSCRIPTION: '/games/subscriptions/',
+		FULL_GAME: '/games/full',
+		DLC_GAME: '/games/dlc',
+		SUBSCRIPTION: '/games/subscriptions',
 	}
 }
 
