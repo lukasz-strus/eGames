@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using NLog;
 
-namespace Application.Internals.Behaviors;
+namespace Application.Core.Behaviors;
 
 internal class LoggerBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>

@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Application.Authentication;
-using Application.Behaviors;
 using FluentValidation;
 using MediatR;
+using Application.Core.Behaviors;
+using Sieve.Services;
+using Application.Core.Sieve;
 
 namespace Application;
 
@@ -17,6 +19,8 @@ public static class DependencyInjection
 
         services.AddScoped<IUserContext, UserContext>();
         services.AddHttpContextAccessor();
+
+        services.AddScoped<ISieveProcessor, ApplicationSieveProcessor>();
 
         return services;
     }

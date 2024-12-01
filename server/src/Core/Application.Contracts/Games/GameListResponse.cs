@@ -1,6 +1,12 @@
-﻿namespace Application.Contracts.Games;
+﻿using Application.Contracts.Common;
 
-public sealed class GameListResponse(IReadOnlyCollection<GameResponse> items)
+namespace Application.Contracts.Games;
+
+public sealed class GameListResponse(
+    IReadOnlyCollection<GameResponse> items,
+    int totalCount,
+    int? pageSize,
+    int? pageNumber) : PagedResult(totalCount, pageSize, pageNumber)
 {
     public IReadOnlyCollection<GameResponse> Items { get; } = items;
 }

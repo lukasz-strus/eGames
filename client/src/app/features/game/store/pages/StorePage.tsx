@@ -40,7 +40,7 @@ const StorePage: React.FC = () => {
 						data = await gameService.fetchGames()
 				}
 				setGames(data)
-				setFilteredGames(data) 
+				setFilteredGames(data)
 			} catch (err) {
 				setError('Failed to load games.')
 			} finally {
@@ -93,7 +93,7 @@ const StorePage: React.FC = () => {
 			<Container>
 				{/* Combobox for filtering and search */}
 				<Row className='align-items-center'>
-					<Col md={7}>
+					<Col md={6}>
 						<Form.Group>
 							<Form.Label>Search by name:</Form.Label>
 							<Form.Control
@@ -115,7 +115,7 @@ const StorePage: React.FC = () => {
 						</Form.Group>
 					</Col>
 
-					<Col md={2}>
+					<Col md={3}>
 						<Form.Group>
 							<Form.Label>Results per page:</Form.Label>
 							<Form.Select value={gamesPerPage} onChange={handleGamesPerPageChange}>

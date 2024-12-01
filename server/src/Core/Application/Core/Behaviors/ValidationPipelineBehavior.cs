@@ -4,7 +4,7 @@ using Domain.Core.Validator;
 using FluentValidation;
 using MediatR;
 
-namespace Application.Behaviors;
+namespace Application.Core.Behaviors;
 
 public class ValidationPipelineBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
@@ -29,7 +29,7 @@ public class ValidationPipelineBehavior<TRequest, TResponse>(
             .Distinct()
             .ToArray();
 
-        if (errors.Any())
+        if (errors.Length != 0)
             return CreateValidationResult<TResponse>(errors);
 
         return await next();

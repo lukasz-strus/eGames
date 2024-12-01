@@ -6,60 +6,20 @@ namespace Infrastructure.Repositories;
 internal sealed class GameRepository(
     ApplicationDbContext dbContext) : IGameRepository
 {
-    public async Task<List<Game>> GetAllAsync(
-        bool? isPublished,
-        bool? isSoftDeleted,
-        CancellationToken cancellationToken)
-    {
-        var query = dbContext.Games.AsQueryable();
+    public IQueryable<Game> GetAll() =>
+        dbContext.Games.AsQueryable();
 
-        if (isPublished.HasValue)
-            query = query.Where(x => x.IsPublished == isPublished);
+    public IQueryable<FullGame> GetAllFullGames() =>
+        dbContext.FullGames.AsQueryable();
 
-        if (isSoftDeleted.HasValue)
-            query = query.Where(x => x.IsDeleted == isSoftDeleted);
+    public IQueryable<DlcGame> GetAllDlcGames(GameId fullGameId) =>
+        dbContext.DlcGames.Where(x => x.FullGameId == fullGameId);
 
-        return await query.ToListAsync(cancellationToken);
-    }
+    public IQueryable<Subscription> GetAllSubscriptions() =>
+        dbContext.Subscriptions.AsQueryable();
 
     public async Task<Game?> GetByName(string value, CancellationToken cancellationToken) =>
         await dbContext.Games.FirstOrDefaultAsync(x => x.Name == value, cancellationToken);
-
-    public async Task<List<FullGame>> GetAllFullGamesAsync(
-        bool? isPublished, CancellationToken cancellationToken)
-    {
-        var query = dbContext.FullGames.AsQueryable();
-
-        if (isPublished.HasValue)
-            query = query.Where(x => x.IsPublished == isPublished);
-
-        return await query.ToListAsync(cancellationToken);
-    }
-
-    public async Task<List<DlcGame>> GetAllDlcGamesAsync(
-        GameId fullGameId,
-        bool? isPublished,
-        CancellationToken cancellationToken)
-    {
-        var query = dbContext.DlcGames.Where(x => x.FullGameId == fullGameId);
-
-        if (isPublished.HasValue)
-            query = query.Where(x => x.IsPublished == isPublished);
-
-        return await query.ToListAsync(cancellationToken);
-    }
-
-    public async Task<List<Subscription>> GetAllSubscriptionsAsync(
-        bool? isPublished,
-        CancellationToken cancellationToken)
-    {
-        var query = dbContext.Subscriptions.AsQueryable();
-
-        if (isPublished.HasValue)
-            query = query.Where(x => x.IsPublished == isPublished);
-
-        return await query.ToListAsync(cancellationToken);
-    }
 
     public async Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken) =>
         await dbContext.Games.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

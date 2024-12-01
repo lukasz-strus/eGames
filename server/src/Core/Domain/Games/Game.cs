@@ -46,7 +46,7 @@ public abstract class Game : Entity<GameId>
 
     [Required] [MaxLength(100)] public string Name { get; private set; }
 
-    [Required] [MaxLength(1000)] public string Description { get; private set; }
+    [Required] public string Description { get; private set; }
 
     [Required] public Money Price { get; private set; }
 

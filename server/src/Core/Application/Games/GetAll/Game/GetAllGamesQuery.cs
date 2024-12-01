@@ -1,7 +1,8 @@
 ﻿using Application.Contracts.Games;
 using Domain.Core.Results;
 using MediatR;
+using Sieve.Models;
 
 namespace Application.Games.GetAll.Game;
 
-public record GetAllGamesQuery(bool? IsPublished, bool? IsSoftDeleted) : IRequest<Result<GameListResponse>>;
+public record GetAllGamesQuery(SieveModel Query) : IRequest<Result<GameListResponse>>;

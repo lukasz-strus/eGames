@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Contracts;
+using Sieve.Models;
 
 namespace Presentation.Controllers;
 
@@ -35,39 +36,38 @@ public class GameController(IMediator mediator) : ApiController(mediator)
     [HttpGet(ApiRoutes.Games.GetGames)]
     [ProducesResponseType(typeof(GameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetGames(
-        [FromQuery] bool? isPublished,
-        [FromQuery] bool? isSoftDeleted,
+        [FromQuery] SieveModel query,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllGamesQuery(isPublished, isSoftDeleted))
-            .Bind(query => Mediator.Send(query, cancellationToken))
+        await Result.Success(new GetAllGamesQuery(query))
+            .Bind(value => Mediator.Send(value, cancellationToken))
             .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetFullGames)]
     [ProducesResponseType(typeof(FullGameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetFullGames(
-        [FromQuery] bool? isPublished,
+        [FromQuery] SieveModel query,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllFullGamesQuery(isPublished))
-            .Bind(query => Mediator.Send(query, cancellationToken))
+        await Result.Success(new GetAllFullGamesQuery(query))
+            .Bind(value => Mediator.Send(value, cancellationToken))
             .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetDlcGames)]
     [ProducesResponseType(typeof(DlcGameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDlcGames(
         Guid id,
-        [FromQuery] bool? isPublished,
+        [FromQuery] SieveModel query,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllDlcGamesQuery(id, isPublished))
-            .Bind(query => Mediator.Send(query, cancellationToken))
+        await Result.Success(new GetAllDlcGamesQuery(id, query))
+            .Bind(value => Mediator.Send(value, cancellationToken))
             .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetSubscriptions)]
     [ProducesResponseType(typeof(SubscriptionListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSubscriptions(
-        [FromQuery] bool? isPublished,
+        [FromQuery] SieveModel query,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllSubscriptionsQuery(isPublished))
-            .Bind(query => Mediator.Send(query, cancellationToken))
+        await Result.Success(new GetAllSubscriptionsQuery(query))
+            .Bind(value => Mediator.Send(value, cancellationToken))
             .Match(Ok, BadRequest);
 
     #endregion

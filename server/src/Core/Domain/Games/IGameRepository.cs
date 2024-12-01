@@ -2,13 +2,13 @@
 
 public interface IGameRepository
 {
-    Task<List<Game>> GetAllAsync(bool? isPublished, bool? isSoftDeleted, CancellationToken cancellationToken);
+    IQueryable<Game> GetAll();
+    IQueryable<FullGame> GetAllFullGames();
+    IQueryable<DlcGame> GetAllDlcGames(GameId fullGameId);
+    IQueryable<Subscription> GetAllSubscriptions();
+
     Task<Game?> GetByIdAsync(GameId id, CancellationToken cancellationToken);
     Task<Game?> GetByName(string value, CancellationToken cancellationToken);
-    Task<List<FullGame>> GetAllFullGamesAsync(bool? isPublished, CancellationToken cancellationToken);
-    Task<List<DlcGame>> GetAllDlcGamesAsync(GameId fullGameId, bool? isPublished, CancellationToken cancellationToken);
-    Task<List<Subscription>> GetAllSubscriptionsAsync(bool? isPublished, CancellationToken cancellationToken);
-
     Task<FullGame?> GetFullGameByIdAsync(GameId id, CancellationToken cancellationToken);
     Task<DlcGame?> GetDlcGameByIdAsync(GameId id, CancellationToken cancellationToken);
     Task<Subscription?> GetSubscriptionByIdAsync(GameId id, CancellationToken cancellationToken);

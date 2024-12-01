@@ -1,7 +1,7 @@
 ﻿using Application.Contracts.Games;
 using Domain.Games;
 
-namespace Application.Internals.Mappers;
+namespace Application.Core.Mappers;
 
 internal static class GameMapper
 {

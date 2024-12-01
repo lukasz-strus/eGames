@@ -1,27 +1,39 @@
 ﻿using Application.Contracts.Games;
-using Application.Internals.Mappers;
+using Application.Core.Mappers;
 using Domain.Core.Results;
 using Domain.Games;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Sieve.Services;
 
 namespace Application.Games.GetAll.Subscription;
 
 internal sealed class GetAllSubscriptionsQueryHandler(
-    IGameRepository gameRepository) : IRequestHandler<GetAllSubscriptionsQuery, Result<SubscriptionListResponse>>
+    IGameRepository gameRepository,
+    ISieveProcessor sieveProcessor) : IRequestHandler<GetAllSubscriptionsQuery, Result<SubscriptionListResponse>>
 {
     public async Task<Result<SubscriptionListResponse>> Handle(
         GetAllSubscriptionsQuery request,
         CancellationToken cancellationToken)
     {
-        var subscriptions = await gameRepository.GetAllSubscriptionsAsync(
-            request.IsPublished,
-            cancellationToken);
+        var subscriptionsQuery = gameRepository.GetAllSubscriptions();
+
+        var subscriptions = await sieveProcessor
+            .Apply(request.Query, subscriptionsQuery)
+            .ToListAsync(cancellationToken);
+
+        var totalCount = await sieveProcessor
+            .Apply(request.Query, subscriptionsQuery, applyFiltering: false, applySorting: false)
+            .CountAsync(cancellationToken);
 
         var subscriptionListResponse = new SubscriptionListResponse(
             [
                 ..subscriptions.Select(g => g.ToResponse())
-            ]
-        );
+            ],
+            totalCount,
+            request.Query.PageSize,
+            request.Query.Page);
+
         return Result.Success(subscriptionListResponse);
     }
 }
