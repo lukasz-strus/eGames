@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Game } from '../../../../core/contracts/Game'
-import GameCard from '../components/GameCard'
 import { Container, Spinner, Alert } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { GameService } from '../../services/GameService'
+import GamesSection from '../components/GamesSection'
 
 const gameService = GameService.getInstance()
 
@@ -28,8 +28,14 @@ const StorePage: React.FC = () => {
 		loadGames()
 	}, [])
 
-	function handleOnGameClick(gameId: string, gameType: string) {
+	const handleOnGameClick = (gameId: string, gameType: string) => {
 		navigate(`/game/${gameType}/${gameId}`)
+	}
+
+	const groupedGames = {
+		FullGame: games.filter(game => game.type === 'FullGame'),
+		DlcGame: games.filter(game => game.type === 'DlcGame'),
+		Subscription: games.filter(game => game.type === 'Subscription'),
 	}
 
 	if (loading) {
@@ -51,13 +57,9 @@ const StorePage: React.FC = () => {
 	return (
 		<>
 			<div className='bcg-image' />
-			<Container className='content-container'>
-				<div className='d-flex justify-content-between align-content-around flex-wrap'>
-					{games.map(game => (
-						<GameCard key={game.id} game={game} onGameClick={handleOnGameClick} />
-					))}
-				</div>
-			</Container>
+			{Object.entries(groupedGames).map(([type, games]) => (
+				<GamesSection key={type} games={games} type={type} onGameClick={handleOnGameClick} />
+			))}
 		</>
 	)
 }

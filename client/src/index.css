@@ -16,10 +16,21 @@
 	padding-top: 2rem;
 }
 
+.section-container {
+	background-color: rgba(0, 0, 0, 0.2);
+	padding: 20px;
+	border-radius: 10px;
+	margin-bottom: 30px;
+}
+
+.section-container:hover {
+	background-color: rgba(0, 0, 0, 0.4);
+	transition: background-color 0.3s ease;
+}
+
 .game-container {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
 }
 
 .game-img-card {
