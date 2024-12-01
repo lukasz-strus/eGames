@@ -1,5 +1,6 @@
 import { ApiService } from '../../../core/services/ApiService.ts'
 import ApiEndpoints from '../../../core/constants/ApiEndpoints'
+import { User } from '../../../core/contracts/User.ts'
 
 export class AuthService extends ApiService {
 	private static instance: AuthService | null = null
@@ -20,9 +21,9 @@ export class AuthService extends ApiService {
 		return data.accessToken
 	}
 
-	async getEmail(token: string): Promise<string> {
+	async getProfile(token: string): Promise<User> {
 		const { data } = await this.API.get(ApiEndpoints.AUTH.PROFILE, this.setAuthorizationHeader(token))
-		return data.email
+		return data
 	}
 
 	async registerUser(userName: string, email: string, password: string): Promise<void> {

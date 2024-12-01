@@ -5,15 +5,17 @@ import RegisterModal from './RegisterModal'
 import { useAuth } from '../../../core/context/AuthContext'
 import { AuthService } from '../services/AuthService'
 import SuccessModal from '../../../core/components/SuccessModal'
+import { UserRole } from '../../../core/contracts/User'
 
 const authService = AuthService.getInstance()
 
 interface LoginModalProps {
 	show: boolean
 	onClose: () => void
+	onUserRolesChange: (roles: UserRole[]) => void
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ show, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChange }) => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [error, setError] = useState<string | null>(null)
@@ -54,8 +56,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose }) => {
 			const token = await authService.loginUser(email, password)
 			localStorage.setItem('authToken', token)
 
+			const user = await authService.getProfile(token)
+
 			setIsLoggedIn(true)
-			setUserName(email)
+			setUserName(user.userName)
+			console.log(onUserRolesChange)
+			onUserRolesChange(user.userRoles.items)
 
 			setShowSuccessModal(true)
 		} catch {

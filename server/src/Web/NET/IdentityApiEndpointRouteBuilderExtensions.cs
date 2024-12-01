@@ -2,6 +2,7 @@
 using Application.Contracts.User;
 using Application.Users.Create.User;
 using Application.Users.Delete.User;
+using Application.Users.Get.User;
 using Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.BearerToken;
@@ -16,6 +17,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using Application.Contracts.Identity;
 
 namespace Web.NET;
 
@@ -39,6 +41,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 
         var routeGroup = endpoints.MapGroup("");
 
+
         // NOTE: We cannot inject UserManager<TUser> directly because the TUser generic parameter is currently unsupported by RDG.
         // https://github.com/dotnet/aspnetcore/issues/47338
         routeGroup.MapPost("/register", async Task<Results<Ok, ValidationProblem>>
@@ -46,6 +49,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
+            var mediator = sp.GetRequiredService<IMediator>();
 
             if (!userManager.SupportsUserEmail)
             {
@@ -62,9 +66,8 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
             }
 
-            //Start custom logic 
             var userName = registration.UserName;
-            var mediator = sp.GetRequiredService<IMediator>();
+
             var createUserRequest = new CreateUserRequest(userName);
             var createdUser = await mediator.Send(new CreateUserCommand(createUserRequest));
             var domainUserId = new UserId(createdUser.Value().Id);
@@ -72,17 +75,14 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             {
                 UserId = domainUserId
             };
-            //var user = new TUser();
-            //End custom logic
+
             await userStore.SetUserNameAsync(user, email, CancellationToken.None);
             await emailStore.SetEmailAsync(user, email, CancellationToken.None);
             var result = await userManager.CreateAsync(user, registration.Password);
 
             if (!result.Succeeded)
             {
-                //Start custom logic 
                 await mediator.Send(new DeleteUserCommand(domainUserId));
-                //End custom logic
 
                 return CreateValidationProblem(result);
             }
@@ -94,10 +94,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         });
 
         routeGroup.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>>
-        ([FromBody] LoginRequest login,
-            //[FromQuery] bool? useCookies,
-            //[FromQuery] bool? useSessionCookies,
-            [FromServices] IServiceProvider sp) =>
+            ([FromBody] LoginRequest login, [FromServices] IServiceProvider sp) =>
         {
             bool? useCookies = null;
             bool? useSessionCookies = null;
@@ -354,17 +351,28 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             });
         });
 
-        accountGroup.MapGet("/info", async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>>
-            (ClaimsPrincipal claimsPrincipal, [FromServices] IServiceProvider sp) =>
-        {
-            var userManager = sp.GetRequiredService<UserManager<TUser>>();
-            if (await userManager.GetUserAsync(claimsPrincipal) is not { } user)
+        accountGroup.MapGet("/info",
+            async Task<Results<Ok<InfoCustomResponse>, ValidationProblem, NotFound>>
+                (ClaimsPrincipal claimsPrincipal, [FromServices] IServiceProvider sp) =>
             {
-                return TypedResults.NotFound();
-            }
+                var userManager = sp.GetRequiredService<UserManager<TUser>>();
+                var mediator = sp.GetRequiredService<IMediator>();
 
-            return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
-        });
+                if (await userManager.GetUserAsync(claimsPrincipal) is not { } user) return TypedResults.NotFound();
+                if (user.UserId?.Value is null || user.Email is null) return TypedResults.NotFound();
+
+                var domainResult = await mediator.Send(new GetUserQuery(user.UserId.Value));
+                if (domainResult.IsFailure) return TypedResults.NotFound();
+                var domainUser = domainResult.Value();
+
+                return TypedResults.Ok(new InfoCustomResponse
+                {
+                    UserName = domainUser.UserName,
+                    Email = user.Email,
+                    IsEmailConfirmed = user.EmailConfirmed,
+                    UserRoles = new UserRoleListResponse(domainUser.UserRoles.Items)
+                });
+            });
 
         accountGroup.MapPost("/info", async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>>
         (ClaimsPrincipal claimsPrincipal, [FromBody] InfoRequest infoRequest, HttpContext context,
