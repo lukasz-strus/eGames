@@ -23,7 +23,7 @@ internal sealed class GetAllSubscriptionsQueryHandler(
             .ToListAsync(cancellationToken);
 
         var totalCount = await sieveProcessor
-            .Apply(request.Query, subscriptionsQuery, applyFiltering: false, applySorting: false)
+            .Apply(request.Query, subscriptionsQuery, applyPagination: false)
             .CountAsync(cancellationToken);
 
         var subscriptionListResponse = new SubscriptionListResponse(

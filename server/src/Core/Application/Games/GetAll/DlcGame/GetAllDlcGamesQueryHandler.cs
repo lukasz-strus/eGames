@@ -23,7 +23,7 @@ internal sealed class GetAllDlcGamesQueryHandler(
             .ToListAsync(cancellationToken);
 
         var totalCount = await sieveProcessor
-            .Apply(request.Query, dlcGamesQuery, applyFiltering: false, applySorting: false)
+            .Apply(request.Query, dlcGamesQuery, applyPagination: false)
             .CountAsync(cancellationToken);
 
         var dlcGameListResponse = new DlcGameListResponse(

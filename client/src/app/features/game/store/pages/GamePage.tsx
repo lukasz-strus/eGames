@@ -8,11 +8,12 @@ import GameImage from '../components/GameImage'
 import FullGameDlcs from '../components/FullGameDlcs'
 import GameCard from '../components/GameCard'
 import { GameService } from '../../services/GameService'
+import { GameType } from '../../../../core/enums/GameType'
 
 const gameService = GameService.getInstance()
 
 const GamePage: React.FC = () => {
-	const { gameId, gameType } = useParams<{ gameId: string; gameType: string }>()
+	const { gameId, gameType } = useParams<{ gameId: string; gameType: GameType }>()
 	const [game, setGame] = useState<Game | null>(null)
 	const [baseGame, setBaseGame] = useState<FullGame | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
@@ -27,8 +28,8 @@ const GamePage: React.FC = () => {
 
 					setGame(data)
 
-					if (data.type === 'DlcGame') {
-						const baseGame = await gameService.fetchGameById((data as DlcGame).baseGameId, 'FullGame')
+					if (data.type === GameType.DlcGame) {
+						const baseGame = await gameService.fetchGameById((data as DlcGame).baseGameId, GameType.FullGame)
 
 						setBaseGame(baseGame as FullGame)
 					}
@@ -78,7 +79,7 @@ const GamePage: React.FC = () => {
 				</div>
 			</Container>
 
-			{game.type === 'FullGame' && (game as FullGame).dlcGames.length !== 0 && (
+			{game.type === GameType.FullGame && (game as FullGame).dlcGames.length !== 0 && (
 				<Container className='content-container'>
 					<h1 className='fs-2'>DLC:</h1>
 					<div className='d-flex gap-3  align-content-around flex-wrap'>
@@ -87,7 +88,7 @@ const GamePage: React.FC = () => {
 				</Container>
 			)}
 
-			{game.type === 'DlcGame' && baseGame && (
+			{game.type === GameType.DlcGame && baseGame && (
 				<Container className='content-container'>
 					<h1 className='fs-2'>Base Game:</h1>
 					<div className='d-flex gap-3  align-content-around flex-wrap'>

@@ -1,6 +1,7 @@
-import { ApiService } from '../../../core/services/ApiService'
-import { Game, FullGame, DlcGame, Subscription } from '../../../core/contracts/Game'
+import { ApiService, FetchParams } from '../../../core/services/ApiService'
+import { Game, FullGame, DlcGame, Subscription, Games } from '../../../core/contracts/Game'
 import ApiEndpoints from '../../../core/constants/ApiEndpoints'
+import { GameType } from '../../../core/enums/GameType'
 
 export class GameService extends ApiService {
 	private static instance: GameService | null = null
@@ -16,35 +17,39 @@ export class GameService extends ApiService {
 		return GameService.instance
 	}
 
-	async fetchGames(): Promise<Game[]> {
-		const { data } = await this.API.get(ApiEndpoints.GAMES.BASE)
-		return data.items
+	async fetchGames(params: FetchParams): Promise<Games> {
+		const queryParams = this.buildQueryParams(params)
+
+		const { data } = await this.API.get(ApiEndpoints.GAMES.BASE, { params: queryParams })
+
+		return data
 	}
 
-	async fetchFullGames(): Promise<Game[]> {
-		const { data } = await this.API.get(ApiEndpoints.GAMES.FULL_GAME)
-		return data.items
+	async fetchFullGames(params: FetchParams): Promise<Games> {
+		const queryParams = this.buildQueryParams(params)
+
+		const { data } = await this.API.get(ApiEndpoints.GAMES.FULL_GAME, { params: queryParams })
+
+		return data
 	}
 
-	async fetchDlcGames(): Promise<Game[]> {
-		const { data } = await this.API.get(ApiEndpoints.GAMES.DLC_GAME)
-		return data.items
+	async fetchSubscriptionGames(params: FetchParams): Promise<Games> {
+		const queryParams = this.buildQueryParams(params)
+
+		const { data } = await this.API.get(ApiEndpoints.GAMES.SUBSCRIPTION, { params: queryParams })
+
+		return data
 	}
 
-	async fetchSubscriptionGames(): Promise<Game[]> {
-		const { data } = await this.API.get(ApiEndpoints.GAMES.SUBSCRIPTION)
-		return data.items
-	}
-
-	async fetchGameById(gameId: string, gameType: string): Promise<Game> {
+	async fetchGameById(gameId: string, gameType: GameType): Promise<Game> {
 		const gameTypeUrl = this.getGameTypeUrl(gameType)
 		const { data } = await this.API.get(`${gameTypeUrl}/${gameId}`)
 		return this.mapGameDataByType(gameType, data)
 	}
 
-	private getGameTypeUrl(gameType: string): string {
+	private getGameTypeUrl(gameType: GameType): string {
 		switch (gameType) {
-			case 'FullGame':
+			case GameType.FullGame:
 				return ApiEndpoints.GAMES.FULL_GAME
 			case 'DlcGame':
 				return ApiEndpoints.GAMES.DLC_GAME
@@ -55,13 +60,13 @@ export class GameService extends ApiService {
 		}
 	}
 
-	private mapGameDataByType(gameType: string, data: any): Game {
+	private mapGameDataByType(gameType: GameType, data: any): Game {
 		switch (gameType) {
-			case 'FullGame':
+			case GameType.FullGame:
 				return data as FullGame
-			case 'DlcGame':
+			case GameType.DlcGame:
 				return data as DlcGame
-			case 'Subscription':
+			case GameType.Subscription:
 				return data as Subscription
 			default:
 				return data

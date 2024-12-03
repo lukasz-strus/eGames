@@ -2,6 +2,7 @@ import React from 'react'
 import { Game } from '../../../../core/contracts/Game'
 import { Pagination, Container } from 'react-bootstrap'
 import GameCard from './GameCard'
+import { GameTypeExtensions } from '../../../../core/enums/GameType'
 
 interface GamesSectionProps {
 	games: Game[]
@@ -20,24 +21,11 @@ const GamesSection: React.FC<GamesSectionProps> = ({
 	totalPages,
 	onPageChange,
 }) => {
-	const toDisplayType = (type: string) => {
-		switch (type) {
-			case 'FullGame':
-				return 'Full Games'
-			case 'DlcGame':
-				return 'DLC Games'
-			case 'Subscription':
-				return 'Subscriptions'
-			default:
-				return 'All Games'
-		}
-	}
-
 	return (
-		<Container className='content-container mb-5'>
-			<div className='section-container'>
-				<h2 className='text-left mb-4'>{toDisplayType(type)}</h2>
-				<div className='d-flex gap-5 align-content-around flex-wrap'>
+		<Container className='content-container  mb-5'>
+			<div className='section-container '>
+				<h2 className='text-left mb-4'>{GameTypeExtensions.getGameTypes(type)}</h2>
+				<div className='d-flex gap-5 justify-content-center flex-wrap'>
 					{games.map(game => (
 						<GameCard key={game.id} game={game} onGameClick={onGameClick} />
 					))}

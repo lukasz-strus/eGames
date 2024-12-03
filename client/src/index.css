@@ -17,14 +17,14 @@
 }
 
 .section-container {
-	background-color: rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 0, 0, 0.6);
 	padding: 20px;
 	border-radius: 10px;
 	margin-bottom: 30px;
 }
 
 .section-container:hover {
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(0, 0, 0, 0.8);
 	transition: background-color 0.3s ease;
 }
 

@@ -22,9 +22,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 	const setMenuVisibility = (roles: UserRole[]) => {
 		setLibraryVisible(false)
-
-		console.log(roles)
-
 		if (roles.some(role => role.name === 'Customer')) setLibraryVisible(true)
 	}
 

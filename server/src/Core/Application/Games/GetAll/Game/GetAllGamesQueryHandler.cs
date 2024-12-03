@@ -21,7 +21,7 @@ internal sealed class GetAllGamesQueryHandler(
             .ToListAsync(cancellationToken);
 
         var totalCount = await sieveProcessor
-            .Apply(request.Query, gamesQuery, applyFiltering: false, applySorting: false)
+            .Apply(request.Query, gamesQuery, applyPagination: false)
             .CountAsync(cancellationToken);
 
         var gameListResponse = new GameListResponse(

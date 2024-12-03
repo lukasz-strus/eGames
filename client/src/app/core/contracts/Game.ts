@@ -23,3 +23,11 @@ export interface DlcGame extends Game {
 export interface Subscription extends Game {
 	subscriptionPeriodInDays: number
 }
+
+export interface Games {
+	totalPages: number
+	itemsFrom: number
+	itemsTo: number
+	totalItemsCount: number
+	items: Game[]
+}

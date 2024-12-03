@@ -17,7 +17,10 @@ public abstract class PagedResult
         }
 
         ItemsFrom = (int)pageSize * ((int)pageNumber - 1) + 1;
-        ItemsTo = ItemsFrom + (int)pageSize - 1;
+
+        var itemsTo = ItemsFrom + (int)pageSize - 1;
+        ItemsTo = itemsTo > totalCount ? totalCount : itemsTo;
+
         TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
     }
 }
