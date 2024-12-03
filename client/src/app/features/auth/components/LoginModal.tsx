@@ -60,7 +60,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 
 			setIsLoggedIn(true)
 			setUserName(user.userName)
-			console.log(onUserRolesChange)
 			onUserRolesChange(user.userRoles.items)
 
 			setShowSuccessModal(true)

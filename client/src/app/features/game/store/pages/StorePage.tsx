@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Game, Games } from '../../../../core/contracts/Game'
-import { Container, Spinner, Alert, Form, Row, Col, Button } from 'react-bootstrap'
+import { Container, Spinner, Alert, Row, Col, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { GameService } from '../../services/GameService'
 import GamesSection from '../components/GamesSection'
 import { GameType } from '../../../../core/enums/GameType'
+import FormField from '../../../../core/components/FormField'
 
 const gameService = GameService.getInstance()
 
@@ -122,47 +123,55 @@ const StorePage: React.FC = () => {
 			<Container className='section-container justify-content-center align-content-end'>
 				<Row className='justify-content-center'>
 					<Col md={3}>
-						<Form.Group>
-							<Form.Label>Search by name:</Form.Label>
-							<Form.Control
-								type='text'
-								placeholder='Enter game name'
-								value={tempSearchQuery}
-								onChange={e => setTempSearchQuery(e.target.value)}
-							/>
-						</Form.Group>
+						<FormField
+							label='Search by name'
+							type='text'
+							placeholder='Enter game name'
+							value={tempSearchQuery}
+							onChange={e => setTempSearchQuery(e.target.value)}
+						/>
 					</Col>
+
 					<Col md={3}>
-						<Form.Group>
-							<Form.Label>Filter by game type:</Form.Label>
-							<Form.Select value={tempSelectedType} onChange={e => setTempSelectedType(e.target.value)}>
-								<option value='All'>All Games</option>
-								<option value={GameType.FullGame}>Full Games</option>
-								<option value={GameType.Subscription}>Subscription Games</option>
-							</Form.Select>
-						</Form.Group>
+						<FormField
+							label='Filter by game type'
+							type='select'
+							value={tempSelectedType}
+							options={[
+								{ value: 'All', label: 'All Games' },
+								{ value: GameType.FullGame, label: 'Full Games' },
+								{ value: GameType.Subscription, label: 'Subscription Games' },
+							]}
+							onChange={e => setTempSelectedType(e.target.value)}
+						/>
 					</Col>
+
 					<Col md={2}>
-						<Form.Group>
-							<Form.Label>Sort by:</Form.Label>
-							<Form.Select value={tempSortBy} onChange={e => setTempSortBy(e.target.value)}>
-								<option value='name'>Name ascending</option>
-								<option value='-name'>Name descending</option>
-								<option value='price'>Price ascending</option>
-								<option value='-price'>Price descending</option>
-							</Form.Select>
-						</Form.Group>
+						<FormField
+							label='Sort by'
+							type='select'
+							value={tempSortBy}
+							options={[
+								{ value: 'name', label: 'Name asc.' },
+								{ value: '-name', label: 'Name desc.' },
+							]}
+							onChange={e => setTempSortBy(e.target.value)}
+						/>
 					</Col>
+
 					<Col md={2}>
-						<Form.Group>
-							<Form.Label>Results per page:</Form.Label>
-							<Form.Select value={tempGamesPerPage} onChange={e => setTempGamesPerPage(Number(e.target.value))}>
-								<option value='6'>6</option>
-								<option value='9'>9</option>
-								<option value='12'>12</option>
-								<option value='15'>15</option>
-							</Form.Select>
-						</Form.Group>
+						<FormField
+							label='Results per page'
+							type='select'
+							value={tempGamesPerPage}
+							options={[
+								{ value: 6, label: '6' },
+								{ value: 9, label: '9' },
+								{ value: 12, label: '12' },
+								{ value: 15, label: '15' },
+							]}
+							onChange={e => setTempGamesPerPage(Number(e.target.value))}
+						/>
 					</Col>
 					<Col md={1} className='text-center'>
 						<Button variant='primary' className='mt-4' onClick={handleSearch}>
