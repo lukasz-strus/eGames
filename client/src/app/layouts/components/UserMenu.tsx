@@ -24,6 +24,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ onUserRolesChange }) => {
 
 	const handleSuccessClose = () => {
 		setShowSuccessModal(false)
+		window.location.reload()
 	}
 
 	return (

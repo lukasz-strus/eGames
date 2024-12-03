@@ -26,6 +26,10 @@ export class AuthService extends ApiService {
 		return data
 	}
 
+	async updateProfile(token: string, newPassword?: string, oldPassword?: string): Promise<void> {
+		await this.API.post(ApiEndpoints.AUTH.PROFILE, { newPassword, oldPassword }, this.setAuthorizationHeader(token))
+	}
+
 	async registerUser(userName: string, email: string, password: string): Promise<void> {
 		await this.API.post(ApiEndpoints.AUTH.REGISTER, { userName, email, password })
 	}

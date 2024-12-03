@@ -3,6 +3,8 @@ import { Button, Form, Modal, Alert } from 'react-bootstrap'
 import FormField from '../../../core/components/FormField'
 import { AuthService } from '../services/AuthService'
 import SuccessModal from '../../../core/components/SuccessModal'
+import { PasswordHelpers } from '../../../core/helpers/PasswordHelpers'
+import { EmailHelpers } from '../../../core/helpers/EmailHelpers'
 
 const authService = AuthService.getInstance()
 
@@ -21,16 +23,6 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 	const [error, setError] = useState<string | null>(null)
 	const [showSuccessModal, setShowSuccessModal] = useState(false)
 
-	const validateEmail = (email: string): boolean => {
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-		return emailRegex.test(email)
-	}
-
-	const validatePassword = (password: string): boolean => {
-		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-		return passwordRegex.test(password)
-	}
-
 	const handleRegister = async () => {
 		let hasError = false
 
@@ -38,21 +30,19 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 		setPasswordError(null)
 		setError(null)
 
-		if (!email || !validateEmail(email)) {
-			setEmailError('Invalid email format.')
+		if (!email || !EmailHelpers.validateEmail(email)) {
+			setEmailError(EmailHelpers.emailError)
 			hasError = true
 		} else if (email !== confirmEmail) {
-			setEmailError('Emails do not match.')
+			setEmailError(EmailHelpers.emailMatchError)
 			hasError = true
 		}
 
-		if (!password || !validatePassword(password)) {
-			setPasswordError(
-				'Password must be at least 8 characters, include 1 lowercase, 1 uppercase, 1 number, and 1 special character.'
-			)
+		if (!password || !PasswordHelpers.validatePassword(password)) {
+			setPasswordError(PasswordHelpers.passwordError)
 			hasError = true
 		} else if (password !== confirmPassword) {
-			setPasswordError('Passwords do not match.')
+			setPasswordError(PasswordHelpers.passwordMatchError)
 			hasError = true
 		}
 

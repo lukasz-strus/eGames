@@ -5,6 +5,7 @@ import StorePage from './app/features/game/store/pages/StorePage'
 import LibraryPage from './app/features/library/pages/LibraryPage'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GamePage from './app/features/game/store/pages/GamePage'
+import UserPage from './app/features/user/me/pages/ProfilePage'
 
 const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
@@ -16,6 +17,7 @@ const App: React.FC = () => {
 					<Route path='/' element={<StorePage />} />
 					<Route path='/library' element={<LibraryPage />} />
 					<Route path='/game/:gameType/:gameId' element={<GamePage />} />
+					<Route path='/profile' element={<UserPage />} />
 				</Routes>
 			</MainLayout>
 		</Router>
