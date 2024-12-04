@@ -46,8 +46,10 @@ const GamePage: React.FC = () => {
 		}
 	}
 
-	const handleSuccessClose = () => {
+	function handleSuccessClose() {
 		setShowSuccessModal(false)
+
+		window.location.reload()
 	}
 
 	useEffect(() => {

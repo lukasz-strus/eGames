@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Nav, NavDropdown } from 'react-bootstrap'
 import LoginModal from '../../features/auth/components/LoginModal'
 import { useAuth } from '../../core/context/AuthContext'
 import InfoModal from '../../core/components/InfoModal'
 import { UserRole } from '../../core/contracts/User'
 import { useLocation } from 'react-router-dom'
+import { OrderService } from '../../features/order/services/OrderService'
+
+const orderService = OrderService.getInstance()
 
 interface UserMenuProps {
 	onUserRolesChange: (roles: UserRole[]) => void
@@ -14,13 +17,14 @@ const UserMenu: React.FC<UserMenuProps> = ({ onUserRolesChange }) => {
 	const [showLoginModal, setShowLoginModal] = useState(false)
 	const { isLoggedIn, setIsLoggedIn, userName, setUserName } = useAuth()
 	const [showSuccessModal, setShowSuccessModal] = useState(false)
+	const [orderCount, setOrderCount] = useState<string>('')
 	const location = useLocation()
 
-	const getNavLinkClass = (path: string): string => {
+	function getNavLinkClass(path: string): string {
 		return location.pathname === path ? 'fw-bold' : ''
 	}
 
-	const handleLogout = () => {
+	function handleLogout() {
 		localStorage.removeItem('authToken')
 		setIsLoggedIn(false)
 		setUserName(null)
@@ -28,17 +32,41 @@ const UserMenu: React.FC<UserMenuProps> = ({ onUserRolesChange }) => {
 		setShowSuccessModal(true)
 	}
 
-	const handleSuccessClose = () => {
+	function handleSuccessClose() {
 		setShowSuccessModal(false)
 		window.location.reload()
 	}
+
+	function getOrderHeader(count: string) {
+		return count === '' ? 'Order' : `Order (${count})`
+	}
+
+	useEffect(() => {
+		const fetchOrderCount = async (token: string) => {
+			const order = await orderService.getOrder(token)
+
+			if (!order) {
+				setOrderCount('')
+				return
+			}
+
+			setOrderCount(order.orderItems.length.toString())
+		}
+
+		const token = localStorage.getItem('authToken')
+		if (token) {
+			fetchOrderCount(token)
+		} else {
+			setOrderCount('')
+		}
+	}, [])
 
 	return (
 		<>
 			<Nav>
 				{isLoggedIn && (
 					<Nav.Link href='/order' className={getNavLinkClass('/order')}>
-						Order
+						{getOrderHeader(orderCount)}
 					</Nav.Link>
 				)}
 				{isLoggedIn ? (
