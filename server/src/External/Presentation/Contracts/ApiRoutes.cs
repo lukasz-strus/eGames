@@ -19,6 +19,7 @@ public static class ApiRoutes
     public static class Games
     {
         public const string GetGames = "games";
+        public const string GetGame = "games/{id:guid}";
         public const string PublishGame = "games/{id:guid}/publish";
         public const string UnpublishGame = "games/{id:guid}/unpublish";
         public const string DeleteGame = "games/{id:guid}";

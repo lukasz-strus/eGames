@@ -11,14 +11,5 @@ internal sealed class CreateOrderItemCommandValidator : AbstractValidator<Create
 
         RuleFor(x => x.OrderItem.GameId)
             .NotEmpty();
-
-        RuleFor(x => x.OrderItem.Price)
-            .NotEmpty()
-            .GreaterThan(0);
-
-        RuleFor(x => x.OrderItem.CurrencyId)
-            .NotEmpty()
-            .Must(x => new[] { 1, 2, 3 }.Contains(x))
-            .WithMessage("Currency ID must be 1, 2 or 3.");
     }
 }

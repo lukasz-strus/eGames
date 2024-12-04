@@ -6,6 +6,7 @@ using Application.Games.Create.Subscription;
 using Application.Games.Delete;
 using Application.Games.Get.DlcGame;
 using Application.Games.Get.FullGame;
+using Application.Games.Get.Game;
 using Application.Games.Get.Subscription;
 using Application.Games.GetAll.DlcGame;
 using Application.Games.GetAll.FullGame;
@@ -73,6 +74,16 @@ public class GameController(IMediator mediator) : ApiController(mediator)
     #endregion
 
     #region Get
+
+    [HttpGet(ApiRoutes.Games.GetGame)]
+    [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetGameById(
+        Guid id,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new GetGameByIdQuery(id))
+            .Bind(query => Mediator.Send(query, cancellationToken))
+            .Match(Ok, BadRequest);
 
     [HttpGet(ApiRoutes.Games.GetFullGame)]
     [ProducesResponseType(typeof(FullGameResponse), StatusCodes.Status200OK)]

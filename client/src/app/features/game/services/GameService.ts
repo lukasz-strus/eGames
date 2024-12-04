@@ -41,10 +41,15 @@ export class GameService extends ApiService {
 		return data
 	}
 
-	async fetchGameById(gameId: string, gameType: GameType): Promise<Game> {
-		const gameTypeUrl = this.getGameTypeUrl(gameType)
-		const { data } = await this.API.get(`${gameTypeUrl}/${gameId}`)
-		return this.mapGameDataByType(gameType, data)
+	async fetchGameById(gameId: string, gameType?: GameType): Promise<Game> {
+		if (gameType) {
+			const gameTypeUrl = this.getGameTypeUrl(gameType)
+			const { data } = await this.API.get(`${gameTypeUrl}/${gameId}`)
+			return this.mapGameDataByType(gameType, data)
+		} else {
+			const { data } = await this.API.get(`${ApiEndpoints.GAMES.BASE}/${gameId}`)
+			return data
+		}
 	}
 
 	private getGameTypeUrl(gameType: GameType): string {
@@ -69,7 +74,7 @@ export class GameService extends ApiService {
 			case GameType.Subscription:
 				return data as Subscription
 			default:
-				return data
+				return data as Game
 		}
 	}
 }

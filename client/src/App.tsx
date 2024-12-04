@@ -6,10 +6,11 @@ import LibraryPage from './app/features/library/pages/LibraryPage'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GamePage from './app/features/game/store/pages/GamePage'
 import UserPage from './app/features/user/me/pages/ProfilePage'
+import OrderPage from './app/features/order/pages/OrderPage'
 
 const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
-	htmlElement?.setAttribute('data-bs-theme', 'dark') // TODDO: to toggle functionality
+	htmlElement?.setAttribute('data-bs-theme', 'dark')
 	return (
 		<Router>
 			<MainLayout>
@@ -18,6 +19,7 @@ const App: React.FC = () => {
 					<Route path='/library' element={<LibraryPage />} />
 					<Route path='/game/:gameType/:gameId' element={<GamePage />} />
 					<Route path='/profile' element={<UserPage />} />
+					<Route path='/order' element={<OrderPage />} />
 				</Routes>
 			</MainLayout>
 		</Router>

@@ -1,7 +1,6 @@
 ﻿using Application.Core.Abstractions.Data;
 using Domain;
 using Domain.Core.Results;
-using Domain.Enums;
 using Domain.Games;
 using Domain.Orders;
 using MediatR;
@@ -10,6 +9,7 @@ namespace Application.Orders.Create.OrderItem;
 
 internal sealed class CreateOrderItemCommandHandler(
     IOrderRepository orderRepository,
+    IGameRepository gameRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<CreateOrderItemCommand, Result<Unit>>
 {
     public async Task<Result<Unit>> Handle(
@@ -22,15 +22,15 @@ internal sealed class CreateOrderItemCommandHandler(
             return Result.Failure<Unit>(
                 Errors.Orders.GetOrderById.OrderNotFound(request.OrderId));
 
-        var currency = Currency.FromValue(request.OrderItem.CurrencyId);
-
-        if (currency is null)
+        var game = await gameRepository.GetByIdAsync(new GameId(request.OrderItem.GameId), cancellationToken);
+        if (game is null)
             return Result.Failure<Unit>(
-                Errors.Currency.FromValue.InvalidCurrencyValue(request.OrderItem.CurrencyId));
+                Errors.Games.GetGameById.GameNotFound(request.OrderItem.GameId));
 
-        order.AddItem(new GameId(request.OrderItem.GameId),
-            request.OrderItem.Price,
-            currency);
+        order.AddItem(
+            game.Id,
+            game.Price.Amount,
+            game.Price.Currency);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

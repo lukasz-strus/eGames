@@ -9,8 +9,11 @@ import FullGameDlcs from '../components/FullGameDlcs'
 import GameCard from '../components/GameCard'
 import { GameService } from '../../services/GameService'
 import { GameType } from '../../../../core/enums/GameType'
+import { OrderService } from '../../../order/services/OrderService'
+import SuccessModal from '../../../../core/components/SuccessModal'
 
 const gameService = GameService.getInstance()
+const orderService = OrderService.getInstance()
 
 const GamePage: React.FC = () => {
 	const { gameId, gameType } = useParams<{ gameId: string; gameType: GameType }>()
@@ -18,7 +21,34 @@ const GamePage: React.FC = () => {
 	const [baseGame, setBaseGame] = useState<FullGame | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
+	const [showSuccessModal, setShowSuccessModal] = useState(false)
 	const navigate = useNavigate()
+
+	function handleOnGameClick(gameId: string, gameType: string) {
+		navigate(`/game/${gameType}/${gameId}`)
+	}
+
+	async function handleAddToOrder() {
+		if (!game) return
+
+		const token = localStorage.getItem('authToken')
+
+		if (!token) {
+			navigate('/login')
+			return
+		}
+		try {
+			await orderService.addOrderItem(game.id, token)
+
+			setShowSuccessModal(true)
+		} catch (err) {
+			setError('Failed to add the game to the order.')
+		}
+	}
+
+	const handleSuccessClose = () => {
+		setShowSuccessModal(false)
+	}
 
 	useEffect(() => {
 		const loadGame = async () => {
@@ -48,10 +78,6 @@ const GamePage: React.FC = () => {
 		window.scrollTo(0, 0)
 	}, [gameId])
 
-	function handleOnGameClick(gameId: string, gameType: string) {
-		navigate(`/game/${gameType}/${gameId}`)
-	}
-
 	if (loading)
 		return (
 			<Container className='d-flex justify-content-center align-items-center vh-100'>
@@ -75,7 +101,7 @@ const GamePage: React.FC = () => {
 				<GameImage src={game.imageUrl} alt={game.name} />
 				<div className='game-info'>
 					<GameInfo game={game} />
-					<GamePrice amount={game.amount} currency={game.currency} />
+					<GamePrice amount={game.amount} currency={game.currency} onAddToOrder={handleAddToOrder} />
 				</div>
 			</Container>
 
@@ -95,6 +121,10 @@ const GamePage: React.FC = () => {
 						<GameCard key={baseGame.id} game={baseGame} onGameClick={handleOnGameClick} />
 					</div>
 				</Container>
+			)}
+
+			{showSuccessModal && (
+				<SuccessModal show={showSuccessModal} onClose={handleSuccessClose} title='Game has been added to order' />
 			)}
 		</>
 	)

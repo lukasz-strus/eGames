@@ -13,6 +13,14 @@ class ApiEndpoints {
 		DLC_GAME: '/games/dlc',
 		SUBSCRIPTION: '/games/subscriptions',
 	}
+
+	static readonly ORDER = {
+		OWN: 'me/orders',
+		BASE: '/orders',
+		ITEMS: (orderId: string) => `/orders/${orderId}/items`,
+		ITEM: (orderId: string, itemId: string) => `/orders/${orderId}/items/${itemId}`,
+		PAY: (orderId: string) => `/orders/${orderId}/pay`,
+	}
 }
 
 export default ApiEndpoints
