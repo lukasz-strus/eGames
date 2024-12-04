@@ -21,8 +21,6 @@ export class OrderService extends ApiService {
 		if (!data) return null
 		if (data.orders.length === 0) return null
 
-		console.log(data)
-
 		return data.orders.find((order: { status: string }) => order.status === 'Pending')
 	}
 

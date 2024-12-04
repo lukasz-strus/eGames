@@ -37,6 +37,10 @@
 	width: 100%;
 }
 
+.library-game-img-card {
+	width: 100%;
+}
+
 .game-info {
 	display: flex;
 	flex-direction: column;
@@ -69,6 +73,17 @@
 }
 
 .game-card:hover {
+	transform: scale(1.1);
+	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+
+.library-game-card {
+	width: 18em;
+	transition: transform 0.3s ease, box-sahdow 0.3s ease;
+	cursor: pointer;
+}
+
+.library-game-card:hover {
 	transform: scale(1.1);
 	box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }

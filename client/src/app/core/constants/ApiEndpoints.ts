@@ -21,6 +21,11 @@ class ApiEndpoints {
 		ITEM: (orderId: string, itemId: string) => `/orders/${orderId}/items/${itemId}`,
 		PAY: (orderId: string) => `/orders/${orderId}/pay`,
 	}
+
+	static readonly LIBRARY = {
+		OWN: 'me/library-games',
+		BASE: '/library-games',
+	}
 }
 
 export default ApiEndpoints

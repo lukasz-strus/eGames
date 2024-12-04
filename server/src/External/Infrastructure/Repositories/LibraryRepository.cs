@@ -7,6 +7,11 @@ namespace Infrastructure.Repositories;
 internal sealed class LibraryRepository(
     ApplicationDbContext dbContext) : ILibraryRepository
 {
+    public IQueryable<LibraryGame> GetAllByUserId(UserId userId) =>
+        dbContext.LibraryGames
+            .Include(x => x.Game)
+            .Where(x => x.UserId == userId);
+
     public async Task AddAsync(LibraryGame libraryGame, CancellationToken cancellationToken) =>
         await dbContext.LibraryGames.AddAsync(libraryGame, cancellationToken);
 

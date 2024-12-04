@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Contracts;
+using Sieve.Models;
 
 namespace Presentation.Controllers;
 
@@ -20,9 +21,11 @@ public class LibraryController(IMediator mediator) : ApiController(mediator)
     [Authorize(Roles = UserRoleNames.Customer)]
     [HttpGet(ApiRoutes.Libraries.GetOwnLibraryGames)]
     [ProducesResponseType(typeof(LibraryGameListResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetOwnGames(CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllLibraryGamesQuery())
-            .Bind(query => Mediator.Send(query, cancellationToken))
+    public async Task<IActionResult> GetOwnGames(
+        [FromQuery] SieveModel query,
+        CancellationToken cancellationToken) =>
+        await Result.Success(new GetAllLibraryGamesQuery(query))
+            .Bind(value => Mediator.Send(value, cancellationToken))
             .Match(Ok, BadRequest);
 
     [Authorize(Roles = UserRoleNames.SuperAdmin)]
@@ -30,9 +33,10 @@ public class LibraryController(IMediator mediator) : ApiController(mediator)
     [ProducesResponseType(typeof(LibraryGameListResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUserGames(
         Guid userId,
+        [FromQuery] SieveModel query,
         CancellationToken cancellationToken) =>
-        await Result.Success(new GetAllLibraryGamesQuery(userId))
-            .Bind(query => Mediator.Send(query, cancellationToken))
+        await Result.Success(new GetAllLibraryGamesQuery(query, userId))
+            .Bind(value => Mediator.Send(value, cancellationToken))
             .Match(Ok, BadRequest);
 
     #endregion
