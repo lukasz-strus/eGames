@@ -12,5 +12,5 @@
 
 ## Technologies
 
-- **Server** - ASP.NET Core 9
-- **Client** - React v18
+- **[Server](https://github.com/lukasz-strus/eGames/tree/main/server)** - ASP.NET Core 9
+- **[Client](https://github.com/lukasz-strus/eGames/tree/main/client)** - React v18
