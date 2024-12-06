@@ -14,6 +14,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { setIsLoggedIn, setUserName } = useAuth()
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [isLibraryVisible, setLibraryVisible] = useState<boolean>(false)
+	const [isGameManagmentVisible, setGameManagmentVisible] = useState<boolean>(false)
 	const location = useLocation()
 
 	const getNavLinkClass = (path: string): string => {
@@ -22,7 +23,9 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 	const setMenuVisibility = (roles: UserRole[]) => {
 		setLibraryVisible(false)
+
 		if (roles.some(role => role.name === 'Customer')) setLibraryVisible(true)
+		if (roles.some(role => role.name === 'Admin')) setGameManagmentVisible(true)
 	}
 
 	useEffect(() => {
@@ -75,6 +78,11 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 							{isLibraryVisible && (
 								<Nav.Link href='/library' className={getNavLinkClass('/library')}>
 									Library
+								</Nav.Link>
+							)}
+							{isGameManagmentVisible && (
+								<Nav.Link href='/games-managment' className={getNavLinkClass('/games-managment')}>
+									Game Managment
 								</Nav.Link>
 							)}
 						</Nav>

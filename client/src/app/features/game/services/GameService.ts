@@ -52,6 +52,19 @@ export class GameService extends ApiService {
 		}
 	}
 
+	async deleteGame(gameId: string, token: string): Promise<void> {
+		await this.API.delete(`${ApiEndpoints.GAMES.BASE}/${gameId}`, {
+			params: {
+				destroy: false,
+			},
+			...this.setAuthorizationHeader(token),
+		})
+	}
+
+	async restoreGame(gameId: string, token: string): Promise<void> {
+		await this.API.post(ApiEndpoints.GAMES.RESTORE(gameId), this.setAuthorizationHeader(token))
+	}
+
 	private getGameTypeUrl(gameType: GameType): string {
 		switch (gameType) {
 			case GameType.FullGame:

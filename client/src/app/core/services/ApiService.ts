@@ -28,7 +28,7 @@ export abstract class ApiService {
 		const queryParams: Record<string, string | number> = {}
 
 		if (params.filters) {
-			queryParams.Filters = `name@=*${params.filters}`
+			queryParams.Filters = params.filters
 		}
 		if (params.sorts) {
 			queryParams.Sorts = params.sorts

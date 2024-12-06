@@ -28,16 +28,13 @@ const StorePage: React.FC = () => {
 
 	const navigate = useNavigate()
 
-	const loadGames = async (
-		query?: { filters: string; sorts: string; page: number; pageSize: number },
-		type?: string
-	) => {
+	async function loadGames(query?: { filters: string; sorts: string; page: number; pageSize: number }, type?: string) {
 		setLoading(true)
 		setError(null)
 
 		try {
 			const gameQuery = query || {
-				filters: searchQuery || '',
+				filters: searchQuery + ',isDeleted==false' || '',
 				sorts: sortBy,
 				page: currentPage,
 				pageSize: gamesPerPage,

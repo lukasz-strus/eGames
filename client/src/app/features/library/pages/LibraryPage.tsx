@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom'
 import { LibraryService } from '../services/LibraryService'
 import FormField from '../../../core/components/FormField'
 import LibrarySection from '../components/LibrarySection'
+import { AuthService } from '../../auth/services/AuthService'
 
 const libraryService = LibraryService.getInstance()
+const authService = AuthService.getInstance()
 
 const LibraryPage: React.FC = () => {
 	const [libraryGames, setLibraryGames] = useState<LibraryGame[]>([])
@@ -25,14 +27,37 @@ const LibraryPage: React.FC = () => {
 
 	const navigate = useNavigate()
 
+	const isCustomer = async (token: string) => {
+		try {
+			const user = await authService.getProfile(token)
+			if (user) {
+				if (user.userRoles.items.some(role => role.name === 'Customer')) return true
+				else return false
+			} else {
+				localStorage.removeItem('authToken')
+				return false
+			}
+		} catch (error) {
+			localStorage.removeItem('authToken')
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	const loadLibraryGames = async (query?: { filters: string; sorts: string; page: number; pageSize: number }) => {
 		setLoading(true)
 		setError(null)
 
 		try {
 			const token = localStorage.getItem('authToken')
+
 			if (!token) {
-				setError('You need to be logged in to view your library.')
+				setError('You are not authorized to view this page.')
+				return
+			}
+
+			if (!isCustomer(token)) {
+				setError('You are not authorized to view this page.')
 				return
 			}
 
@@ -54,10 +79,6 @@ const LibraryPage: React.FC = () => {
 		}
 	}
 
-	useEffect(() => {
-		loadLibraryGames()
-	}, [currentPage])
-
 	const handleSearch = async () => {
 		const libraryQuery = {
 			filters: tempSearchQuery || '',
@@ -78,6 +99,10 @@ const LibraryPage: React.FC = () => {
 		setCurrentPage(newPage)
 		window.scrollTo(0, 0)
 	}
+
+	useEffect(() => {
+		loadLibraryGames()
+	}, [currentPage])
 
 	if (loading) {
 		return (

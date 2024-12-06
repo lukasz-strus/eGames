@@ -12,6 +12,7 @@ class ApiEndpoints {
 		FULL_GAME: '/games/full',
 		DLC_GAME: '/games/dlc',
 		SUBSCRIPTION: '/games/subscriptions',
+		RESTORE: (gameId: string) => `/games/${gameId}/restore`,
 	}
 
 	static readonly ORDER = {

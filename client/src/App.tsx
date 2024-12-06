@@ -8,6 +8,7 @@ import GamePage from './app/features/game/store/pages/GamePage'
 import UserPage from './app/features/user/me/pages/ProfilePage'
 import OrderPage from './app/features/order/pages/OrderPage'
 import LibraryGamePage from './app/features/library/pages/LibraryGamePage'
+import GamesManagmentPage from './app/features/game/admin/pages/GamesManagmentPage'
 
 const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
@@ -22,6 +23,7 @@ const App: React.FC = () => {
 					<Route path='/game/:gameType/:gameId' element={<GamePage />} />
 					<Route path='/profile' element={<UserPage />} />
 					<Route path='/order' element={<OrderPage />} />
+					<Route path='/games-managment' element={<GamesManagmentPage />} />
 				</Routes>
 			</MainLayout>
 		</Router>
