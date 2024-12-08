@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Row, Col, Button, Form, Table } from 'react-bootstrap'
+import { Container, Row, Col, Button, Form, Spinner, Alert } from 'react-bootstrap'
 import { Game, FullGame, DlcGame, Subscription } from '../../../../core/contracts/Game'
 import { useNavigate, useParams } from 'react-router-dom'
-import FormField from '../../../../core/components/FormField'
 import { GameService } from '../../services/GameService'
 import { GameType } from '../../../../core/enums/GameType'
+import GameDetailsForm from '../components/GameDetailsForm'
+import DlcGameList from '../components/DlcGameList'
+import DlcGameForm from '../components/DlcGameForm'
 
 const gameService = GameService.getInstance()
 
@@ -14,7 +16,8 @@ const GameFormPage: React.FC = () => {
 	const [dlcGames, setDlcGames] = useState<DlcGame[]>([])
 	const [tmpDlcGame, setTmpDlcGame] = useState<Partial<DlcGame>>({})
 	const [dlcGameButtonLabel, setDlcGameButtonLabel] = useState<string>('Add DLC Game')
-	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [loading, setLoading] = useState<boolean>(false)
+	const [error, setError] = useState<string | null>(null)
 	const [isDlcOnAddMode, setIsDlcOnAddMode] = useState<boolean>(false)
 	const [errors, setErrors] = useState<Record<string, string | null>>({})
 	const navigate = useNavigate()
@@ -26,7 +29,7 @@ const GameFormPage: React.FC = () => {
 	const fetchGame = async () => {
 		if (!gameId) return
 
-		setIsLoading(true)
+		setLoading(true)
 		try {
 			switch (gameType) {
 				case GameType.FullGame:
@@ -46,9 +49,9 @@ const GameFormPage: React.FC = () => {
 					throw new Error('Invalid game type selected.')
 			}
 		} catch (error) {
-			console.error('Error fetching game:', error)
+			setError('Failed to fetch game information.')
 		} finally {
-			setIsLoading(false)
+			setLoading(false)
 		}
 	}
 
@@ -156,18 +159,13 @@ const GameFormPage: React.FC = () => {
 		return Object.values(newErrors).every(error => error === null)
 	}
 
-	const handleInputChange = (key: keyof Game, value: string | number) => {
+	const handleInputChange = (key: keyof Game | keyof Subscription, value: string | number) => {
 		if (key === 'releaseDate') {
 			setGame(prev => ({ ...prev, [key]: formatDate(value as string) }))
 		} else {
 			setGame(prev => ({ ...prev, [key]: value }))
 		}
 
-		setErrors(prev => ({ ...prev, [key]: null }))
-	}
-
-	const handleSubscriptionInputChange = (key: keyof Subscription, value: string | number) => {
-		setGame(prev => ({ ...prev, [key]: value }))
 		setErrors(prev => ({ ...prev, [key]: null }))
 	}
 
@@ -256,7 +254,7 @@ const GameFormPage: React.FC = () => {
 			return
 		}
 		try {
-			setIsLoading(true)
+			setLoading(true)
 			const token = localStorage.getItem('authToken')
 
 			if (!token) {
@@ -298,9 +296,9 @@ const GameFormPage: React.FC = () => {
 
 			navigate('/games-managment')
 		} catch (error) {
-			console.error('Error saving game:', error)
+			setError('Failed to save game.')
 		} finally {
-			setIsLoading(false)
+			setLoading(false)
 		}
 	}
 
@@ -312,7 +310,21 @@ const GameFormPage: React.FC = () => {
 		return `${year}-${month}-${day}`
 	}
 
-	if (isLoading) return <div>Loading...</div>
+	if (loading) {
+		return (
+			<Container className='d-flex justify-content-center align-items-center vh-100'>
+				<Spinner animation='border' />
+			</Container>
+		)
+	}
+
+	if (error) {
+		return (
+			<Container>
+				<Alert variant='danger'>{error}</Alert>
+			</Container>
+		)
+	}
 
 	return (
 		<>
@@ -329,342 +341,24 @@ const GameFormPage: React.FC = () => {
 				</Row>
 
 				<Form>
-					<Row>
-						<Col>
-							<FormField
-								label='Game Title'
-								type='text'
-								floatingLabel={true}
-								value={game.name || ''}
-								isInvalid={!!errors.name}
-								feedback={errors.name}
-								onChange={e => handleInputChange('name', e.target.value)}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						{game.type === GameType.DlcGame && (
-							<Col md={6}>
-								<FormField
-									label='Game Type'
-									type='text'
-									floatingLabel={true}
-									value={game.type || ''}
-									onChange={() => {}}
-								/>
-							</Col>
-						)}
-						{game.type !== GameType.DlcGame && (
-							<Col md={6}>
-								<FormField
-									label='Game Type'
-									type='select'
-									floatingLabel={true}
-									value={game.type || ''}
-									options={[
-										{ value: '', label: '' },
-										{ value: GameType.FullGame, label: 'Full Game' },
-										{ value: GameType.Subscription, label: 'Subscription' },
-									]}
-									isInvalid={!!errors.type}
-									feedback={errors.type}
-									onChange={e => handleInputChange('type', e.target.value)}
-								/>
-							</Col>
-						)}
+					<GameDetailsForm game={game} errors={errors} onChange={handleInputChange} />
 
-						<Col md={3}>
-							<FormField
-								label='Price'
-								type='number'
-								floatingLabel={true}
-								value={game.amount || ''}
-								isInvalid={!!errors.amount}
-								feedback={errors.amount}
-								onChange={e => handleInputChange('amount', parseFloat(e.target.value))}
-							/>
-						</Col>
-						<Col md={3}>
-							<FormField
-								label='Currency'
-								type='select'
-								floatingLabel={true}
-								value={game.currency || ''}
-								options={[
-									{ value: '', label: '' },
-									{ value: 'USD', label: 'USD' },
-									{ value: 'EUR', label: 'EUR' },
-									{ value: 'PLN', label: 'PLN' },
-								]}
-								isInvalid={!!errors.currency}
-								feedback={errors.currency}
-								onChange={e => handleInputChange('currency', e.target.value)}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						<Col md={6}>
-							<FormField
-								label='Publisher'
-								type='text'
-								floatingLabel={true}
-								value={game.publisher || ''}
-								isInvalid={!!errors.publisher}
-								feedback={errors.publisher}
-								onChange={e => handleInputChange('publisher', e.target.value)}
-							/>
-						</Col>
-						<Col md={3}>
-							<FormField
-								label='Release Date'
-								type='date'
-								floatingLabel={true}
-								value={game.releaseDate ? formatDate(game.releaseDate) : ''}
-								isInvalid={!!errors.releaseDate}
-								feedback={errors.releaseDate}
-								onChange={e => handleInputChange('releaseDate', e.target.value)}
-							/>
-						</Col>
-						<Col md={3}>
-							<FormField
-								label='File Size'
-								type='number'
-								floatingLabel={true}
-								value={game.fileSize || ''}
-								isInvalid={!!errors.fileSize}
-								feedback={errors.fileSize}
-								onChange={e => handleInputChange('fileSize', parseFloat(e.target.value))}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						<Col>
-							<FormField
-								label='Description'
-								type='text'
-								as='textarea'
-								floatingLabel={true}
-								value={game.description || ''}
-								isInvalid={!!errors.description}
-								feedback={errors.description}
-								onChange={e => handleInputChange('description', e.target.value)}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						<Col>
-							<FormField
-								label='Download Link'
-								type='text'
-								as='textarea'
-								floatingLabel={true}
-								value={game.downloadLink || ''}
-								isInvalid={!!errors.downloadLink}
-								feedback={errors.downloadLink}
-								onChange={e => handleInputChange('downloadLink', e.target.value)}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						<Col>
-							<FormField
-								label='Image Url'
-								type='text'
-								as='textarea'
-								floatingLabel={true}
-								value={game.imageUrl || ''}
-								isInvalid={!!errors.imageUrl}
-								feedback={errors.imageUrl}
-								onChange={e => handleInputChange('imageUrl', e.target.value)}
-							/>
-						</Col>
-					</Row>
-					{game.type === 'Subscription' && (
-						<Row>
-							<Col md={3}>
-								<FormField
-									label='Subscription Period In Days'
-									type='number'
-									floatingLabel={true}
-									value={(game as Subscription).subscriptionPeriodInDays || ''}
-									onChange={e => handleSubscriptionInputChange('subscriptionPeriodInDays', parseFloat(e.target.value))}
-								/>
-							</Col>
-						</Row>
-					)}
 					{game.type === 'FullGame' && (
-						<Container>
+						<>
 							<h4>DLC Games</h4>
-							<Table bordered>
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Price</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody>
-									{dlcGames.map((dlc, index) => (
-										<tr key={dlc.id || index}>
-											<td>
-												<Form.Control
-													type='text'
-													placeholder='DLC Name'
-													value={dlc.name}
-													onChange={() => {}}
-													readOnly
-												/>
-											</td>
-											<td>
-												<Form.Control
-													type='number'
-													placeholder='DLC Price'
-													value={dlc.amount}
-													onChange={() => {}}
-													readOnly
-												/>
-											</td>
-											<td className='text-center align-middle'>
-												<Button variant='warning' className='me-3' onClick={() => handleEditDlcGame(index)}>
-													Edit
-												</Button>
-												<Button variant='danger' onClick={() => handleRemoveDlcGame(index)}>
-													Remove
-												</Button>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</Table>
+							<DlcGameList dlcGames={dlcGames} onEdit={handleEditDlcGame} onDelete={handleRemoveDlcGame} />
 							<Button onClick={handleAddDlcGame} variant='primary' className='mb-3'>
 								{dlcGameButtonLabel}
 							</Button>
 							{isDlcOnAddMode && (
-								<>
-									<Row>
-										<Col md={7}>
-											<FormField
-												label='Title'
-												type='text'
-												floatingLabel={true}
-												value={tmpDlcGame.name || ''}
-												isInvalid={!!errors.dlcName}
-												feedback={errors.dlcName}
-												onChange={e => handleDlcInputChange('name', e.target.value)}
-											/>
-										</Col>
-										<Col md={5}>
-											<FormField
-												label='Publisher'
-												type='text'
-												floatingLabel={true}
-												value={tmpDlcGame.publisher || ''}
-												isInvalid={!!errors.dlcPublisher}
-												feedback={errors.dlcPublisher}
-												onChange={e => handleDlcInputChange('publisher', e.target.value)}
-											/>
-										</Col>
-									</Row>
-									<Row>
-										<Col md={3}>
-											<FormField
-												label='Price'
-												type='number'
-												floatingLabel={true}
-												value={tmpDlcGame.amount || ''}
-												isInvalid={!!errors.dlcAmount}
-												feedback={errors.dlcAmount}
-												onChange={e => handleDlcInputChange('amount', parseFloat(e.target.value))}
-											/>
-										</Col>
-										<Col md={3}>
-											<FormField
-												label='Currency'
-												type='select'
-												floatingLabel={true}
-												value={tmpDlcGame.currency || ''}
-												isInvalid={!!errors.dlcCurrency}
-												feedback={errors.dlcCurrency}
-												options={[
-													{ value: 'USD', label: 'USD' },
-													{ value: 'EUR', label: 'EUR' },
-													{ value: 'PLN', label: 'PLN' },
-												]}
-												onChange={e => handleDlcInputChange('currency', e.target.value)}
-											/>
-										</Col>
-										<Col md={3}>
-											<FormField
-												label='Release Date'
-												type='date'
-												floatingLabel={true}
-												value={tmpDlcGame.releaseDate || ''}
-												isInvalid={!!errors.dlcReleaseDate}
-												feedback={errors.dlcReleaseDate}
-												onChange={e => handleDlcInputChange('releaseDate', e.target.value)}
-											/>
-										</Col>
-										<Col md={3}>
-											<FormField
-												label='File Size'
-												type='number'
-												floatingLabel={true}
-												value={tmpDlcGame.fileSize || ''}
-												isInvalid={!!errors.dlcFileSize}
-												feedback={errors.dlcFileSize}
-												onChange={e => handleDlcInputChange('fileSize', parseFloat(e.target.value))}
-											/>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormField
-												label='Description'
-												type='text'
-												as='textarea'
-												floatingLabel={true}
-												value={tmpDlcGame.description || ''}
-												isInvalid={!!errors.dlcDescription}
-												feedback={errors.dlcDescription}
-												onChange={e => handleDlcInputChange('description', e.target.value)}
-											/>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormField
-												label='Download Link'
-												type='text'
-												as='textarea'
-												floatingLabel={true}
-												value={tmpDlcGame.downloadLink || ''}
-												isInvalid={!!errors.dlcDownloadLink}
-												feedback={errors.dlcDownloadLink}
-												onChange={e => handleDlcInputChange('downloadLink', e.target.value)}
-											/>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormField
-												label='Image Url'
-												type='text'
-												as='textarea'
-												floatingLabel={true}
-												value={tmpDlcGame.imageUrl || ''}
-												isInvalid={!!errors.dlcImageUrl}
-												feedback={errors.dlcImageUrl}
-												onChange={e => handleDlcInputChange('imageUrl', e.target.value)}
-											/>
-										</Col>
-									</Row>
-
-									<Button onClick={handleSaveNewDlcGame} variant='success' className='mt-3'>
-										Save DLC Game
-									</Button>
-								</>
+								<DlcGameForm
+									dlcGame={tmpDlcGame}
+									errors={errors}
+									onChange={handleDlcInputChange}
+									onSave={handleSaveNewDlcGame}
+								/>
 							)}
-						</Container>
+						</>
 					)}
 				</Form>
 			</Container>
