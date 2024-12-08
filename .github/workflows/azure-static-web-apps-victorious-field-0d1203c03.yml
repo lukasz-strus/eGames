@@ -19,6 +19,7 @@ jobs:
         with:
           submodules: true
           lfs: false
+          
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -27,6 +28,10 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory: ./client
+
+      - name: Build application
+        run: npm run build
         working-directory: ./client
         
       - name: Build And Deploy
