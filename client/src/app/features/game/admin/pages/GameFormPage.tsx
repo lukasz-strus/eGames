@@ -4,51 +4,132 @@ import { Game, FullGame, DlcGame, Subscription } from '../../../../core/contract
 import { useNavigate, useParams } from 'react-router-dom'
 import FormField from '../../../../core/components/FormField'
 import { GameService } from '../../services/GameService'
+import { GameType } from '../../../../core/enums/GameType'
 
 const gameService = GameService.getInstance()
 
 const GameFormPage: React.FC = () => {
-	const { gameId } = useParams<{ gameId?: string }>()
+	const { gameType, gameId } = useParams<{ gameType: GameType; gameId?: string }>()
 	const [game, setGame] = useState<Partial<Game | FullGame | Subscription>>({})
 	const [dlcGames, setDlcGames] = useState<DlcGame[]>([])
 	const [tmpDlcGame, setTmpDlcGame] = useState<Partial<DlcGame>>({})
 	const [dlcGameButtonLabel, setDlcGameButtonLabel] = useState<string>('Add DLC Game')
 	const [isLoading, setIsLoading] = useState<boolean>(false)
 	const [isDlcOnAddMode, setIsDlcOnAddMode] = useState<boolean>(false)
+	const [errors, setErrors] = useState<Record<string, string | null>>({})
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		const fetchGame = async () => {
-			if (!gameId) return
-
-			setIsLoading(true)
-			try {
-				const fetchedGame = await gameService.fetchGameById(gameId)
-				setGame(fetchedGame)
-
-				if (fetchedGame.type === 'FullGame' && 'dlcGames' in fetchedGame) {
-					//setDlcGames(fetchedGame.dlcGames || [])
-				}
-			} catch (error) {
-				console.error('Error fetching game:', error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
 		fetchGame()
 	}, [gameId])
 
+	const fetchGame = async () => {
+		if (!gameId) return
+
+		setIsLoading(true)
+		try {
+			switch (gameType) {
+				case GameType.FullGame:
+					const fetchedFullGame = await gameService.fetchGameById(gameId, GameType.FullGame)
+					setGame(fetchedFullGame)
+					setDlcGames((fetchedFullGame as FullGame).dlcGames || [])
+					break
+				case GameType.Subscription:
+					const fetchedSubscriptionGame = await gameService.fetchGameById(gameId, GameType.Subscription)
+					setGame(fetchedSubscriptionGame)
+					break
+				case GameType.DlcGame:
+					const fetchedDlcGame = await gameService.fetchGameById(gameId, GameType.DlcGame)
+					setGame(fetchedDlcGame)
+					break
+				default:
+					throw new Error('Invalid game type selected.')
+			}
+		} catch (error) {
+			console.error('Error fetching game:', error)
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	const validate = (): boolean => {
+		const newErrors: Record<string, string | null> = {}
+
+		if (!game.name || game.name.trim() === '') {
+			newErrors.name = 'Game title is required.'
+		} else if (game.name.length > 100) {
+			newErrors.name = 'Game title cannot exceed 100 characters.'
+		}
+
+		if (!game.type || !['FullGame', 'Subscription', 'DlcGame'].includes(game.type)) {
+			newErrors.type = 'Game type must be defined.'
+		}
+
+		if (!game.description || game.description.trim() === '') {
+			newErrors.description = 'Description is required.'
+		} else if (game.description.length > 500) {
+			newErrors.description = 'Description cannot exceed 500 characters.'
+		}
+
+		if (!game.amount || game.amount <= 0) {
+			newErrors.amount = 'Price must be greater than 0.'
+		}
+
+		if (!game.currency || !['USD', 'EUR', 'PLN'].includes(game.currency)) {
+			newErrors.currency = 'Currency must be one of USD, EUR, or PLN.'
+		}
+
+		if (!game.releaseDate) {
+			newErrors.releaseDate = 'Release date is required.'
+		}
+
+		if (!game.publisher || game.publisher.trim() === '') {
+			newErrors.publisher = 'Publisher is required.'
+		} else if (game.publisher.length > 100) {
+			newErrors.publisher = 'Publisher cannot exceed 100 characters.'
+		}
+
+		if (!game.downloadLink || game.downloadLink.trim() === '') {
+			newErrors.downloadLink = 'Download link is required.'
+		} else if (game.downloadLink.length > 200) {
+			newErrors.downloadLink = 'Download link cannot exceed 200 characters.'
+		}
+
+		if (!game.fileSize || game.fileSize <= 0) {
+			newErrors.fileSize = 'File size must be greater than 0.'
+		}
+
+		if (!game.imageUrl || game.imageUrl.trim() === '') {
+			newErrors.imageUrl = 'Image URL is required.'
+		}
+
+		setErrors(newErrors)
+
+		return Object.values(newErrors).every(error => error === null)
+	}
+
 	const handleInputChange = (key: keyof Game, value: string | number) => {
-		setGame(prev => ({ ...prev, [key]: value }))
+		if (key === 'releaseDate') {
+			setGame(prev => ({ ...prev, [key]: formatDate(value as string) }))
+		} else {
+			setGame(prev => ({ ...prev, [key]: value }))
+		}
+
+		setErrors(prev => ({ ...prev, [key]: null }))
 	}
 
 	const handleSubscriptionInputChange = (key: keyof Subscription, value: string | number) => {
 		setGame(prev => ({ ...prev, [key]: value }))
+		setErrors(prev => ({ ...prev, [key]: null }))
 	}
 
 	const handleDlcInputChange = (key: keyof DlcGame, value: string | number) => {
-		setTmpDlcGame(prev => ({ ...prev, [key]: value }))
+		if (key === 'releaseDate') {
+			setTmpDlcGame(prev => ({ ...prev, [key]: formatDate(value as string) }))
+		} else {
+			setTmpDlcGame(prev => ({ ...prev, [key]: value }))
+		}
+		setErrors(prev => ({ ...prev, [key]: null }))
 	}
 
 	const handleAddDlcGame = () => {
@@ -69,8 +150,15 @@ const GameFormPage: React.FC = () => {
 		handleAddDlcGame()
 	}
 
-	const handleRemoveDlcGame = (index: number) => {
-		setDlcGames(prev => prev.filter((_, i) => i !== index))
+	const handleRemoveDlcGame = async (index: number) => {
+		const token = localStorage.getItem('authToken')
+
+		if (!token) {
+			throw new Error('User is not authenticated')
+		} else {
+			await gameService.deleteGame(dlcGames[index].id, token)
+			await fetchGame()
+		}
 	}
 
 	const handleEditDlcGame = (index: number) => {
@@ -81,6 +169,9 @@ const GameFormPage: React.FC = () => {
 	}
 
 	const handleSaveGame = async () => {
+		if (!validate()) {
+			return
+		}
 		try {
 			setIsLoading(true)
 			const token = localStorage.getItem('authToken')
@@ -89,7 +180,7 @@ const GameFormPage: React.FC = () => {
 				throw new Error('User is not authenticated')
 			}
 
-			if (game.type === 'FullGame') {
+			if (game.type === GameType.FullGame) {
 				const fullGamePayload: FullGame = {
 					...(game as FullGame),
 					dlcGames,
@@ -102,7 +193,7 @@ const GameFormPage: React.FC = () => {
 				}
 			}
 
-			if (game.type === 'Subscription') {
+			if (game.type === GameType.Subscription) {
 				const subscriptionPayload: Subscription = game as Subscription
 
 				if (gameId) {
@@ -112,7 +203,7 @@ const GameFormPage: React.FC = () => {
 				}
 			}
 
-			if (game.type === 'DlcGame') {
+			if (game.type === GameType.DlcGame) {
 				const dlcGamePayload: DlcGame = game as DlcGame
 
 				if (gameId) {
@@ -122,12 +213,20 @@ const GameFormPage: React.FC = () => {
 				}
 			}
 
-			navigate('/games-managment')
+			//navigate('/games-managment')
 		} catch (error) {
 			console.error('Error saving game:', error)
 		} finally {
 			setIsLoading(false)
 		}
+	}
+
+	const formatDate = (date: string): string => {
+		const d = new Date(date)
+		const year = d.getFullYear()
+		const month = String(d.getMonth() + 1).padStart(2, '0') // Dodaj 1, bo miesiące są zero-indexed
+		const day = String(d.getDate()).padStart(2, '0')
+		return `${year}-${month}-${day}`
 	}
 
 	if (isLoading) return <div>Loading...</div>
@@ -154,12 +253,14 @@ const GameFormPage: React.FC = () => {
 								type='text'
 								floatingLabel={true}
 								value={game.name || ''}
+								isInvalid={!!errors.name}
+								feedback={errors.name}
 								onChange={e => handleInputChange('name', e.target.value)}
 							/>
 						</Col>
 					</Row>
 					<Row>
-						{game.type === 'DlcGame' && (
+						{game.type === GameType.DlcGame && (
 							<Col md={6}>
 								<FormField
 									label='Game Type'
@@ -170,7 +271,7 @@ const GameFormPage: React.FC = () => {
 								/>
 							</Col>
 						)}
-						{game.type !== 'DlcGame' && (
+						{game.type !== GameType.DlcGame && (
 							<Col md={6}>
 								<FormField
 									label='Game Type'
@@ -179,19 +280,24 @@ const GameFormPage: React.FC = () => {
 									value={game.type || ''}
 									options={[
 										{ value: '', label: '' },
-										{ value: 'FullGame', label: 'Full Game' },
-										{ value: 'Subscription', label: 'Subscription' },
+										{ value: GameType.FullGame, label: 'Full Game' },
+										{ value: GameType.Subscription, label: 'Subscription' },
 									]}
+									isInvalid={!!errors.type}
+									feedback={errors.type}
 									onChange={e => handleInputChange('type', e.target.value)}
 								/>
 							</Col>
 						)}
+
 						<Col md={3}>
 							<FormField
 								label='Price'
 								type='number'
 								floatingLabel={true}
 								value={game.amount || ''}
+								isInvalid={!!errors.amount}
+								feedback={errors.amount}
 								onChange={e => handleInputChange('amount', parseFloat(e.target.value))}
 							/>
 						</Col>
@@ -202,10 +308,13 @@ const GameFormPage: React.FC = () => {
 								floatingLabel={true}
 								value={game.currency || ''}
 								options={[
+									{ value: '', label: '' },
 									{ value: 'USD', label: 'USD' },
 									{ value: 'EUR', label: 'EUR' },
 									{ value: 'PLN', label: 'PLN' },
 								]}
+								isInvalid={!!errors.currency}
+								feedback={errors.currency}
 								onChange={e => handleInputChange('currency', e.target.value)}
 							/>
 						</Col>
@@ -217,6 +326,8 @@ const GameFormPage: React.FC = () => {
 								type='text'
 								floatingLabel={true}
 								value={game.publisher || ''}
+								isInvalid={!!errors.publisher}
+								feedback={errors.publisher}
 								onChange={e => handleInputChange('publisher', e.target.value)}
 							/>
 						</Col>
@@ -225,7 +336,9 @@ const GameFormPage: React.FC = () => {
 								label='Release Date'
 								type='date'
 								floatingLabel={true}
-								value={game.releaseDate || ''}
+								value={game.releaseDate ? formatDate(game.releaseDate) : ''}
+								isInvalid={!!errors.releaseDate}
+								feedback={errors.releaseDate}
 								onChange={e => handleInputChange('releaseDate', e.target.value)}
 							/>
 						</Col>
@@ -235,6 +348,8 @@ const GameFormPage: React.FC = () => {
 								type='number'
 								floatingLabel={true}
 								value={game.fileSize || ''}
+								isInvalid={!!errors.fileSize}
+								feedback={errors.fileSize}
 								onChange={e => handleInputChange('fileSize', parseFloat(e.target.value))}
 							/>
 						</Col>
@@ -247,6 +362,8 @@ const GameFormPage: React.FC = () => {
 								as='textarea'
 								floatingLabel={true}
 								value={game.description || ''}
+								isInvalid={!!errors.description}
+								feedback={errors.description}
 								onChange={e => handleInputChange('description', e.target.value)}
 							/>
 						</Col>
@@ -259,6 +376,8 @@ const GameFormPage: React.FC = () => {
 								as='textarea'
 								floatingLabel={true}
 								value={game.downloadLink || ''}
+								isInvalid={!!errors.downloadLink}
+								feedback={errors.downloadLink}
 								onChange={e => handleInputChange('downloadLink', e.target.value)}
 							/>
 						</Col>
@@ -271,6 +390,8 @@ const GameFormPage: React.FC = () => {
 								as='textarea'
 								floatingLabel={true}
 								value={game.imageUrl || ''}
+								isInvalid={!!errors.imageUrl}
+								feedback={errors.imageUrl}
 								onChange={e => handleInputChange('imageUrl', e.target.value)}
 							/>
 						</Col>

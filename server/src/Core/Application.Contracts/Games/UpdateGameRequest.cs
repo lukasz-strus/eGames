@@ -1,6 +1,7 @@
 ﻿namespace Application.Contracts.Games;
 
 public sealed class UpdateGameRequest(
+    string name,
     string description,
     decimal price,
     int currencyId,
@@ -10,6 +11,7 @@ public sealed class UpdateGameRequest(
     ulong fileSize,
     string imageUrl)
 {
+    public string Name { get; set; } = name;
     public string Description { get; set; } = description;
     public decimal Price { get; set; } = price;
     public int CurrencyId { get; set; } = currencyId;

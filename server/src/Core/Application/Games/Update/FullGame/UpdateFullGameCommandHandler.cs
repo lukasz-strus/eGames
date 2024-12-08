@@ -28,6 +28,7 @@ internal sealed class UpdateFullGameCommandHandler(
         var money = new Money(currency, request.Game.Price);
 
         game.Update(
+            request.Game.Name,
             request.Game.Description,
             money,
             request.Game.ReleaseDate,

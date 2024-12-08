@@ -54,6 +54,7 @@ public sealed class Subscription : Game
     }
 
     public void Update(
+        string name,
         string description,
         Money price,
         DateTime releaseDate,
@@ -64,6 +65,6 @@ public sealed class Subscription : Game
         uint periodInDays)
     {
         PeriodInDays = periodInDays;
-        Update(description, price, releaseDate, publisher, downloadLink, fileSize, imageUrl);
+        Update(name, description, price, releaseDate, publisher, downloadLink, fileSize, imageUrl);
     }
 }

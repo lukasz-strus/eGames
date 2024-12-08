@@ -77,7 +77,7 @@ const StorePage: React.FC = () => {
 
 	const handleSearch = async () => {
 		const gameQuery = {
-			filters: tempSearchQuery || '',
+			filters: (tempSearchQuery ? `name@=*${tempSearchQuery},` : '') + 'isDeleted==false',
 			sorts: tempSortBy,
 			page: 1,
 			pageSize: tempGamesPerPage,

@@ -196,7 +196,7 @@ const GamesManagementPage: React.FC = () => {
 			}
 
 			await gameService.deleteGame(gameId, token)
-			setGames(prev => prev.filter(game => game.id !== gameId))
+			loadGames()
 			loadDeletedGames()
 		} catch (err) {
 			setError('Failed to delete the game.')
@@ -335,7 +335,10 @@ const GamesManagementPage: React.FC = () => {
 									{game.amount.toFixed(2)} {game.currency}
 								</td>
 								<td className='text-center align-middle'>
-									<Button variant='warning' className='me-2' onClick={() => navigate(`/game-form/${game.id}`)}>
+									<Button
+										variant='warning'
+										className='me-2'
+										onClick={() => navigate(`/game-form/${game.type}/${game.id}`)}>
 										Edit
 									</Button>
 									<Button

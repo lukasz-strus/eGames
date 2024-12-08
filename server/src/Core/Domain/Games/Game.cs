@@ -65,6 +65,7 @@ public abstract class Game : Entity<GameId>
     [Required] public string ImageUrl { get; private set; }
 
     public void Update(
+        string name,
         string description,
         Money price,
         DateTime releaseDate,
@@ -73,6 +74,7 @@ public abstract class Game : Entity<GameId>
         ulong fileSize,
         string imageUrl)
     {
+        Name = name;
         Description = description;
         Price = price;
         ReleaseDate = releaseDate;

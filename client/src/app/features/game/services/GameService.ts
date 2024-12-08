@@ -63,7 +63,7 @@ export class GameService extends ApiService {
 	}
 
 	async restoreGame(gameId: string, token: string): Promise<void> {
-		await this.API.post(ApiEndpoints.GAMES.RESTORE(gameId), this.setAuthorizationHeader(token))
+		await this.API.post(ApiEndpoints.GAMES.RESTORE(gameId), {}, this.setAuthorizationHeader(token))
 	}
 
 	async createFullGame(game: FullGame, token: string): Promise<FullGame> {
@@ -88,14 +88,38 @@ export class GameService extends ApiService {
 	}
 
 	async createSubscription(game: Subscription, token: string): Promise<Subscription> {
-		const { data } = await this.API.post(ApiEndpoints.GAMES.SUBSCRIPTION, game, this.setAuthorizationHeader(token))
+		const request = {
+			name: game.name,
+			description: game.description,
+			price: game.amount,
+			currencyId: Currency.fromName(game.currency).id,
+			releaseDate: game.releaseDate,
+			publisher: game.publisher,
+			downloadLink: game.downloadLink,
+			fileSize: game.fileSize,
+			imageUrl: game.imageUrl,
+			periodInDays: game.subscriptionPeriodInDays,
+		}
+		const { data } = await this.API.post(ApiEndpoints.GAMES.SUBSCRIPTION, request, this.setAuthorizationHeader(token))
 		return data
 	}
 
 	async createDlcGame(dlcGame: Game, baseGameId: string, token: string): Promise<DlcGame> {
+		const request = {
+			name: dlcGame.name,
+			description: dlcGame.description,
+			price: dlcGame.amount,
+			currencyId: Currency.fromName(dlcGame.currency).id,
+			releaseDate: dlcGame.releaseDate,
+			publisher: dlcGame.publisher,
+			downloadLink: dlcGame.downloadLink,
+			fileSize: dlcGame.fileSize,
+			imageUrl: dlcGame.imageUrl,
+		}
+
 		const { data } = await this.API.post(
 			ApiEndpoints.GAMES.FULL_GAME_DLCS(baseGameId),
-			dlcGame,
+			request,
 			this.setAuthorizationHeader(token)
 		)
 		return data
@@ -103,9 +127,10 @@ export class GameService extends ApiService {
 
 	async updateFullGame(gameId: string, game: FullGame, token: string): Promise<void> {
 		const request = {
+			name: game.name,
 			description: game.description,
 			price: game.amount,
-			currency: Currency.fromName(game.currency).id,
+			currencyId: Currency.fromName(game.currency).id,
 			releaseDate: game.releaseDate,
 			publisher: game.publisher,
 			downloadLink: game.downloadLink,
@@ -117,11 +142,35 @@ export class GameService extends ApiService {
 	}
 
 	async updateSubscription(gameId: string, game: Subscription, token: string): Promise<void> {
-		await this.API.put(`${ApiEndpoints.GAMES.SUBSCRIPTION}/${gameId}`, game, this.setAuthorizationHeader(token))
+		const request = {
+			name: game.name,
+			description: game.description,
+			price: game.amount,
+			currencyId: Currency.fromName(game.currency).id,
+			releaseDate: game.releaseDate,
+			publisher: game.publisher,
+			downloadLink: game.downloadLink,
+			fileSize: game.fileSize,
+			imageUrl: game.imageUrl,
+			periodInDays: game.subscriptionPeriodInDays,
+		}
+		await this.API.put(`${ApiEndpoints.GAMES.SUBSCRIPTION}/${gameId}`, request, this.setAuthorizationHeader(token))
 	}
 
 	async updateDlcGame(gameId: string, dlcGame: DlcGame, token: string): Promise<void> {
-		await this.API.put(`${ApiEndpoints.GAMES.DLC_GAME}/${gameId}`, dlcGame as Game, this.setAuthorizationHeader(token))
+		const request = {
+			name: dlcGame.name,
+			description: dlcGame.description,
+			price: dlcGame.amount,
+			currencyId: Currency.fromName(dlcGame.currency).id,
+			releaseDate: dlcGame.releaseDate,
+			publisher: dlcGame.publisher,
+			downloadLink: dlcGame.downloadLink,
+			fileSize: dlcGame.fileSize,
+			imageUrl: dlcGame.imageUrl,
+		}
+
+		await this.API.put(`${ApiEndpoints.GAMES.DLC_GAME}/${gameId}`, request, this.setAuthorizationHeader(token))
 	}
 
 	private getGameTypeUrl(gameType: GameType): string {
