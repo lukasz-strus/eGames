@@ -26,7 +26,7 @@ internal sealed class GameRepository(
 
     public async Task<FullGame?> GetFullGameByIdAsync(GameId id, CancellationToken cancellationToken) =>
         await dbContext.FullGames
-            .Include(x => x.DlcGames)
+            .Include(x => x.DlcGames.Where(y => !y.IsDeleted))
             .FirstOrDefaultAsync(g => g.Id == id, cancellationToken);
 
     public async Task<DlcGame?> GetDlcGameByIdAsync(GameId id, CancellationToken cancellationToken) =>

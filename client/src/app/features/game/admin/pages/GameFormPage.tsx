@@ -67,8 +67,6 @@ const GameFormPage: React.FC = () => {
 
 		if (!game.description || game.description.trim() === '') {
 			newErrors.description = 'Description is required.'
-		} else if (game.description.length > 500) {
-			newErrors.description = 'Description cannot exceed 500 characters.'
 		}
 
 		if (!game.amount || game.amount <= 0) {
@@ -108,6 +106,56 @@ const GameFormPage: React.FC = () => {
 		return Object.values(newErrors).every(error => error === null)
 	}
 
+	const validateDlc = (): boolean => {
+		const newErrors: Record<string, string | null> = {}
+
+		if (!tmpDlcGame.name || tmpDlcGame.name.trim() === '') {
+			newErrors.dlcName = 'Game title is required.'
+		} else if (tmpDlcGame.name.length > 100) {
+			newErrors.dlcName = 'Game title cannot exceed 100 characters.'
+		}
+
+		if (!tmpDlcGame.description || tmpDlcGame.description.trim() === '') {
+			newErrors.dlcDescription = 'Description is required.'
+		}
+
+		if (!tmpDlcGame.amount || tmpDlcGame.amount <= 0) {
+			newErrors.dlcAmount = 'Price must be greater than 0.'
+		}
+
+		if (!tmpDlcGame.currency || !['USD', 'EUR', 'PLN'].includes(tmpDlcGame.currency)) {
+			newErrors.dlcCurrency = 'Currency must be one of USD, EUR, or PLN.'
+		}
+
+		if (!tmpDlcGame.releaseDate) {
+			newErrors.dlcReleaseDate = 'Release date is required.'
+		}
+
+		if (!tmpDlcGame.publisher || tmpDlcGame.publisher.trim() === '') {
+			newErrors.dlcPublisher = 'Publisher is required.'
+		} else if (tmpDlcGame.publisher.length > 100) {
+			newErrors.dlcPublisher = 'Publisher cannot exceed 100 characters.'
+		}
+
+		if (!tmpDlcGame.downloadLink || tmpDlcGame.downloadLink.trim() === '') {
+			newErrors.dlcDownloadLink = 'Download link is required.'
+		} else if (tmpDlcGame.downloadLink.length > 200) {
+			newErrors.dlcDownloadLink = 'Download link cannot exceed 200 characters.'
+		}
+
+		if (!tmpDlcGame.fileSize || tmpDlcGame.fileSize <= 0) {
+			newErrors.dlcFileSize = 'File size must be greater than 0.'
+		}
+
+		if (!tmpDlcGame.imageUrl || tmpDlcGame.imageUrl.trim() === '') {
+			newErrors.dlcImageUrl = 'Image URL is required.'
+		}
+
+		setErrors(newErrors)
+
+		return Object.values(newErrors).every(error => error === null)
+	}
+
 	const handleInputChange = (key: keyof Game, value: string | number) => {
 		if (key === 'releaseDate') {
 			setGame(prev => ({ ...prev, [key]: formatDate(value as string) }))
@@ -136,21 +184,63 @@ const GameFormPage: React.FC = () => {
 		if (isDlcOnAddMode) {
 			setIsDlcOnAddMode(false)
 			setDlcGameButtonLabel('Add DLC Game')
+			setErrors({
+				...errors,
+				dlcName: null,
+				dlcDescription: null,
+				dlcAmount: null,
+				dlcCurrency: null,
+				dlcReleaseDate: null,
+				dlcPublisher: null,
+				dlcDownloadLink: null,
+				dlcFileSize: null,
+				dlcImageUrl: null,
+			})
 		} else {
+			setTmpDlcGame({ id: Math.random().toString(36).substring(7), baseGameId: gameId || '' })
 			setIsDlcOnAddMode(true)
 			setDlcGameButtonLabel('Cancel')
 		}
 	}
 
+	const handleEditDlcGame = (index: number) => {
+		const dlcGame = dlcGames[index]
+		setTmpDlcGame(dlcGame)
+		setIsDlcOnAddMode(true)
+		setDlcGameButtonLabel('Cancel')
+	}
+
 	const handleSaveNewDlcGame = async () => {
-		const newDlc = { ...tmpDlcGame, baseGameId: gameId || '' }
-		setDlcGames(prev => [...prev, newDlc as DlcGame])
+		if (!validateDlc()) {
+			return
+		}
+
+		if (!gameId) {
+			const newDlc = { ...tmpDlcGame, baseGameId: gameId || '' }
+			setDlcGames(prev => [...prev, newDlc as DlcGame])
+		} else {
+			const token = localStorage.getItem('authToken')
+
+			if (!token) {
+				throw new Error('User is not authenticated')
+			}
+
+			if (gameId) {
+				await gameService.createDlcGame(tmpDlcGame as DlcGame, gameId, token)
+				await fetchGame()
+			}
+		}
 
 		setTmpDlcGame({})
 		handleAddDlcGame()
 	}
 
 	const handleRemoveDlcGame = async (index: number) => {
+		if (!gameId) {
+			const newDlcGames = dlcGames.filter((_, i) => i !== index)
+			setDlcGames(newDlcGames)
+			return
+		}
 		const token = localStorage.getItem('authToken')
 
 		if (!token) {
@@ -159,13 +249,6 @@ const GameFormPage: React.FC = () => {
 			await gameService.deleteGame(dlcGames[index].id, token)
 			await fetchGame()
 		}
-	}
-
-	const handleEditDlcGame = (index: number) => {
-		const dlcGame = dlcGames[index]
-		setTmpDlcGame(dlcGame)
-		handleRemoveDlcGame(index)
-		handleAddDlcGame()
 	}
 
 	const handleSaveGame = async () => {
@@ -213,7 +296,7 @@ const GameFormPage: React.FC = () => {
 				}
 			}
 
-			//navigate('/games-managment')
+			navigate('/games-managment')
 		} catch (error) {
 			console.error('Error saving game:', error)
 		} finally {
@@ -224,7 +307,7 @@ const GameFormPage: React.FC = () => {
 	const formatDate = (date: string): string => {
 		const d = new Date(date)
 		const year = d.getFullYear()
-		const month = String(d.getMonth() + 1).padStart(2, '0') // Dodaj 1, bo miesiące są zero-indexed
+		const month = String(d.getMonth() + 1).padStart(2, '0')
 		const day = String(d.getDate()).padStart(2, '0')
 		return `${year}-${month}-${day}`
 	}
@@ -422,7 +505,7 @@ const GameFormPage: React.FC = () => {
 								</thead>
 								<tbody>
 									{dlcGames.map((dlc, index) => (
-										<tr key={dlc.id}>
+										<tr key={dlc.id || index}>
 											<td>
 												<Form.Control
 													type='text'
@@ -459,13 +542,26 @@ const GameFormPage: React.FC = () => {
 							{isDlcOnAddMode && (
 								<>
 									<Row>
-										<Col>
+										<Col md={7}>
 											<FormField
 												label='Title'
 												type='text'
 												floatingLabel={true}
 												value={tmpDlcGame.name || ''}
+												isInvalid={!!errors.dlcName}
+												feedback={errors.dlcName}
 												onChange={e => handleDlcInputChange('name', e.target.value)}
+											/>
+										</Col>
+										<Col md={5}>
+											<FormField
+												label='Publisher'
+												type='text'
+												floatingLabel={true}
+												value={tmpDlcGame.publisher || ''}
+												isInvalid={!!errors.dlcPublisher}
+												feedback={errors.dlcPublisher}
+												onChange={e => handleDlcInputChange('publisher', e.target.value)}
 											/>
 										</Col>
 									</Row>
@@ -476,6 +572,8 @@ const GameFormPage: React.FC = () => {
 												type='number'
 												floatingLabel={true}
 												value={tmpDlcGame.amount || ''}
+												isInvalid={!!errors.dlcAmount}
+												feedback={errors.dlcAmount}
 												onChange={e => handleDlcInputChange('amount', parseFloat(e.target.value))}
 											/>
 										</Col>
@@ -485,6 +583,8 @@ const GameFormPage: React.FC = () => {
 												type='select'
 												floatingLabel={true}
 												value={tmpDlcGame.currency || ''}
+												isInvalid={!!errors.dlcCurrency}
+												feedback={errors.dlcCurrency}
 												options={[
 													{ value: 'USD', label: 'USD' },
 													{ value: 'EUR', label: 'EUR' },
@@ -499,6 +599,8 @@ const GameFormPage: React.FC = () => {
 												type='date'
 												floatingLabel={true}
 												value={tmpDlcGame.releaseDate || ''}
+												isInvalid={!!errors.dlcReleaseDate}
+												feedback={errors.dlcReleaseDate}
 												onChange={e => handleDlcInputChange('releaseDate', e.target.value)}
 											/>
 										</Col>
@@ -508,6 +610,8 @@ const GameFormPage: React.FC = () => {
 												type='number'
 												floatingLabel={true}
 												value={tmpDlcGame.fileSize || ''}
+												isInvalid={!!errors.dlcFileSize}
+												feedback={errors.dlcFileSize}
 												onChange={e => handleDlcInputChange('fileSize', parseFloat(e.target.value))}
 											/>
 										</Col>
@@ -520,6 +624,8 @@ const GameFormPage: React.FC = () => {
 												as='textarea'
 												floatingLabel={true}
 												value={tmpDlcGame.description || ''}
+												isInvalid={!!errors.dlcDescription}
+												feedback={errors.dlcDescription}
 												onChange={e => handleDlcInputChange('description', e.target.value)}
 											/>
 										</Col>
@@ -532,6 +638,8 @@ const GameFormPage: React.FC = () => {
 												as='textarea'
 												floatingLabel={true}
 												value={tmpDlcGame.downloadLink || ''}
+												isInvalid={!!errors.dlcDownloadLink}
+												feedback={errors.dlcDownloadLink}
 												onChange={e => handleDlcInputChange('downloadLink', e.target.value)}
 											/>
 										</Col>
@@ -544,6 +652,8 @@ const GameFormPage: React.FC = () => {
 												as='textarea'
 												floatingLabel={true}
 												value={tmpDlcGame.imageUrl || ''}
+												isInvalid={!!errors.dlcImageUrl}
+												feedback={errors.dlcImageUrl}
 												onChange={e => handleDlcInputChange('imageUrl', e.target.value)}
 											/>
 										</Col>

@@ -10,8 +10,7 @@ internal sealed class UpdateDlcGameCommandValidator : AbstractValidator<UpdateDl
             .NotEmpty();
 
         RuleFor(x => x.Game.Description)
-            .NotEmpty()
-            .MaximumLength(500);
+            .NotEmpty();
 
         RuleFor(x => x.Game.Price)
             .NotEmpty()

@@ -21,8 +21,7 @@ internal sealed class CreateFullGameCommandValidator : AbstractValidator<CreateF
             });
 
         RuleFor(x => x.Game.Description)
-            .NotEmpty()
-            .MaximumLength(500);
+            .NotEmpty();
 
         RuleFor(x => x.Game.Price)
             .NotEmpty()
