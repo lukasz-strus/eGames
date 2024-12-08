@@ -97,7 +97,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 					<FormField
 						label='Email'
 						type='email'
-						placeholder='Enter email'
+						floatingLabel={true}
 						value={email}
 						onChange={e => setEmail(e.target.value)}
 						isInvalid={!!emailError}
@@ -106,7 +106,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 					<FormField
 						label='Password'
 						type='password'
-						placeholder='Enter password'
+						floatingLabel={true}
 						value={password}
 						onChange={e => setPassword(e.target.value)}
 						isInvalid={!!passwordError}

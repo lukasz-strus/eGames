@@ -117,13 +117,13 @@ const StorePage: React.FC = () => {
 	return (
 		<>
 			<div className='bcg-image' />
-			<Container className='section-container justify-content-center align-content-end'>
-				<Row className='justify-content-center'>
+			<Container className='section-container justify-content-center align-content-center'>
+				<Row className='justify-content-center mt-3'>
 					<Col md={3}>
 						<FormField
 							label='Search by name'
 							type='text'
-							placeholder='Enter game name'
+							floatingLabel={true}
 							value={tempSearchQuery}
 							onChange={e => setTempSearchQuery(e.target.value)}
 						/>
@@ -132,6 +132,7 @@ const StorePage: React.FC = () => {
 					<Col md={3}>
 						<FormField
 							label='Filter by game type'
+							floatingLabel={true}
 							type='select'
 							value={tempSelectedType}
 							options={[
@@ -146,6 +147,7 @@ const StorePage: React.FC = () => {
 					<Col md={2}>
 						<FormField
 							label='Sort by'
+							floatingLabel={true}
 							type='select'
 							value={tempSortBy}
 							options={[
@@ -159,6 +161,7 @@ const StorePage: React.FC = () => {
 					<Col md={2}>
 						<FormField
 							label='Results per page'
+							floatingLabel={true}
 							type='select'
 							value={tempGamesPerPage}
 							options={[
@@ -171,7 +174,7 @@ const StorePage: React.FC = () => {
 						/>
 					</Col>
 					<Col md={1} className='text-center'>
-						<Button variant='primary' className='mt-4' onClick={handleSearch}>
+						<Button variant='primary' className='mt-2' onClick={handleSearch}>
 							<i className='fas fa-search'></i> Search
 						</Button>
 					</Col>

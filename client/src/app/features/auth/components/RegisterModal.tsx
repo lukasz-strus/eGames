@@ -89,7 +89,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 						<FormField
 							label='Email'
 							type='email'
-							placeholder='Enter email'
+							floatingLabel={true}
 							value={email}
 							onChange={e => setEmail(e.target.value)}
 							isInvalid={!!emailError}
@@ -98,7 +98,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 						<FormField
 							label='Confirm Email'
 							type='email'
-							placeholder='Confirm email'
+							floatingLabel={true}
 							value={confirmEmail}
 							onChange={e => setConfirmEmail(e.target.value)}
 							isInvalid={!!emailError}
@@ -106,7 +106,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 						<FormField
 							label='Password'
 							type='password'
-							placeholder='Enter password'
+							floatingLabel={true}
 							value={password}
 							onChange={e => setPassword(e.target.value)}
 							isInvalid={!!passwordError}
@@ -115,7 +115,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 						<FormField
 							label='Confirm Password'
 							type='password'
-							placeholder='Confirm password'
+							floatingLabel={true}
 							value={confirmPassword}
 							onChange={e => setConfirmPassword(e.target.value)}
 							isInvalid={!!passwordError}

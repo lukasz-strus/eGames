@@ -261,7 +261,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Search by name'
 							type='text'
-							placeholder='Enter game name'
+							floatingLabel={true}
 							value={tempSearchQuery}
 							onChange={e => setTempSearchQuery(e.target.value)}
 						/>
@@ -271,6 +271,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Filter by game type'
 							type='select'
+							floatingLabel={true}
 							value={tempSelectedType}
 							options={[
 								{ value: 'All', label: 'All Games' },
@@ -285,6 +286,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Sort by'
 							type='select'
+							floatingLabel={true}
 							value={tempSortBy}
 							options={[
 								{ value: 'name', label: 'Name asc.' },
@@ -298,6 +300,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Results per page'
 							type='select'
+							floatingLabel={true}
 							value={tempGamesPerPage}
 							options={[
 								{ value: 6, label: '6' },
@@ -309,7 +312,7 @@ const GamesManagementPage: React.FC = () => {
 						/>
 					</Col>
 					<Col md={1} className='text-center'>
-						<Button variant='primary' className='mt-4' onClick={handleSearch}>
+						<Button variant='primary' className='mt-2' onClick={handleSearch}>
 							<i className='fas fa-search'></i> Search
 						</Button>
 					</Col>
@@ -332,7 +335,7 @@ const GamesManagementPage: React.FC = () => {
 									{game.amount.toFixed(2)} {game.currency}
 								</td>
 								<td className='text-center align-middle'>
-									<Button variant='warning' className='me-2' onClick={() => navigate(`/edit-game/${game.id}`)}>
+									<Button variant='warning' className='me-2' onClick={() => navigate(`/game-form/${game.id}`)}>
 										Edit
 									</Button>
 									<Button
@@ -362,7 +365,7 @@ const GamesManagementPage: React.FC = () => {
 						))}
 						<Pagination.Next disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} />
 					</Pagination>
-					<Button variant='success' onClick={() => navigate('/add-game')}>
+					<Button variant='success' onClick={() => navigate('/game-form')}>
 						Add New Game
 					</Button>
 				</div>
@@ -375,7 +378,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Search by name'
 							type='text'
-							placeholder='Enter game name'
+							floatingLabel={true}
 							value={tempSearchQueryDeleted}
 							onChange={e => setTempSearchQueryDeleted(e.target.value)}
 						/>
@@ -384,6 +387,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Filter by game type'
 							type='select'
+							floatingLabel={true}
 							value={tempSelectedTypeDeleted}
 							options={[
 								{ value: 'All', label: 'All Games' },
@@ -397,6 +401,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Sort by'
 							type='select'
+							floatingLabel={true}
 							value={tempSortByDeleted}
 							options={[
 								{ value: 'name', label: 'Name asc.' },
@@ -409,6 +414,7 @@ const GamesManagementPage: React.FC = () => {
 						<FormField
 							label='Results per page'
 							type='select'
+							floatingLabel={true}
 							value={tempGamesPerPageDeleted}
 							options={[
 								{ value: 6, label: '6' },
@@ -419,7 +425,7 @@ const GamesManagementPage: React.FC = () => {
 						/>
 					</Col>
 					<Col md={1} className='text-center'>
-						<Button variant='primary' className='mt-4' onClick={handleSearchDeleted}>
+						<Button variant='primary' className='mt-2' onClick={handleSearchDeleted}>
 							Search
 						</Button>
 					</Col>

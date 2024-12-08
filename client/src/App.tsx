@@ -9,6 +9,7 @@ import UserPage from './app/features/user/me/pages/ProfilePage'
 import OrderPage from './app/features/order/pages/OrderPage'
 import LibraryGamePage from './app/features/library/pages/LibraryGamePage'
 import GamesManagmentPage from './app/features/game/admin/pages/GamesManagmentPage'
+import GameFormPage from './app/features/game/admin/pages/GameFormPage'
 
 const App: React.FC = () => {
 	const htmlElement = document.querySelector('html')
@@ -24,6 +25,8 @@ const App: React.FC = () => {
 					<Route path='/profile' element={<UserPage />} />
 					<Route path='/order' element={<OrderPage />} />
 					<Route path='/games-managment' element={<GamesManagmentPage />} />
+					<Route path='/game-form' element={<GameFormPage />} />
+					<Route path='/game-form/:gameId' element={<GameFormPage />} />
 				</Routes>
 			</MainLayout>
 		</Router>

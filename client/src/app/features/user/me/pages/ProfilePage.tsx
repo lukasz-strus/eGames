@@ -93,16 +93,23 @@ const UserPage: React.FC = () => {
 
 			<Row>
 				<Col md={6}>
-					<FormField label='Username' type='text' value={userName} isInvalid={false} onChange={() => {}} />
+					<FormField
+						label='Username'
+						floatingLabel={true}
+						type='text'
+						value={userName}
+						isInvalid={false}
+						onChange={() => {}}
+					/>
 				</Col>
 				<Col md={6}>
 					<FormField
 						label='Email'
-						type='text'
+						type='email'
+						floatingLabel={true}
 						value={email}
 						isInvalid={false}
 						onChange={() => {}}
-						placeholder='Current email'
 					/>
 				</Col>
 			</Row>
@@ -115,7 +122,7 @@ const UserPage: React.FC = () => {
 					<FormField
 						label='Old Password'
 						type='password'
-						placeholder='Enter current password'
+						floatingLabel={true}
 						value={oldPassword}
 						onChange={e => setOldPassword(e.target.value)}
 					/>
@@ -126,7 +133,7 @@ const UserPage: React.FC = () => {
 					<FormField
 						label='New Password'
 						type='password'
-						placeholder='Enter new password'
+						floatingLabel={true}
 						value={newPassword}
 						onChange={e => setNewPassword(e.target.value)}
 					/>
@@ -135,7 +142,7 @@ const UserPage: React.FC = () => {
 					<FormField
 						label='Confirm Password'
 						type='password'
-						placeholder='Enter confirm password'
+						floatingLabel={true}
 						value={newConfirmPassword}
 						onChange={e => setConfirmPassword(e.target.value)}
 					/>
