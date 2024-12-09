@@ -4,7 +4,7 @@ import LoginModal from '../../features/auth/components/LoginModal'
 import { useAuth } from '../../core/context/AuthContext'
 import InfoModal from '../../core/components/InfoModal'
 import { UserRole } from '../../core/contracts/User'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { OrderService } from '../../features/order/services/OrderService'
 
 const orderService = OrderService.getInstance()
@@ -19,6 +19,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ onUserRolesChange }) => {
 	const [showSuccessModal, setShowSuccessModal] = useState(false)
 	const [orderCount, setOrderCount] = useState<string>('')
 	const location = useLocation()
+	const navigate = useNavigate()
 
 	function getNavLinkClass(path: string): string {
 		return location.pathname === path ? 'fw-bold' : ''
@@ -34,7 +35,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ onUserRolesChange }) => {
 
 	function handleSuccessClose() {
 		setShowSuccessModal(false)
-		window.location.reload()
+		navigate(0)
 	}
 
 	function getOrderHeader(count: string) {

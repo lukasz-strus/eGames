@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Form, Modal, Alert } from 'react-bootstrap'
+import { Button, Form, Modal, Alert, Container, Spinner } from 'react-bootstrap'
 import FormField from '../../../core/components/FormField'
 import RegisterModal from './RegisterModal'
 import { useAuth } from '../../../core/context/AuthContext'
@@ -24,6 +24,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 	const [showRegisterModal, setShowRegisterModal] = useState(false)
 	const { setIsLoggedIn, setUserName } = useAuth()
 	const [showSuccessModal, setShowSuccessModal] = useState(false)
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const validateEmail = (email: string): boolean => {
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -31,6 +32,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 	}
 
 	const handleLogin = async () => {
+		setLoading(true)
 		let hasError = false
 
 		setEmailError(null)
@@ -50,7 +52,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 			hasError = true
 		}
 
-		if (hasError) return
+		if (hasError) {
+			setLoading(false)
+			return
+		}
 
 		try {
 			const token = await authService.loginUser(email, password)
@@ -65,6 +70,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 			setShowSuccessModal(true)
 		} catch {
 			setError('Login failed. Please check your credentials.')
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -75,6 +82,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 		setEmailError(null)
 		setPasswordError(null)
 		onClose()
+		setLoading(false)
 	}
 
 	const handleSuccessClose = () => {
@@ -83,58 +91,65 @@ const LoginModal: React.FC<LoginModalProps> = ({ show, onClose, onUserRolesChang
 	}
 
 	return (
-		<Modal show={show} onHide={handleClose} centered>
-			<Modal.Header closeButton>
-				<Modal.Title>Login</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				{error && (
-					<Alert variant='danger' className='mb-3'>
-						{error}
-					</Alert>
-				)}
-				<Form>
-					<FormField
-						label='Email'
-						type='email'
-						floatingLabel={true}
-						value={email}
-						onChange={e => setEmail(e.target.value)}
-						isInvalid={!!emailError}
-						feedback={emailError}
-					/>
-					<FormField
-						label='Password'
-						type='password'
-						floatingLabel={true}
-						value={password}
-						onChange={e => setPassword(e.target.value)}
-						isInvalid={!!passwordError}
-						feedback={passwordError}
-					/>
-				</Form>
-			</Modal.Body>
-			<Modal.Footer>
-				<p className='text-muted'>
-					Don't have an account?{' '}
-					<Button variant='link' onClick={() => setShowRegisterModal(true)}>
-						Sign up
+		<>
+			<Modal show={show} onHide={handleClose} centered>
+				<Modal.Header closeButton>
+					<Modal.Title>Login</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					{error && (
+						<Alert variant='danger' className='mb-3'>
+							{error}
+						</Alert>
+					)}
+					<Form>
+						<FormField
+							label='Email'
+							type='email'
+							floatingLabel={true}
+							value={email}
+							onChange={e => setEmail(e.target.value)}
+							isInvalid={!!emailError}
+							feedback={emailError}
+						/>
+						<FormField
+							label='Password'
+							type='password'
+							floatingLabel={true}
+							value={password}
+							onChange={e => setPassword(e.target.value)}
+							isInvalid={!!passwordError}
+							feedback={passwordError}
+						/>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					{loading && (
+						<Container className='d-flex justify-content-center align-items-center'>
+							<Spinner animation='border' />
+						</Container>
+					)}
+					<p className='text-muted'>
+						Don't have an account?{' '}
+						<Button variant='link' onClick={() => setShowRegisterModal(true)}>
+							Sign up
+						</Button>
+					</p>
+					<Button variant='secondary' onClick={handleClose}>
+						Close
 					</Button>
-				</p>
-				<Button variant='secondary' onClick={handleClose}>
-					Close
-				</Button>
-				<Button variant='primary' onClick={handleLogin}>
-					Login
-				</Button>
-			</Modal.Footer>
+					<Button variant='primary' onClick={handleLogin}>
+						Login
+					</Button>
+				</Modal.Footer>
 
-			{showRegisterModal && <RegisterModal show={showRegisterModal} onClose={() => setShowRegisterModal(false)} />}
+				{showRegisterModal && <RegisterModal show={showRegisterModal} onClose={() => setShowRegisterModal(false)} />}
 
-			{showSuccessModal && (
-				<SuccessModal show={showSuccessModal} onClose={handleSuccessClose} title='Login Successful' />
-			)}
-		</Modal>
+				{showSuccessModal && (
+					<SuccessModal show={showSuccessModal} onClose={handleSuccessClose} title='Login Successful' />
+				)}
+			</Modal>
+		</>
 	)
 }
 

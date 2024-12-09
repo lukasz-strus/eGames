@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Form, Modal, Alert } from 'react-bootstrap'
+import { Button, Form, Modal, Alert, Container, Spinner } from 'react-bootstrap'
 import FormField from '../../../core/components/FormField'
 import { AuthService } from '../services/AuthService'
 import SuccessModal from '../../../core/components/SuccessModal'
@@ -23,8 +23,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 	const [passwordError, setPasswordError] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [showSuccessModal, setShowSuccessModal] = useState(false)
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const handleRegister = async () => {
+		setLoading(true)
 		let hasError = false
 
 		setEmailError(null)
@@ -47,7 +49,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 			hasError = true
 		}
 
-		if (hasError) return
+		if (hasError) {
+			setLoading(false)
+			return
+		}
 
 		try {
 			await authService.registerUser(username, email, password)
@@ -55,6 +60,8 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 			setShowSuccessModal(true)
 		} catch {
 			setError('Registration failed. Please try again.')
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -67,6 +74,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 		setEmailError(null)
 		setPasswordError(null)
 		onClose()
+		setLoading(false)
 	}
 
 	const handleSuccessClose = () => {
@@ -131,6 +139,11 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>
+					{loading && (
+						<Container className='d-flex justify-content-center align-items-center'>
+							<Spinner animation='border' />
+						</Container>
+					)}
 					<Button variant='secondary' onClick={handleClose}>
 						Close
 					</Button>
