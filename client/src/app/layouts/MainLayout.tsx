@@ -7,6 +7,7 @@ import { AuthService } from '../features/auth/services/AuthService.ts'
 import { useAuth } from '../core/context/AuthContext.tsx'
 import { useLocation } from 'react-router-dom'
 import { UserRole } from '../core/contracts/User.ts'
+import { Link } from 'react-router-dom'
 
 const authService = AuthService.getInstance()
 
@@ -72,16 +73,16 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 					<Navbar.Toggle aria-controls='basic-navbar-nav' />
 					<Navbar.Collapse id='basic-navbar-nav'>
 						<Nav className='me-auto'>
-							<Nav.Link href='/' className={getNavLinkClass('/')}>
+							<Nav.Link as={Link} to='/' className={getNavLinkClass('/')}>
 								Store
 							</Nav.Link>
 							{isLibraryVisible && (
-								<Nav.Link href='/library' className={getNavLinkClass('/library')}>
+								<Nav.Link as={Link} to='/library' className={getNavLinkClass('/library')}>
 									Library
 								</Nav.Link>
 							)}
 							{isGameManagmentVisible && (
-								<Nav.Link href='/games-managment' className={getNavLinkClass('/games-managment')}>
+								<Nav.Link as={Link} to='/games-managment' className={getNavLinkClass('/games-managment')}>
 									Game Managment
 								</Nav.Link>
 							)}
