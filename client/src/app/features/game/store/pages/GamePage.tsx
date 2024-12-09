@@ -11,6 +11,8 @@ import { GameService } from '../../services/GameService'
 import { GameType } from '../../../../core/enums/GameType'
 import { OrderService } from '../../../order/services/OrderService'
 import SuccessModal from '../../../../core/components/SuccessModal'
+import LoginModal from '../../../auth/components/LoginModal'
+import { UserRole } from '../../../../core/contracts/User'
 
 const gameService = GameService.getInstance()
 const orderService = OrderService.getInstance()
@@ -21,11 +23,21 @@ const GamePage: React.FC = () => {
 	const [baseGame, setBaseGame] = useState<FullGame | null>(null)
 	const [loading, setLoading] = useState<boolean>(true)
 	const [error, setError] = useState<string | null>(null)
+	const [showLoginModal, setShowLoginModal] = useState(false)
 	const [showSuccessModal, setShowSuccessModal] = useState(false)
 	const navigate = useNavigate()
 
 	function handleOnGameClick(gameId: string, gameType: string) {
 		navigate(`/game/${gameType}/${gameId}`)
+	}
+
+	const addToOrderAfterLogin = (roles: UserRole[]) => {
+		if (!roles.some(role => role.name === 'Customer')) {
+			setError('You must be a customer to add games to the order.')
+			return
+		}
+
+		handleAddToOrder()
 	}
 
 	async function handleAddToOrder() {
@@ -34,7 +46,7 @@ const GamePage: React.FC = () => {
 		const token = localStorage.getItem('authToken')
 
 		if (!token) {
-			navigate('/login')
+			setShowLoginModal(true)
 			return
 		}
 		try {
@@ -49,7 +61,7 @@ const GamePage: React.FC = () => {
 	function handleSuccessClose() {
 		setShowSuccessModal(false)
 
-		window.location.reload()
+		navigate(0)
 	}
 
 	useEffect(() => {
@@ -124,6 +136,12 @@ const GamePage: React.FC = () => {
 					</div>
 				</Container>
 			)}
+
+			<LoginModal
+				show={showLoginModal}
+				onClose={() => setShowLoginModal(false)}
+				onUserRolesChange={addToOrderAfterLogin}
+			/>
 
 			{showSuccessModal && (
 				<SuccessModal show={showSuccessModal} onClose={handleSuccessClose} title='Game has been added to order' />

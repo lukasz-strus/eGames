@@ -18,6 +18,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using Application.Contracts.Identity;
+using Application.Users.Update.Role;
 
 namespace Web.NET;
 
@@ -85,6 +86,16 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 await mediator.Send(new DeleteUserCommand(domainUserId));
 
                 return CreateValidationProblem(result);
+            }
+
+            var roleToUserResult =
+                await mediator.Send(new AddRoleCommand(domainUserId.Value, 1), CancellationToken.None);
+
+            if (!roleToUserResult.IsSuccess)
+            {
+                await mediator.Send(new DeleteUserCommand(domainUserId));
+
+                return CreateValidationProblem(roleToUserResult.Error.Code, roleToUserResult.Error.Message);
             }
 
             await SendConfirmationEmailAsync(user, userManager, context, email);

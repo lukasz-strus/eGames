@@ -1,6 +1,6 @@
 class ApiEndpoints {
-	static readonly BASE_URL = 'https://egames-api.azurewebsites.net/api'
-	//static readonly BASE_URL = 'https://localhost:7164/api'
+	//static readonly BASE_URL = 'https://egames-api.azurewebsites.net/api'
+	static readonly BASE_URL = 'https://localhost:7164/api'
 
 	static readonly AUTH = {
 		LOGIN: '/identity/login',

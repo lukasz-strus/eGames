@@ -14,6 +14,7 @@ interface RegisterModalProps {
 }
 
 const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
+	const [username, setUsername] = useState('')
 	const [email, setEmail] = useState('')
 	const [confirmEmail, setConfirmEmail] = useState('')
 	const [password, setPassword] = useState('')
@@ -49,7 +50,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 		if (hasError) return
 
 		try {
-			await authService.registerUser(email, email, password)
+			await authService.registerUser(username, email, password)
 
 			setShowSuccessModal(true)
 		} catch {
@@ -86,6 +87,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
 						</Alert>
 					)}
 					<Form>
+						<FormField
+							label='Username'
+							type='text'
+							floatingLabel={true}
+							value={username}
+							onChange={e => setUsername(e.target.value)}
+						/>
 						<FormField
 							label='Email'
 							type='email'

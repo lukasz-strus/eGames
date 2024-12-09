@@ -78,7 +78,7 @@ const OrderPage: React.FC = () => {
 	function handleSuccessClose() {
 		setShowSuccessModal(false)
 		setSuccessMessage('')
-		window.location.reload()
+		navigate(0)
 	}
 
 	useEffect(() => {
