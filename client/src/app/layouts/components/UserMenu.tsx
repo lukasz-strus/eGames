@@ -4,7 +4,7 @@ import LoginModal from '../../features/auth/components/LoginModal'
 import { useAuth } from '../../core/context/AuthContext'
 import InfoModal from '../../core/components/InfoModal'
 import { UserRole } from '../../core/contracts/User'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { OrderService } from '../../features/order/services/OrderService'
 
 const orderService = OrderService.getInstance()
@@ -65,13 +65,15 @@ const UserMenu: React.FC<UserMenuProps> = ({ onUserRolesChange }) => {
 		<>
 			<Nav>
 				{isLoggedIn && (
-					<Nav.Link href='/order' className={getNavLinkClass('/order')}>
+					<Nav.Link as={Link} to='/order' className={getNavLinkClass('/order')}>
 						{getOrderHeader(orderCount)}
 					</Nav.Link>
 				)}
 				{isLoggedIn ? (
 					<NavDropdown title={userName || 'Guest'} id='user-dropdown' className={getNavLinkClass('/profile')}>
-						<NavDropdown.Item href='/profile'>Profile</NavDropdown.Item>
+						<NavDropdown.Item as={Link} to='/profile'>
+							Profile
+						</NavDropdown.Item>
 						<NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
 					</NavDropdown>
 				) : (
