@@ -1,8 +1,5 @@
 # eGames Client
 
-## URL
-[https://victorious-field-0d1203c03.4.azurestaticapps.net](https://victorious-field-0d1203c03.4.azurestaticapps.net)
-
 ## Technologies
 Key technologies used in the project:
 - **React** 
