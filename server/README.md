@@ -30,4 +30,3 @@ The application is deployed on Azure:
 ## API Documentation
 
 The API documentation is available via Swagger and can be accessed at:
-[- [https://egames-api.azurewebsites.net](https://egames-api.azurewebsites.net/index.html)](url)
